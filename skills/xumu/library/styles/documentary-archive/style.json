@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "key": "documentary-archive",
+  "name": "档案纪录",
+  "family": "B. 新闻纪实",
+  "kind": "style",
+  "look": "老照片、胶片框、打字机文字、档案夹、日期戳",
+  "signature": "慢推老照片、盖章、打字",
+  "fits": "人物史、公司史、复盘",
+  "implementation": "`gn:ken-burns` `gn:typewriter` `gn:stamp-impact` `gn:film-dust-scratches`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:ken-burns",
+    "gn:typewriter",
+    "gn:stamp-impact",
+    "gn:film-dust-scratches"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "慢推老照片、盖章、打字"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/documentary-archive.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/documentary-archive/concept.png"
+  },
+  "verified_in": []
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "crt-film",
+  "name": "老电视 / 胶片",
+  "family": "F. 复古年代",
+  "kind": "style",
+  "look": "扫描线、弧面、荧光点、颗粒、光晕",
+  "signature": "作为质感层叠在其他风格上",
+  "fits": "回忆、年代感",
+  "implementation": "WebGL 质感层；`gn:crt-scanlines` `gn:film-grain` `gn:vhs-tracking`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:crt-scanlines",
+    "gn:film-grain",
+    "gn:vhs-tracking"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "作为质感层叠在其他风格上"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/crt-film.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/crt-film/concept.png"
+  },
+  "verified_in": []
+}

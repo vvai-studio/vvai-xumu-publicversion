@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "key": "whiteboard-world",
+  "name": "白板一镜到底",
+  "family": "A. 教学解说",
+  "kind": "style",
+  "look": "白底大画布、手写体、灰色手绘箭头串起各站点",
+  "signature": "一台镜头推、甩、拉，下潜进手绘显示器接真实录屏；画笔手跟随",
+  "fits": "教程、案例拆解、工作流讲解",
+  "implementation": "HyperFrames；`hf:whiteboard-ink` `hf:hw-arrow` `hf:pan-stations` `gn:infinite-pan`；站酷快乐体",
+  "tags": [
+    "已验证 · 有模板"
+  ],
+  "template": "assets/templates/whiteboard-world",
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:whiteboard-ink",
+    "hf:hw-arrow",
+    "hf:pan-stations",
+    "gn:infinite-pan"
+  ],
+  "spec": {
+    "palette": [
+      "#ffffff",
+      "#2b2b2b",
+      "#c93b3b",
+      "#dfe9f7"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": "站酷快乐体"
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "一台镜头推、甩、拉",
+      "下潜进手绘显示器接真实录屏",
+      "画笔手跟随"
+    ],
+    "forbidden": [],
+    "notes": "白底、墨色主线、红色强调、浅蓝底块；来自 assets/templates/whiteboard-world",
+    "palette_status": "verified"
+  },
+  "gallery": {
+    "frame": "assets/gallery/whiteboard-world.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/whiteboard-world/concept.png"
+  },
+  "verified_in": [
+    "一人公司介绍_成片（7 分 41 秒教程片）"
+  ]
+}

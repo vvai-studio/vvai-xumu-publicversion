@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "3d-scene",
+  "name": "三维场景",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "代码几何、材质、灯光",
+  "signature": "镜头真实推拉环绕，主体占画面三分之一以上",
+  "fits": "产品展示、空间结构、宏大开场",
+  "implementation": "Three.js；`gn:camera-orbit` `gn:object-turntable`；写实产品需模型文件",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:camera-orbit",
+    "gn:object-turntable"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "镜头真实推拉环绕",
+      "主体占画面三分之一以上"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/3d-scene.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/3d-scene/concept.png"
+  },
+  "verified_in": []
+}

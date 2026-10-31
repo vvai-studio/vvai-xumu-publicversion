@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "key": "cyber-hud",
+  "name": "赛博 HUD",
+  "family": "G. 科技与氛围",
+  "kind": "style",
+  "look": "深色、青与品红、扫描线、数据面板",
+  "signature": "扫描、解码、故障",
+  "fits": "科技、安全、游戏",
+  "implementation": "`hf:telemetry-hud` `hf:camcorder-hud` `hf:matrix-decode` `gn:glitch-scan-band`；`mg15:22-hud`",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:22-hud",
+  "needs_assets": false,
+  "components": [
+    "hf:telemetry-hud",
+    "hf:camcorder-hud",
+    "hf:matrix-decode",
+    "gn:glitch-scan-band"
+  ],
+  "spec": {
+    "palette": [
+      "#07111a",
+      "#00e5ff",
+      "#ff00aa",
+      "#9af7ff"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "扫描、解码、故障"
+    ],
+    "forbidden": [],
+    "notes": "",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/cyber-hud.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/cyber-hud/concept.png"
+  },
+  "verified_in": []
+}

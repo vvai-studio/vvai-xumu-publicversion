@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "key": "collage",
+  "name": "拼贴剪贴",
+  "family": "E. 插画与手作",
+  "kind": "style",
+  "look": "老照片与报纸剪影加白边、半调网点、纸纹、比例失衡的超现实拼装",
+  "signature": "肩肘下颌分段转动、嘴巴换帧开合、主体按 12fps 定格并轻微手抖，\"手拍上来\"或翻纸转场",
+  "fits": "文化评论、音乐、潮流、脑洞话题",
+  "implementation": "照片 **需素材**（CC0 / 公有领域，去背后加白边）；`mg15:06-collage` `gn:papercut-placement`",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:06-collage",
+  "needs_assets": true,
+  "components": [
+    "gn:papercut-placement"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "肩肘下颌分段转动、嘴巴换帧开合、主体按 12fps 定格并轻微手抖",
+      "\"手拍上来\"或翻纸转场"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/collage.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/collage/concept.png"
+  },
+  "verified_in": []
+}

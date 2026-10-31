@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "halftone-comic",
+  "name": "美漫网点",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "网点阴影、粗描边、分格、拟声字",
+  "signature": "分格推进、拟声字爆出、速度线",
+  "fits": "故事化讲述、反转、娱乐",
+  "implementation": "`hf:halftone-field` `hf:halftone-dissolve` `gn:radial-speed-lines`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:halftone-field",
+    "hf:halftone-dissolve",
+    "gn:radial-speed-lines"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "分格推进、拟声字爆出、速度线"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/halftone-comic.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/halftone-comic/concept.png"
+  },
+  "verified_in": []
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "key": "cartoon-collage",
+  "name": "卡通拼贴",
+  "family": "A. 教学解说",
+  "kind": "style",
+  "look": "米色纸纹、扁平插画剪贴、色块胶囊、手写",
+  "signature": "剪贴落地、近景 → 滑行 → 拉远",
+  "fits": "科普、轻教育",
+  "implementation": "插画剪贴 **需素材**（Open Peeps 或生成后去背）；`hf:hw-box-label`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "hf:hw-box-label"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "剪贴落地、近景 → 滑行 → 拉远"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/cartoon-collage.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/cartoon-collage/concept.png"
+  },
+  "verified_in": []
+}

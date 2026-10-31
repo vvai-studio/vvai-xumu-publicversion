@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "key": "risograph",
+  "name": "孔版印刷",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "有限套色、套印错位、颗粒",
+  "signature": "图层错位抖动、颗粒闪动",
+  "fits": "文艺、独立品牌、读书",
+  "implementation": "多色图层 + 混合模式；`gn:animated-dither` `gn:halftone-motion`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:animated-dither",
+    "gn:halftone-motion"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "图层错位抖动、颗粒闪动"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/risograph.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/risograph/concept.png"
+  },
+  "verified_in": []
+}

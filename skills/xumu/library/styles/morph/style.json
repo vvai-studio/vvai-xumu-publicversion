@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "key": "morph",
+  "name": "形变叙事",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "少量纯色图形、色场",
+  "signature": "一个图形连续变成另一个（手机变定位钉），复杂形先收成圆或胶囊再展开，形变中带挤压与轻转",
+  "fits": "概念转换、因果串联、品牌意象",
+  "implementation": "`mg15:08-morph` `gn:shape-morph`；路径插值用 flubber 或 MorphSVG",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:08-morph",
+  "needs_assets": false,
+  "components": [
+    "gn:shape-morph"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "一个图形连续变成另一个（手机变定位钉）",
+      "复杂形先收成圆或胶囊再展开",
+      "形变中带挤压与轻转"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/morph.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/morph/concept.png"
+  },
+  "verified_in": []
+}

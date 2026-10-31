@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "memphis",
+  "name": "孟菲斯",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "撞色、波浪线、点阵、几何碎片",
+  "signature": "弹跳、抖动、贴纸弹出",
+  "fits": "轻松话题、年轻向、生活方式",
+  "implementation": "`gn:jello` `gn:wobble` `hf:spring-pop`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:jello",
+    "gn:wobble",
+    "hf:spring-pop"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "弹跳、抖动、贴纸弹出"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/memphis.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/memphis/concept.png"
+  },
+  "verified_in": []
+}

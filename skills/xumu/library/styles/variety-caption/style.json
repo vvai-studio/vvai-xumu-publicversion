@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "key": "variety-caption",
+  "name": "综艺花字",
+  "family": "E. 插画与手作",
+  "kind": "style",
+  "look": "多层描边的胖圆体字、撞色加白边与投影、爆炸框汗滴闪光等手绘符号",
+  "signature": "弹性弹出（约 8 帧冲过再回落），比说话晚 2–3 帧出现，驻留时轻微摆动；情绪决定字形与符号",
+  "fits": "vlog、萌宠、访谈、轻综艺；叠在人物画面上",
+  "implementation": "`mg15:18-hanazi` `hf:badge-pop` `hf:spring-pop`；花字与原话字幕样式区分（见 [综艺包装层](production-profile.md#4-综艺包装层)）",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:18-hanazi",
+  "needs_assets": false,
+  "components": [
+    "hf:badge-pop",
+    "hf:spring-pop"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "弹性弹出（约 8 帧冲过再回落）",
+      "比说话晚 2–3 帧出现",
+      "驻留时轻微摆动",
+      "情绪决定字形与符号"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/variety-caption.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/variety-caption/concept.png"
+  },
+  "verified_in": []
+}

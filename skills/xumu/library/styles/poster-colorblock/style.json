@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "poster-colorblock",
+  "name": "海报色块",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "大面积纯色场、超粗大字被画框裁切",
+  "signature": "色块擦除、字撞画框",
+  "fits": "观点冲击、口号、活动",
+  "implementation": "`hf:headline-slam` `hf:caption-kinetic-slam` `gn:kinetic-type-sweep`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:headline-slam",
+    "hf:caption-kinetic-slam",
+    "gn:kinetic-type-sweep"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "色块擦除、字撞画框"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/poster-colorblock.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/poster-colorblock/concept.png"
+  },
+  "verified_in": []
+}

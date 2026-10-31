@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "soft-3d",
+  "name": "3D 渲染质感",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "软胶、玻璃、金属等真实材质，棚拍布光，浅景深，糖果色",
+  "signature": "克隆阵列群体波动、软体碰撞，长尾缓动（前 20% 走完 80% 路程），24fps 电影感",
+  "fits": "产品展示、品牌开场、片头",
+  "implementation": "`mg15:04-3d-render`；Blender 命令行渲染序列帧，**需安装 Blender**（新依赖先取得同意）",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:04-3d-render",
+  "needs_assets": false,
+  "components": [],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "克隆阵列群体波动、软体碰撞",
+      "长尾缓动（前 20% 走完 80% 路程）",
+      "24fps 电影感"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/soft-3d.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/soft-3d/concept.png"
+  },
+  "verified_in": []
+}

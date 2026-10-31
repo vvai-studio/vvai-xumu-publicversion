@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "key": "sticker-explainer",
+  "name": "贴纸科普（回形针式）",
+  "family": "A. 教学解说",
+  "kind": "style",
+  "look": "冷静的蓝灰或米白底、照片抠图加粗白描边成\"贴纸\"、扁平图标与精确图表、等线字体",
+  "signature": "超大画布上一台镜头长缓动平移缩放，每句旁白带出一个新元素；柱状图生长、数字滚动、路线描出",
+  "fits": "硬核科普、财经、跨学科知识口播",
+  "implementation": "`mg15:19-paperclip` `gn:infinite-pan` `hf:data-chart`；照片 **需素材**",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:19-paperclip",
+  "needs_assets": true,
+  "components": [
+    "gn:infinite-pan",
+    "hf:data-chart"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "超大画布上一台镜头长缓动平移缩放",
+      "每句旁白带出一个新元素",
+      "柱状图生长、数字滚动、路线描出"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/sticker-explainer.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/sticker-explainer/concept.png"
+  },
+  "verified_in": []
+}

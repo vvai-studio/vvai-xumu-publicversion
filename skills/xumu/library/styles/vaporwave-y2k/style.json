@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "key": "vaporwave-y2k",
+  "name": "蒸汽波 / Synthwave / Y2K",
+  "family": "F. 复古年代",
+  "kind": "style",
+  "look": "粉紫渐变、铬金属字、网格地平线、旧系统窗口",
+  "signature": "网格滚动、铬字旋转",
+  "fits": "互联网文化、潮流",
+  "implementation": "`gn:perspective-grid-drift` `hf:liquid-metal` `gn:liquid-metal`；`mg15:10-synthwave`",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:10-synthwave",
+  "needs_assets": false,
+  "components": [
+    "gn:perspective-grid-drift",
+    "hf:liquid-metal",
+    "gn:liquid-metal"
+  ],
+  "spec": {
+    "palette": [
+      "#2b0a3d",
+      "#ff71ce",
+      "#01cdfe",
+      "#05ffa1",
+      "#b967ff"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "网格滚动、铬字旋转"
+    ],
+    "forbidden": [],
+    "notes": "",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/vaporwave-y2k.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/vaporwave-y2k/concept.png"
+  },
+  "verified_in": []
+}

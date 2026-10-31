@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "key": "luxury-dark",
+  "name": "奢华暗金",
+  "family": "G. 科技与氛围",
+  "kind": "style",
+  "look": "黑配金铜、柔和阴影、高挑衬线",
+  "signature": "慢动作、扫光、纵深",
+  "fits": "高端产品、品牌",
+  "implementation": "`gn:light-sweep` `hf:gloss-sweep` `hf:light-sweep-pass`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:light-sweep",
+    "hf:gloss-sweep",
+    "hf:light-sweep-pass"
+  ],
+  "spec": {
+    "palette": [
+      "#0a0a0a",
+      "#c9a24a",
+      "#8c6a2b",
+      "#f3e9d2"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "慢动作、扫光、纵深"
+    ],
+    "forbidden": [],
+    "notes": "",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/luxury-dark.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/luxury-dark/concept.png"
+  },
+  "verified_in": []
+}

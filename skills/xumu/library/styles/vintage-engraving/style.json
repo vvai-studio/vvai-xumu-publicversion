@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "key": "vintage-engraving",
+  "name": "复古版画",
+  "family": "B. 新闻纪实",
+  "kind": "style",
+  "look": "棕黄旧纸、铜版或木刻插图、古典衬线、锈红批注",
+  "signature": "版画逐层显现、手写批注",
+  "fits": "历史、传记、发明史",
+  "implementation": "版画插图 **需素材**（公版图或生成）；`gn:hatch-fill` `gn:outline-then-fill`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:hatch-fill",
+    "gn:outline-then-fill"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "版画逐层显现、手写批注"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/vintage-engraving.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/vintage-engraving/concept.png"
+  },
+  "verified_in": []
+}

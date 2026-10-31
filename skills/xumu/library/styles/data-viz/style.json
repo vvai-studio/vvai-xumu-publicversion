@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "data-viz",
+  "name": "数据图解",
+  "family": "B. 新闻纪实",
+  "kind": "style",
+  "look": "干净底色、坐标与单位清晰",
+  "signature": "数据驱动的生长、计数、排序",
+  "fits": "指标、对比、趋势",
+  "implementation": "`gn-recipe:data-story` `hf:data-chart` `hf:bar-chart-race`；数值来自来源文件",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn-recipe:data-story",
+    "hf:data-chart",
+    "hf:bar-chart-race"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "数据驱动的生长、计数、排序"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/data-viz.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/data-viz/concept.png"
+  },
+  "verified_in": []
+}

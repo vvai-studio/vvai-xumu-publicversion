@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "key": "koubo-layout-card",
+  "name": "口播板式卡",
+  "family": "J. 口播呈现",
+  "kind": "style",
+  "look": "竖屏；深灰网格动态底或暖橙光晕底；素材装进圆角\"矩阵蒙版\"窗口，人物抠像加白描边或投影压在窗口边上；主标题 + 副标题框、字幕条位置固定",
+  "signature": "七种板式按段落轮换：包围、上中下（圆形头像 / 大关键词）、三段、上下斜切、空间卡片、出框；窗口和关键词卡带轻微透视与发光边，层叠浮起",
+  "fits": "知识口播、财经、职场，有 B-roll 可放的竖屏口播",
+  "implementation": "人物抠像（见 [人物抠像进场景](style-stack.md#5-人物抠像进场景)）+ HyperFrames 版式；`gn:perspective-tilt` `gn:card-stack-shuffle` `gn:lower-third-reveal`；B-roll **需素材**；七种板式的参数见手法卡",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:perspective-tilt",
+    "gn:card-stack-shuffle",
+    "gn:lower-third-reveal"
+  ],
+  "spec": {
+    "palette": [
+      "#1c1d20",
+      "#3a3c40",
+      "#f26a2e",
+      "#f6b38a",
+      "#2f6fd6",
+      "#ffffff"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "七种板式按段落轮换：包围、上中下（圆形头像 / 大关键词）、三段、上下斜切、空间卡片、出框",
+      "窗口和关键词卡带轻微透视与发光边",
+      "层叠浮起"
+    ],
+    "forbidden": [],
+    "notes": "色板按参考片画面手取（draft），首次成片后校准",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/koubo-layout-card.jpg",
+    "sample": "styles/koubo-layout-card/refs/01/sample.mp4",
+    "frame_kind": "reference",
+    "original": "styles/koubo-layout-card/refs/01/kf_05.jpg"
+  },
+  "verified_in": [],
+  "learned": {
+    "refs": 1,
+    "cuts_per_min": 64.4,
+    "motion_mean": 38.52,
+    "strength_hint": "强"
+  }
+}

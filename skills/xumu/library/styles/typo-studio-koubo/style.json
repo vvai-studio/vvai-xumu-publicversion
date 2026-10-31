@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "key": "typo-studio-koubo",
+  "name": "大字棚拍口播",
+  "family": "J. 口播呈现",
+  "kind": "style",
+  "look": "横屏，灰色无缝背景布，人物半身居中；人后和四周是超大中文字，红、藏蓝、白三色，字号对比极大；章节用黑底红字加小号 \"PART\" 卡；偶尔叠取景器 REC 角标",
+  "signature": "关键词从四周飞入或砸下铺满背景；疑问词绕着人头散开；章节黑场闪切；字在人后",
+  "fits": "观点、方法论、个人 IP 干货",
+  "implementation": "人物抠像 + HyperFrames 文字层；`hf:kinetic-type-swap` `gn:kinetic-beats` `gn:stamp-impact` `hf:camcorder-hud` `gn-recipe:chapter-transition`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:kinetic-type-swap",
+    "gn:kinetic-beats",
+    "gn:stamp-impact",
+    "hf:camcorder-hud",
+    "gn-recipe:chapter-transition"
+  ],
+  "spec": {
+    "palette": [
+      "#c9cccd",
+      "#7a1414",
+      "#1f3f7a",
+      "#ffffff",
+      "#111111"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "关键词从四周飞入或砸下铺满背景",
+      "疑问词绕着人头散开",
+      "章节黑场闪切",
+      "字在人后"
+    ],
+    "forbidden": [],
+    "notes": "色板按参考片画面手取（draft），首次成片后校准",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/typo-studio-koubo.jpg",
+    "sample": "styles/typo-studio-koubo/refs/01/sample.mp4",
+    "frame_kind": "reference",
+    "original": "styles/typo-studio-koubo/refs/01/kf_05.jpg"
+  },
+  "verified_in": [],
+  "learned": {
+    "refs": 1,
+    "cuts_per_min": 25.2,
+    "motion_mean": 32.98,
+    "strength_hint": "强"
+  }
+}

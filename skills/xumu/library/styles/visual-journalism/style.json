@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "key": "visual-journalism",
+  "name": "视觉新闻",
+  "family": "B. 新闻纪实",
+  "kind": "style",
+  "look": "黑底、真实照片配来源标签、黄色荧光笔、红色警示、虚线标注",
+  "signature": "照片推近、荧光扫过、圈注、数字计数",
+  "fits": "时事、行业事件、争议话题",
+  "implementation": "`hf:vox-annotate` `hf:marker-highlight` `gn:annotation-callout`；真实图片 **需素材** 且需授权",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "hf:vox-annotate",
+    "hf:marker-highlight",
+    "gn:annotation-callout"
+  ],
+  "spec": {
+    "palette": [
+      "#000000",
+      "#ffffff",
+      "#ffe600",
+      "#ff2d2d"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "照片推近、荧光扫过、圈注、数字计数"
+    ],
+    "forbidden": [],
+    "notes": "黑底白字、黄色荧光笔、红色警示",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/visual-journalism.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/visual-journalism/concept.png"
+  },
+  "verified_in": []
+}

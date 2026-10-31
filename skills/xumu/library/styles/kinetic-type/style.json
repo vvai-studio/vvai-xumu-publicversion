@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "key": "kinetic-type",
+  "name": "大字排版",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "一屏一句、字号层级克制",
+  "signature": "遮罩揭示，在语义词处落定",
+  "fits": "观点、金句、章节标题",
+  "implementation": "`gn-recipe:title-opener` `hf:per-word-rise` `gn:mask-reveal`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn-recipe:title-opener",
+    "hf:per-word-rise",
+    "gn:mask-reveal"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "遮罩揭示",
+      "在语义词处落定"
+    ],
+    "forbidden": [],
+    "notes": "一屏一句，字号层级克制；阅读速度按 3 字/秒"
+  },
+  "gallery": {
+    "frame": "assets/gallery/kinetic-type.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/kinetic-type/concept.png"
+  },
+  "verified_in": []
+}

@@ -1,0 +1,19 @@
+{
+  "name": "xumu",
+  "version": "0.22.0",
+  "description": "序幕（剪辑成片助手）：素材或想法 → 成片，替代编剧、导演、剪辑师。含频道档案与创作决策书、xumu 总控、Video Use 剪辑 helper、Video Shotcraft 镜头卡库；含定制 MG 灵感索引、确定性渲染契约、126 种风格目录（59 套开源风格包带规则与样片，15 种附参考成片）、18 类组合配方、64 项表达指导与解说语法、帧精确口播剪辑链、白板一镜到底模板与学习模式，可调用已安装的 HyperFrames。",
+  "author": {
+    "name": "VVAI",
+    "url": "https://github.com/cecilPENG53"
+  },
+  "homepage": "https://github.com/vvai-studio/xumu",
+  "repository": "https://github.com/vvai-studio/xumu",
+  "license": "MIT",
+  "keywords": [
+    "video",
+    "editing",
+    "remotion",
+    "shotcraft",
+    "口播"
+  ]
+}

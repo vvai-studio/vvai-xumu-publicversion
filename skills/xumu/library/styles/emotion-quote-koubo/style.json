@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "key": "emotion-quote-koubo",
+  "name": "情感金句口播",
+  "family": "J. 口播呈现",
+  "kind": "style",
+  "look": "近距自拍、暗暖室内光；字幕放在脸侧而不是底部，宋体或衬线中文配一行小号英文；关键词黄色；偶尔一个超大衬线词压在画面上方",
+  "signature": "一句拆两行：上行小字铺垫、下行大字落点；逐句出现不做弹跳；超大字只给核心词，一条片子两三次",
+  "fits": "情感、心理、人生感悟、金句类口播",
+  "implementation": "HyperFrames 字幕层；`hf:blur-in` `hf:per-word-rise`；思源宋体或霞鹜文楷；无需 B-roll",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:blur-in",
+    "hf:per-word-rise"
+  ],
+  "spec": {
+    "palette": [
+      "#2a2226",
+      "#c9a58c",
+      "#f2d14a",
+      "#ffffff",
+      "#8a6a5a"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "一句拆两行：上行小字铺垫、下行大字落点",
+      "逐句出现不做弹跳",
+      "超大字只给核心词",
+      "一条片子两三次"
+    ],
+    "forbidden": [],
+    "notes": "色板按参考片画面手取（draft），首次成片后校准",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/emotion-quote-koubo.jpg",
+    "sample": "styles/emotion-quote-koubo/refs/01/sample.mp4",
+    "frame_kind": "reference",
+    "original": "styles/emotion-quote-koubo/refs/01/kf_05.jpg"
+  },
+  "verified_in": [],
+  "learned": {
+    "refs": 1,
+    "cuts_per_min": 1.9,
+    "motion_mean": 10.31,
+    "strength_hint": "强"
+  }
+}

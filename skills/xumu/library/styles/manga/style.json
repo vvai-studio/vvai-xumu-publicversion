@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "key": "manga",
+  "name": "日漫",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "黑白网点、速度线、集中线、竖排对白",
+  "signature": "集中线冲击、分镜格切换",
+  "fits": "情绪高点、二次元、游戏",
+  "implementation": "`gn:radial-speed-lines` `gn:stamp-impact`；角色 **需素材**",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:radial-speed-lines",
+    "gn:stamp-impact"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "集中线冲击、分镜格切换"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/manga.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/manga/concept.png"
+  },
+  "verified_in": []
+}

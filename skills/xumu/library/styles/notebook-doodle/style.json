@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "notebook-doodle",
+  "name": "笔记本涂鸦",
+  "family": "A. 教学解说",
+  "kind": "style",
+  "look": "方格或横线纸、圆珠笔蓝、便利贴",
+  "signature": "涂鸦圈注、便利贴贴上、翻页",
+  "fits": "学习笔记、个人经验",
+  "implementation": "rough-notation；`hf:hw-underline` `hf:hw-callout-circle` `gn:page-turn`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:hw-underline",
+    "hf:hw-callout-circle",
+    "gn:page-turn"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "涂鸦圈注、便利贴贴上、翻页"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/notebook-doodle.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/notebook-doodle/concept.png"
+  },
+  "verified_in": []
+}

@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "key": "chalkboard",
+  "name": "黑板粉笔",
+  "family": "A. 教学解说",
+  "kind": "style",
+  "look": "墨绿或黑板底、粉笔纹理、手写",
+  "signature": "粉笔描画、擦除转场",
+  "fits": "课堂感、数学、复盘",
+  "implementation": "SVG 描边 + 粉笔纹理滤镜；`gn:line-boil` `gn:scribble-wipe`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:line-boil",
+    "gn:scribble-wipe"
+  ],
+  "spec": {
+    "palette": [
+      "#1f3b2e",
+      "#f5f1e6",
+      "#e8c547",
+      "#f08a8a"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "粉笔描画、擦除转场"
+    ],
+    "forbidden": [],
+    "notes": "墨绿板面、粉笔米白、黄与粉红粉笔强调（待首次成片校准）",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/chalkboard.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/chalkboard/concept.png"
+  },
+  "verified_in": []
+}

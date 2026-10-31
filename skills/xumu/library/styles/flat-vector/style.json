@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "flat-vector",
+  "name": "扁平矢量",
+  "family": "E. 插画与手作",
+  "kind": "style",
+  "look": "实色填充、风格化的手、扁平界面",
+  "signature": "形状轻微回弹",
+  "fits": "金融科技、App 宣传",
+  "implementation": "SVG；`gn:spring-overshoot`；Open Peeps；`mg15:01-flat-vector`",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:01-flat-vector",
+  "needs_assets": false,
+  "components": [
+    "gn:spring-overshoot"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "形状轻微回弹"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/flat-vector.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/flat-vector/concept.png"
+  },
+  "verified_in": []
+}

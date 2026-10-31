@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "key": "ip-interior-koubo",
+  "name": "实景高级感 IP 口播",
+  "family": "J. 口播呈现",
+  "kind": "style",
+  "look": "实景办公室、沙发、落地窗，自然光；红色粗衬线标题带投影，关键词放大变橙红，小字白色衬线；景别在全身、中景之间切换",
+  "signature": "同一句话里一两个关键词放大变色，其余小字；景别切换换段落；包装按\"字幕花字 → 音效 → 画中画素材\"一层层加",
+  "fits": "个人 IP、创业、培训、高客单服务",
+  "implementation": "HyperFrames 字幕层；`hf:per-word-rise` `gn:lower-third-reveal`；画中画 **需素材**",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "hf:per-word-rise",
+    "gn:lower-third-reveal"
+  ],
+  "spec": {
+    "palette": [
+      "#3a2a22",
+      "#b0202a",
+      "#e8662a",
+      "#ffffff",
+      "#7d8a8f"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "同一句话里一两个关键词放大变色",
+      "其余小字",
+      "景别切换换段落",
+      "包装按\"字幕花字 → 音效 → 画中画素材\"一层层加"
+    ],
+    "forbidden": [],
+    "notes": "色板按参考片画面手取（draft），首次成片后校准",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/ip-interior-koubo.jpg",
+    "sample": "styles/ip-interior-koubo/refs/01/sample.mp4",
+    "frame_kind": "reference",
+    "original": "styles/ip-interior-koubo/refs/01/kf_05.jpg"
+  },
+  "verified_in": [],
+  "learned": {
+    "refs": 1,
+    "cuts_per_min": 14.8,
+    "motion_mean": 19.25,
+    "strength_hint": "强"
+  }
+}

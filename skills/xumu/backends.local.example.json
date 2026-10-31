@@ -1,0 +1,36 @@
+{
+  "_note": "Copy to backends.local.json (git-ignored) and fill in paths on your own machine. Never put API keys here.",
+  "python": {"interpreter": "C:/path/to/python.exe"},
+  "refs": {"dir": "D:/path/to/_refs", "mg_styles": "D:/path/to/_refs/mg-styles-15"},
+  "learning": {"media_root": "D:/path/to/library-media"},
+  "audio": {
+    "_note": "Sound backend (scripts/audio_cloud.py); image_cloud.py uses the same providers and budget. For 造物社 run `audio_cloud.py setup` instead of copying this. key_env names an environment variable; the key itself never goes in this file. Prices are in the provider's own unit.",
+    "budget": {"confirm_over": 1.0, "min_success_rate": 0.9, "avoid_vendors": [], "concurrency": 3},
+    "providers": {
+      "my-gateway": {"type": "gateway-media", "base_url": "https://gateway.example.com", "key_env": "MY_GATEWAY_KEY", "currency": "¥"},
+      "my-task-api": {"type": "lk-media-task", "base_url": "https://task-api.example.com", "key_env": "MY_TASK_API_KEY",
+                      "currency": "credits", "price": {"per": "token", "amount": 0.0}}
+    },
+    "voice": {
+      "default": "my-voice",
+      "voices": {
+        "my-voice": {"provider": "my-gateway", "model": "speech-2.8", "voice_id": "<voice id from: audio_cloud.py voice list>",
+                     "owner": "<whose voice>", "consent": "<date and how consent was given>"}
+      },
+      "defaults": {"tier": "hd", "speed": 1, "emotion": "auto"},
+      "batch_min_chars": 200,
+      "pronounce": {"<word>": "<how to say it>"}
+    },
+    "music": {
+      "provider": "my-gateway", "model": "music",
+      "defaults": {"mode": "instrumental", "negative_tags": "vocals, singing, rap"},
+      "license": "<can you use the output commercially? say so here>",
+      "mix": {"duck_db": -11, "target": -14}
+    }
+  },
+  "image": {
+    "_note": "Image backend (scripts/image_cloud.py): which provider (from audio.providers) and model; every image at these defaults unless the user asks otherwise.",
+    "provider": "my-gateway", "model": "gt-image-2.5-flare",
+    "defaults": {"resolution": "4K", "quality": "high"}
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "key": "whiteboard-ink",
+  "name": "白板手画",
+  "family": "A. 教学解说",
+  "kind": "style",
+  "look": "白板 + 马克笔，图和字一笔一笔画出来",
+  "signature": "描边画出、手写出字，跟口播节奏",
+  "fits": "知识科普、流程讲解",
+  "implementation": "`hf:whiteboard-ink` `hf:hw-write-title` `gn:handwriting-write-on`；rough.js",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:whiteboard-ink",
+    "hf:hw-write-title",
+    "gn:handwriting-write-on"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "描边画出、手写出字",
+      "跟口播节奏"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/whiteboard-ink.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/whiteboard-ink/concept.png"
+  },
+  "verified_in": []
+}

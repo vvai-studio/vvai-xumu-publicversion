@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "key": "brutalist-mono",
+  "name": "粗野等宽",
+  "family": "C. 界面与产品",
+  "kind": "style",
+  "look": "黑白硬网格、等宽与窄体字、光标闪烁",
+  "signature": "硬切、方块位移、乱码解码",
+  "fits": "开发者、极客、冷观点",
+  "implementation": "`gn:hard-cut` `gn:hard-appearance` `hf:scramble-reveal`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:hard-cut",
+    "gn:hard-appearance",
+    "hf:scramble-reveal"
+  ],
+  "spec": {
+    "palette": [
+      "#000000",
+      "#ffffff"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "硬切、方块位移、乱码解码"
+    ],
+    "forbidden": [],
+    "notes": "",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/brutalist-mono.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/brutalist-mono/concept.png"
+  },
+  "verified_in": []
+}

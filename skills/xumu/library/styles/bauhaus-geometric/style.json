@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "key": "bauhaus-geometric",
+  "name": "包豪斯几何",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "原色圆、方、三角，几何构成",
+  "signature": "形状组合拼成意象、旋转咬合",
+  "fits": "抽象概念、结构关系",
+  "implementation": "`gn:shape-split-merge` `gn:piece-assembly` `gn:shape-built-letters`；`mg15:09-bauhaus`",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:09-bauhaus",
+  "needs_assets": false,
+  "components": [
+    "gn:shape-split-merge",
+    "gn:piece-assembly",
+    "gn:shape-built-letters"
+  ],
+  "spec": {
+    "palette": [
+      "#f2e8d5",
+      "#d7263d",
+      "#1b4fa0",
+      "#f2c316",
+      "#111111"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "形状组合拼成意象、旋转咬合"
+    ],
+    "forbidden": [],
+    "notes": "",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/bauhaus-geometric.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/bauhaus-geometric/concept.png"
+  },
+  "verified_in": []
+}

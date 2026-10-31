@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "key": "exploded-diagram",
+  "name": "爆炸拆解",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "部件分离悬浮、引线标注",
+  "signature": "分离 → 标注 → 合拢",
+  "fits": "产品结构、硬件",
+  "implementation": "`gn:exploded-assembly` `gn:layer-separation`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:exploded-assembly",
+    "gn:layer-separation"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "分离 → 标注 → 合拢"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/exploded-diagram.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/exploded-diagram/concept.png"
+  },
+  "verified_in": []
+}

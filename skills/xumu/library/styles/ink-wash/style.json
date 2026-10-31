@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "key": "ink-wash",
+  "name": "水墨",
+  "family": "H. 东方传统",
+  "kind": "style",
+  "look": "宣纸底、墨晕、留白、朱红印章、楷书或行书",
+  "signature": "墨迹晕开揭示、毛笔描写、印章落下",
+  "fits": "传统文化、历史、东方美学、哲思",
+  "implementation": "`hf:ink-bleed-reveal` `gn:ink-bleed` `gn:fluid-ink` `gn:stamp-impact`；马善政楷书、霞鹜文楷",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:ink-bleed-reveal",
+    "gn:ink-bleed",
+    "gn:fluid-ink",
+    "gn:stamp-impact"
+  ],
+  "spec": {
+    "palette": [
+      "#f4efe4",
+      "#1a1a1a",
+      "#555555",
+      "#b3261e"
+    ],
+    "fonts": {
+      "title": "马善政楷书",
+      "body": "霞鹜文楷",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "墨迹晕开揭示、毛笔描写、印章落下"
+    ],
+    "forbidden": [],
+    "notes": "宣纸底、墨色层次、朱红印章",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/ink-wash.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/ink-wash/concept.png"
+  },
+  "verified_in": []
+}

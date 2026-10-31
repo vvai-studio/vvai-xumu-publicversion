@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "key": "blueprint",
+  "name": "蓝图工程",
+  "family": "A. 教学解说",
+  "kind": "style",
+  "look": "蓝底白线、网格、尺寸标注、等宽字",
+  "signature": "线条描出结构、尺寸线展开、局部放大",
+  "fits": "产品原理、结构拆解、技术方案",
+  "implementation": "`gn:line-draw` `gn:outline-then-fill` `hf:svg-stroke-trace`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:line-draw",
+    "gn:outline-then-fill",
+    "hf:svg-stroke-trace"
+  ],
+  "spec": {
+    "palette": [
+      "#0b3d91",
+      "#ffffff",
+      "#9ec5ff"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "线条描出结构、尺寸线展开、局部放大"
+    ],
+    "forbidden": [],
+    "notes": "蓝底白线、浅蓝辅线（待首次成片校准）",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/blueprint.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/blueprint/concept.png"
+  },
+  "verified_in": []
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "key": "glass-ui",
+  "name": "液态玻璃 / 弥散渐变",
+  "family": "C. 界面与产品",
+  "kind": "style",
+  "look": "半透明玻璃卡片、柔光、模糊背景",
+  "signature": "卡片浮起、折射扫光",
+  "fits": "科技产品、苹果风界面",
+  "implementation": "`hf:vfx-liquid-glass` `hf:ios26-liquid-glass` `gn:glass-refraction`；`mg15:12-aurora-glass`",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:12-aurora-glass",
+  "needs_assets": false,
+  "components": [
+    "hf:vfx-liquid-glass",
+    "hf:ios26-liquid-glass",
+    "gn:glass-refraction"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "卡片浮起、折射扫光"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/glass-ui.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/glass-ui/concept.png"
+  },
+  "verified_in": []
+}

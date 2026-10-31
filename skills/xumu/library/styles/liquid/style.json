@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "key": "liquid",
+  "name": "液态流动",
+  "family": "G. 科技与氛围",
+  "kind": "style",
+  "look": "有机曲面、高光、颜料或液体质感",
+  "signature": "液滴融合拉丝再断开回弹，波浪前沿扫过换场，次级液滴迟 2–3 帧跟随",
+  "fits": "开场、转场包装、饮品与潮流、情绪高点",
+  "implementation": "`mg15:07-liquid` `gn:fluid-ink` `hf:vfx-liquid-background`；WebGL 着色器",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:07-liquid",
+  "needs_assets": false,
+  "components": [
+    "gn:fluid-ink",
+    "hf:vfx-liquid-background"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "液滴融合拉丝再断开回弹",
+      "波浪前沿扫过换场",
+      "次级液滴迟 2–3 帧跟随"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/liquid.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/liquid/concept.png"
+  },
+  "verified_in": []
+}

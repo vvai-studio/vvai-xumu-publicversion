@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "cinematic-dark",
+  "name": "电影暗调",
+  "family": "G. 科技与氛围",
+  "kind": "style",
+  "look": "近黑渐变、粒子、辉光只给物体",
+  "signature": "推入穿越、镜头前的光",
+  "fits": "发布、AI、游戏",
+  "implementation": "`hf:cinematic-zoom` `hf:godrays` `gn:atmospheric-depth`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:cinematic-zoom",
+    "hf:godrays",
+    "gn:atmospheric-depth"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "推入穿越、镜头前的光"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/cinematic-dark.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/cinematic-dark/concept.png"
+  },
+  "verified_in": []
+}

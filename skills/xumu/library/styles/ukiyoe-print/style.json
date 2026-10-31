@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "key": "ukiyoe-print",
+  "name": "浮世绘版画",
+  "family": "H. 东方传统",
+  "kind": "style",
+  "look": "平涂、勾线、浪纹、和纸",
+  "signature": "平面分层视差、浪纹循环",
+  "fits": "日本文化、艺术史",
+  "implementation": "**需素材**（公版图或生成）；`gn:deep-parallax` `gn:wave-warp`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:deep-parallax",
+    "gn:wave-warp"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "平面分层视差、浪纹循环"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/ukiyoe-print.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/ukiyoe-print/concept.png"
+  },
+  "verified_in": []
+}

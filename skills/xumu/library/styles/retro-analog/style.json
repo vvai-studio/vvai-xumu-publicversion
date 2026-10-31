@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "key": "retro-analog",
+  "name": "模拟复古",
+  "family": "F. 复古年代",
+  "kind": "style",
+  "look": "褪色、颗粒、70–90 年代几何字体",
+  "signature": "可控故障、粗推、定格",
+  "fits": "怀旧、音乐、娱乐",
+  "implementation": "`gn:gate-weave` `gn:film-grain` `hf:grain-overlay`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:gate-weave",
+    "gn:film-grain",
+    "hf:grain-overlay"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "可控故障、粗推、定格"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/retro-analog.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/retro-analog/concept.png"
+  },
+  "verified_in": []
+}

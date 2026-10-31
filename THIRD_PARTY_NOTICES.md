@@ -1,0 +1,52 @@
+# 第三方来源与授权 · Third-Party Notices
+
+本仓库整合了以下第三方开源项目。它们的源码与原始许可证文件完整保留在各自目录中，仅做了与本技能包分发相关的最小适配（本机路径发现、分发提示）。
+
+对上游内容的其他改动：
+
+- `skills/video-use/SKILL.md`（v0.7.1）：Helpers 一节原写 `--preview` 为 720p，与同目录 `helpers/render.py` 的实际行为不符（`--preview` 为 1080p CRF 22，`--draft` 为 720p CRF 28），按代码更正了这一句文档；代码未改。
+
+| 目录 | 上游项目 | 许可证 | 许可证文件 |
+|---|---|---|---|
+| `skills/video-use/` | [browser-use/video-use](https://github.com/browser-use/video-use) | MIT，Copyright (c) 2026 Browser Use | [LICENSE](./skills/video-use/LICENSE) |
+| `skills/video-shotcraft/` | [Vincentwei1021/video-shotcraft](https://github.com/Vincentwei1021/video-shotcraft) | Apache License 2.0 | [LICENSE](./skills/video-shotcraft/LICENSE) |
+
+## 随包分发的改编内容
+
+| 文件 | 来源 | 许可证 | 改动 |
+|---|---|---|---|
+| `skills/xumu/assets/gallery/opuscar-*.jpg`（59 张） | [lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) 的风格代表帧（版本 `413a6bd`），作者 LemoLab | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | 缩为 640 宽 JPEG；每张在对应 `style.json` 的 `gallery.credit` 署名 |
+| `skills/xumu/library/styles/opuscar-*/style.json`、风格目录中 `opuscar-` 开头的 59 行 | 同上（风格规则与原生动作）；中文名、分类与原生动作索引来自 [mileson/chaojifeng-video-design](https://github.com/mileson/chaojifeng-video-design)（`a7c84de`） | MIT，Copyright (c) 2026 LemoLab；MIT，Copyright (c) 2026 Chaojifeng | 观感、标志动作、适合内容为序幕按上游规则改写的中文摘要；色板为从代表帧取的草稿色 |
+| `skills/xumu/library/craft/recipes.json`（18 类组合配方）、`expressions.json`（64 项表达指导） | [mileson/chaojifeng-video-design](https://github.com/mileson/chaojifeng-video-design) 的 `catalog/recipes.json` 与 `catalog/expressions.json`（`a7c84de`） | MIT，Copyright (c) 2026 Chaojifeng | 精简字段、去掉每条重复的通用免责句、原库自有风格映射到序幕相近风格；各条原始来源链接保留在 `sources` |
+
+Lemo-Opuscar 的完整风格规则（STYLE.md）、案例说明与 demo 源码不随本仓库分发，由 `motion_index.py fetch` 按固定版本下载到本机（`opus:` 编号），不含视频、音频、图片与字体。59 条样片只记 Release 链接与哈希，`style_tools.py gallery sample` 按需下载；其中 game-show、paper-lantern、news-package 三条上游原片的声音另有限制，只看画面。超级峰原创的音乐视觉作品（含有版权的歌曲）与配乐库未纳入。
+
+## 已移除的内容
+
+- **Mixkit 音效与音乐**：Shotcraft 原项目中的 MP3 文件**未随本仓库分发**。[Mixkit 音效许可](https://mixkit.co/license/modal/sfxFree/) 禁止将音效作为工具、模板或源码附件再分发；[音乐许可](https://mixkit.co/license/modal/musicFree/) 也有使用范围限制。`skills/video-shotcraft/assets/audio/ATTRIBUTION.md` 保留了来源线索，但无法反查来源的文件不应视为自动获得许可。
+- **Shotcraft 动态样片 MP4**：未内置，请访问 [在线 Gallery](https://vincentwei1021.github.io/video-shotcraft/) 查看。
+- **任何 API Key、`.env`、虚拟环境、FFmpeg/Node 二进制、用户素材与预渲染成片**。
+
+## 引用但不分发
+
+- `skills/xumu/references/mg-inspiration-index.json` 收录 32 条动态图形灵感的**链接与中文摘要**，不包含原提示词全文、代码或素材。
+- [HyperFrames](https://github.com/heygen-com/hyperframes)、[Remotion](https://github.com/remotion-dev/remotion) 为可选外部依赖，需使用者自行安装并遵守其许可证（Remotion 对部分商业用途有单独的许可要求）。
+
+## 参考与改编（不分发代码或素材）
+
+`skills/xumu/references/` 中的解说语法、风格目录与风格技术栈，部分规则与分类参考并改写自以下项目的公开文档；本仓库不包含它们的代码或素材，组件以编号引用，可由使用者用 `motion_index.py fetch` 自行下载到本机：
+
+| 项目 | 许可证 | 用途 |
+|---|---|---|
+| [gongnyang/awesome-ai-motion](https://github.com/gongnyang/awesome-ai-motion) | MIT | 动效卡（`gn:` 编号）、按意图选动效的决策表与配方 |
+| [bangtutorial/bang-motion](https://github.com/bangtutorial/bang-motion) | MIT | 解说风格分类、解说结构、去 PPT 感规则 |
+| [heygen-com/hyperframes](https://github.com/heygen-com/hyperframes) | Apache-2.0 | 组件库条目（`hf:` 编号）的名称与说明 |
+| [Kianzzz/xilo-opus-video](https://github.com/Kianzzz/xilo-opus-video) | MIT | 代码类型分工、风格到技术组合的思路、弹簧手感分档 |
+| [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15) | MIT（素材为 CC0 / 公有领域，字形轮廓为 OFL） | 15 种风格的参考成片、提示词与源码（`mg15:` 编号）；风格目录中 6 个新条目与标志特征的整理 |
+| [lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) | MIT（成片与静帧为 CC BY 4.0） | 59 种风格的完整规则、案例说明与确定性源码（`opus:` 编号，固定版本 `413a6bd`）；随包部分见上一节 |
+
+`skills/xumu/assets/templates/whiteboard-world/` 为 VV 原创模板，随本仓库以 MIT 分发；它在运行时依赖使用者自行安装的 HyperFrames 与 GSAP。
+
+## 使用者责任
+
+使用本技能包制作视频时，素材、字体、音乐、声音和外部生成服务的授权由使用者自行核对，并建议记录在项目的 `edit/assets.json` 中。

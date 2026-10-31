@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "key": "line-art",
+  "name": "一笔画线条",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "单色或双色等宽细线、大量留白",
+  "signature": "线条自我描出并转折成下一个图形，上一形的尾线即下一形的起线；描完轮廓再由锚点铺满色面",
+  "fits": "品牌片、概念串联、logo 落版",
+  "implementation": "`mg15:02-line-art` `gn:line-draw` `hf:svg-stroke-trace`",
+  "tags": [
+    "有参考片"
+  ],
+  "template": null,
+  "reference": "mg15:02-line-art",
+  "needs_assets": false,
+  "components": [
+    "gn:line-draw",
+    "hf:svg-stroke-trace"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "线条自我描出并转折成下一个图形",
+      "上一形的尾线即下一形的起线",
+      "描完轮廓再由锚点铺满色面"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/line-art.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/line-art/concept.png"
+  },
+  "verified_in": []
+}

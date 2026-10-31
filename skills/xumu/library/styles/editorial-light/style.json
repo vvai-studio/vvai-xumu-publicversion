@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "key": "editorial-light",
+  "name": "杂志编辑",
+  "family": "B. 新闻纪实",
+  "kind": "style",
+  "look": "白或米底、大留白、细线、衬线标题配小号无衬线",
+  "signature": "线条描出、平稳滑入",
+  "fits": "深度分析、商业、观点",
+  "implementation": "`hf:caption-editorial-emphasis` `gn:underline-draw`；思源宋体",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:caption-editorial-emphasis",
+    "gn:underline-draw"
+  ],
+  "spec": {
+    "palette": [
+      "#fbfaf7",
+      "#1c1c1c",
+      "#8a8a8a",
+      "#b23a48"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "线条描出、平稳滑入"
+    ],
+    "forbidden": [],
+    "notes": "",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/editorial-light.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/editorial-light/concept.png"
+  },
+  "verified_in": []
+}

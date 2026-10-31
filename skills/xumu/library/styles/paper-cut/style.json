@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "key": "paper-cut",
+  "name": "剪纸皮影",
+  "family": "H. 东方传统",
+  "kind": "style",
+  "look": "红纸镂空、剪影、多层叠放",
+  "signature": "剪影分层视差、皮影关节动作",
+  "fits": "民俗、节日、传统故事",
+  "implementation": "SVG 镂空；`gn:papercut-placement` `gn:layer-separation` `gn:deep-parallax`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:papercut-placement",
+    "gn:layer-separation",
+    "gn:deep-parallax"
+  ],
+  "spec": {
+    "palette": [
+      "#b3261e",
+      "#f6e7c1",
+      "#7a1b12",
+      "#2b2b2b"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "剪影分层视差、皮影关节动作"
+    ],
+    "forbidden": [],
+    "notes": "",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/paper-cut.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/paper-cut/concept.png"
+  },
+  "verified_in": []
+}

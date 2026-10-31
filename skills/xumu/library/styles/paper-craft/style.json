@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "key": "paper-craft",
+  "name": "纸艺定格",
+  "family": "E. 插画与手作",
+  "kind": "style",
+  "look": "纸片、撕边、投影、定格抖动",
+  "signature": "纸片按 8–12fps 定格移动、撕纸转场",
+  "fits": "手作感科普、生活",
+  "implementation": "`hf:stop-motion-cadence` `gn:paper-crumple` `gn:perforated-tear` `gn:papercut-placement`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:stop-motion-cadence",
+    "gn:paper-crumple",
+    "gn:perforated-tear",
+    "gn:papercut-placement"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "纸片按 8–12fps 定格移动、撕纸转场"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/paper-craft.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/paper-craft/concept.png"
+  },
+  "verified_in": []
+}

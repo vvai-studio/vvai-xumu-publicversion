@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "key": "tech-explainer-koubo",
+  "name": "科技口播：插画与样机录屏",
+  "family": "J. 口播呈现",
+  "kind": "style",
+  "look": "真人在书房口播；穿插纸艺感扁平插画（橙、墨绿、紫底，机器人角色），录屏装进显示器或手机样机、放在米色台面；深底方法卡，左上大标题，条目带红色序号",
+  "signature": "基本一句话一个画面，口播与插画、录屏交替；样机里的录屏缓推；方法卡条目逐条亮起；字幕单行白字居中",
+  "fits": "AI 工具、科技产品、效率工作流、演示类口播",
+  "implementation": "`hf:device-frame-stage` `hf:vfx-iphone-device` `hf:browser-device-stage` `gn:progressive-disclosure`；插画 **需素材**（生图后统一色板）",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "hf:device-frame-stage",
+    "hf:vfx-iphone-device",
+    "hf:browser-device-stage",
+    "gn:progressive-disclosure"
+  ],
+  "spec": {
+    "palette": [
+      "#e2672a",
+      "#2f5a46",
+      "#efe3cf",
+      "#141414",
+      "#d9442b",
+      "#ffffff"
+    ],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "基本一句话一个画面",
+      "口播与插画、录屏交替",
+      "样机里的录屏缓推",
+      "方法卡条目逐条亮起",
+      "字幕单行白字居中"
+    ],
+    "forbidden": [],
+    "notes": "色板按参考片画面手取（draft），首次成片后校准",
+    "palette_status": "draft"
+  },
+  "gallery": {
+    "frame": "assets/gallery/tech-explainer-koubo.jpg",
+    "sample": "styles/tech-explainer-koubo/refs/01/sample.mp4",
+    "frame_kind": "reference",
+    "original": "styles/tech-explainer-koubo/refs/01/kf_05.jpg"
+  },
+  "verified_in": [],
+  "learned": {
+    "refs": 1,
+    "cuts_per_min": 10.5,
+    "motion_mean": 17.3,
+    "strength_hint": "强"
+  }
+}

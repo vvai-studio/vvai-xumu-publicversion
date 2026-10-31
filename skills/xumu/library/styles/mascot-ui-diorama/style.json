@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "key": "mascot-ui-diorama",
+  "name": "吉祥物界面剧场",
+  "family": "C. 界面与产品",
+  "kind": "style",
+  "look": "深色软件窗口做成有厚度、受光、有投影的 3D 面板，原创体素小角色站在输入框上；暗红渐变底，换场后是深蓝走廊、夜城等低多边形场景",
+  "signature": "角色看着字被打出、对回复做反应；慢推 → 漫画惊吓猛拉（速度线、问号）；像素块斜向铺满再同向散开换章节；常驻 HUD 记录筹码与倒计时",
+  "fits": "AI 工具拟人化、挑战实验、无旁白剧情短片、口播里的演绎插入段",
+  "implementation": "Three.js + HTML 逐帧；`hf:grid-pixelate-wipe` `gn:radial-speed-lines` `gn:character-gaze-reaction` `gn:squash-stretch` `gn:rolling-digits`；界面为示意重绘，角色用原创或已授权形象",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:grid-pixelate-wipe",
+    "gn:radial-speed-lines",
+    "gn:character-gaze-reaction",
+    "gn:squash-stretch",
+    "gn:rolling-digits"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "角色看着字被打出、对回复做反应",
+      "慢推 → 漫画惊吓猛拉（速度线、问号）",
+      "像素块斜向铺满再同向散开换章节",
+      "常驻 HUD 记录筹码与倒计时"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/mascot-ui-diorama.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/mascot-ui-diorama/concept.png"
+  },
+  "verified_in": []
+}

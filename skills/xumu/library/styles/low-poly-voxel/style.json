@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "key": "low-poly-voxel",
+  "name": "低多边形 / 体素",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "小镇、方块世界、平涂明暗",
+  "signature": "搭建、绕转",
+  "fits": "游戏、世界观、过程",
+  "implementation": "Three.js；`gn:depth-assemble`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:depth-assemble"
+  ],
+  "spec": {
+    "palette": [],
+    "fonts": {
+      "title": "",
+      "body": "",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "搭建、绕转"
+    ],
+    "forbidden": [],
+    "notes": ""
+  },
+  "gallery": {
+    "frame": "assets/gallery/low-poly-voxel.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/low-poly-voxel/concept.png"
+  },
+  "verified_in": []
+}

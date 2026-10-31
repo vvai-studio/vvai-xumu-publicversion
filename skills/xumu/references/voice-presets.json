@@ -1,0 +1,27 @@
+{
+  "_note": "Built-in speech-2.8 (海螺) voices that need no cloning. Each id was synthesised successfully through 造物社 on the date below; ids the platform rejected were left out. The 造物社 web 音色库 lists more (about 328): their ids work the same way, check one with voice audition first. Names follow the 音色库 page; '精品' is that page's '-beta' version.",
+  "verified": "2026-10-26",
+  "model": "speech-2.8",
+  "voices": [
+    {"id": "male-qn-qingse", "name": "青涩青年", "gender": "男", "lang": "中文", "note": "青涩干净的年轻男声，略带少年感"},
+    {"id": "male-qn-jingying", "name": "精英青年", "gender": "男", "lang": "中文", "note": "干练、职场感"},
+    {"id": "male-qn-badao", "name": "霸道青年", "gender": "男", "lang": "中文", "note": "低沉有力"},
+    {"id": "male-qn-daxuesheng", "name": "青年大学生", "gender": "男", "lang": "中文", "note": "轻松、学生气"},
+    {"id": "female-shaonv", "name": "少女", "gender": "女", "lang": "中文", "note": "年轻、明亮"},
+    {"id": "female-yujie", "name": "御姐", "gender": "女", "lang": "中文", "note": "成熟、略带磁性"},
+    {"id": "female-chengshu", "name": "成熟女性", "gender": "女", "lang": "中文", "note": "稳重、适合讲解"},
+    {"id": "female-tianmei", "name": "甜美女性", "gender": "女", "lang": "中文", "note": "温柔、亲和"},
+    {"id": "male-qn-qingse-jingpin", "name": "青涩青年（精品）", "gender": "男", "lang": "中文", "note": "音色库 -beta 版"},
+    {"id": "male-qn-jingying-jingpin", "name": "精英青年（精品）", "gender": "男", "lang": "中文", "note": "音色库 -beta 版"},
+    {"id": "male-qn-badao-jingpin", "name": "霸道青年（精品）", "gender": "男", "lang": "中文", "note": "音色库 -beta 版"},
+    {"id": "male-qn-daxuesheng-jingpin", "name": "青年大学生（精品）", "gender": "男", "lang": "中文", "note": "音色库 -beta 版"},
+    {"id": "female-shaonv-jingpin", "name": "少女（精品）", "gender": "女", "lang": "中文", "note": "音色库 -beta 版"},
+    {"id": "female-yujie-jingpin", "name": "御姐（精品）", "gender": "女", "lang": "中文", "note": "音色库 -beta 版"},
+    {"id": "female-chengshu-jingpin", "name": "成熟女性（精品）", "gender": "女", "lang": "中文", "note": "音色库 -beta 版"},
+    {"id": "female-tianmei-jingpin", "name": "甜美女性（精品）", "gender": "女", "lang": "中文", "note": "音色库 -beta 版"},
+    {"id": "audiobook_male_1", "name": "男性有声书", "gender": "男", "lang": "中文", "note": "沉稳，适合长篇讲述"},
+    {"id": "clever_boy", "name": "聪明男童", "gender": "童", "lang": "中文", "note": "童声"},
+    {"id": "cute_boy", "name": "可爱男童", "gender": "童", "lang": "中文", "note": "童声，语速偏慢"},
+    {"id": "lovely_girl", "name": "萌萌女童", "gender": "童", "lang": "中文", "note": "童声，语速偏慢"}
+  ]
+}
