@@ -104,10 +104,10 @@ Video Use 负责转录；剪辑点、拼接与时间表由 `voice_edit.py` 完�
 
 白板一镜到底的完整模板与做法见 [白板一镜到底](whiteboard-world.md)。
 
-以下来自 HyperFrames 0.8.81 整片实测，并在 0.8.166（2026-10-17）、0.8.181（2026-10-20，模板演示逐帧 SSIM 平均 0.9997）上回归验证一致。动手前仍先加载当前会话的 hyperframes Skill，以其规范为准。
+以下来自 HyperFrames 0.8.81 整片实测，并在 0.8.166（2026-10-17）、0.8.181（2026-10-20，模板演示逐帧 SSIM 平均 0.9997）、0.8.230（2026-11-02，平均 0.9996）上回归验证一致。动手前仍先加载当前会话的 hyperframes Skill，以其规范为准。
 
 **版本与升级**
-- 当前验证版本：**0.8.181**。新项目在 `package.json` 和命令里锁定这个版本（`npx --yes hyperframes@0.8.181 check` / `render`）；已有项目保持自己锁定的版本，不随升级改动，重渲结果才可复现。
+- 当前验证版本：**0.8.230**。新项目在 `package.json` 和命令里锁定这个版本（`npx --yes hyperframes@0.8.230 check` / `render`）；已有项目保持自己锁定的版本，不随升级改动，重渲结果才可复现。
 - 约每月一次受控升级：`hf_upgrade_check.py --work <空目录>` 用当前验证版本与 npm 最新版各渲染一遍白板模板演示，比较 `check`、时长、帧率、音轨和逐帧 SSIM，并把差异最大的帧左右并排存图。结论为 pass 时，把本节的验证版本、`hf_upgrade_check.py` 的 `DEFAULT_OLD` 与模板注释改成新版本，再刷新组件索引（`motion_index.py fetch` 后 `build --force`）；结论为 review 时先看报告与并排图，不升级。
 - HyperFrames 的 Skill（使用说明）随宿主应用的插件更新，可能比这里锁定的命令行版本新。两者不一致时以锁定版本的实际能力为准：用到说明里的新命令或新属性前，先用 `npx --yes hyperframes@<锁定版本> <命令> --help` 或一次 `check` 确认存在。
 

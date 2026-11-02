@@ -6,6 +6,15 @@
 
 ---
 
+## v0.23.1 — 2026-11-02 · HyperFrames 受控升级到 0.8.230
+
+PR [#33](https://github.com/vvai-studio/xumu/pull/33)
+
+**改进**
+- HyperFrames 受控升级：0.8.181 → 0.8.230（两个版本逐帧比对，平均相似度 0.9996，最低 0.9992）。已有项目保持自己的锁定版本。
+
+---
+
 ## v0.23.0 — 2026-11-02 · 新增发布会式界面动效风格与三张手法卡
 
 PR [#34](https://github.com/vvai-studio/xumu/pull/34)

@@ -1,6 +1,6 @@
 """Whiteboard-world builder for HyperFrames (1920x1080): one continuous board per world under one virtual camera.
 
-Generalized from the 一人公司介绍 film (HyperFrames 0.8.81; demo verified on 0.8.181). A project build script creates a Comp, places
+Generalized from the 一人公司介绍 film (HyperFrames 0.8.81; demo verified on 0.8.230). A project build script creates a Comp, places
 worlds, screen clips, video cards and the talking-head window, then calls finish() to write comp/index.html.
 All times are programme seconds; resolve them with cue.Timing (scripts/cue.py) instead of typing seconds.
 

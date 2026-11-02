@@ -27,7 +27,7 @@ for _stream in (sys.stdout, sys.stderr):   # Windows pipes default to the ANSI c
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = SKILL_ROOT / 'assets' / 'templates' / 'whiteboard-world'
-DEFAULT_OLD = '0.8.181'   # the verified, pinned version; update together with references/production.md
+DEFAULT_OLD = '0.8.230'   # the verified, pinned version; update together with references/production.md
 
 
 def tool(name):
