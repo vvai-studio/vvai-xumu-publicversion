@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "storybook-alpine-3d",
+  "name": "绘本山野 3D",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "圆润雕塑感山脊，翠绿草坡，钴蓝晴空，棉絮白云，前景野花草浪随风起伏",
+  "signature": "高空飞越山谷；下降贴近草坡；草浪随风成片伏倒；低机位绕主体环行；云影滑过山坡",
+  "fits": "儿童教育、健康生活、文旅、成长故事",
+  "implementation": "Three.js 高度场地形加实例化草地，着色器风场；`gn:camera-flight` `gn:camera-orbit` `gn:wave-warp`；近亲 `opuscar-lowpoly-island`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:camera-flight",
+    "gn:camera-orbit",
+    "gn:wave-warp"
+  ],
+  "spec": {
+    "palette": [
+      "#46a845",
+      "#2a68c4",
+      "#f7f8f4",
+      "#d9b75f",
+      "#7e6b58",
+      "#e7566a"
+    ],
+    "fonts": {
+      "title": "站酷小薇",
+      "body": "霞鹜文楷",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "高空飞越山谷",
+      "下降贴近草坡",
+      "草浪随风成片伏倒",
+      "低机位绕主体环行",
+      "云影滑过山坡"
+    ],
+    "forbidden": [
+      "低多边形碎面",
+      "尖锐险峰",
+      "灰暗写实岩石",
+      "静止草地",
+      "城市建筑"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "晴朗的高山草甸：远山 2–3 重，中景大片草坡，前景齐膝草和野花。主体小而明确，占高约 20–28%，站在坡顶或路上。讲解物件可以长在草地里，比如路牌、小屋、木栅，用来承载文字。",
+      "material": "形体光滑圆润，像捏出来的黏土模型上了釉色。太阳高挂略在镜头后方，草地满色不发黄。雪线沿坡形走，岩层用暖灰赭色带。最远山脊才加约 20–25% 淡紫空气透视。云是受光白团，投下明确云影。",
+      "type": "标题用站酷小薇，占高 7–10%，放在蓝天留白处；说明字霞鹜文楷，不小于高度 3.5%，深绿或深蓝色，不压在草上。竖屏把山脊线压到下部 40%，主体放三分之一线，标题放天空。",
+      "motion": "24fps 平滑运动。风以阵为单位：一阵 2–3 秒从画面一侧扫到另一侧，草弯伏 20–35 度后回弹。花随草错峰摆动。云影匀速滑动。主体动作舒展，转圈、挥手，缓入缓出，无急停。",
+      "camera": "招牌是一个连续运动：前 2 秒高空飞越，接 2 秒下降，然后贴草环绕主体，约每秒 15–20 度。其余镜头 3–5 秒。换场用云团掠过镜头，或风掀起花瓣满屏。避免切回高空太频繁。",
+      "narration": "开场句飞越全景；举例句降落到一件草地小物；成长或变化句让草坡随时间变色；结论句环绕主体。语调要明快。不适合压抑内容、技术细节和表格；草地实例量大，低配渲染需减到数万株。"
+    },
+    "concept_prompt": "晴朗高山草甸的低机位画面，前景是齐膝的翠绿长草和红黄小野花，被一阵风吹得成片向右倒伏；中景圆润的草坡上站着一个穿鹅黄裙子的小小人影，背对镜头张开手臂，身边一块木牌；后方是几重光滑圆润、顶着白雪的山脊，岩层露出暖灰赭色；钴蓝天空里堆着棉絮般受光的白云，在山坡上投下云影；色彩饱和明快，形体像上釉的雕塑"
+  },
+  "gallery": {
+    "frame": "assets/gallery/storybook-alpine-3d.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/storybook-alpine-3d/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O38"
+  ]
+}

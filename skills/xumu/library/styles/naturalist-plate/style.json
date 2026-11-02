@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "naturalist-plate",
+  "name": "博物图版",
+  "family": "F. 复古年代",
+  "kind": "style",
+  "look": "泛黄图版、居中的大标本图配四周编号小图、细铜版排线与点刻，线内薄涂水彩",
+  "signature": "版框压印成形；主标本由线到彩显出；编号小图逐个归位；引线指向局部；只有一处悄悄活动",
+  "fits": "知识分类、产品结构、生物科普、概念拆解",
+  "implementation": "Canvas 2D 排线点刻后平涂水彩，标本需素材；`gn:annotation-callout` `gn:hatch-fill` `gn:zoom-to-detail`；近亲 `vintage-engraving`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:annotation-callout",
+    "gn:hatch-fill",
+    "gn:zoom-to-detail"
+  ],
+  "spec": {
+    "palette": [
+      "#f0e5c9",
+      "#4f3321",
+      "#a8482a",
+      "#dca52f",
+      "#6f7f5a",
+      "#8b7a95"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": "马善政楷书"
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "版框压印成形",
+      "主标本由线到彩显出",
+      "编号小图逐个归位",
+      "引线指向局部",
+      "只有一处悄悄活动"
+    ],
+    "forbidden": [
+      "平滑渐变",
+      "刺眼饱和色",
+      "缩成小图的主体",
+      "血腥解剖",
+      "现代图标"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一屏是一张图版，把要讲的东西当新物种来记录：主体作图一，居中占版面高 55–60%；周围环绕 3–6 个带编号的小图，画局部、幼体、相关物件，各占约 18% 高。讲手机就画手机的剖面和零件，讲制度就画成一株带标签的植物。上方标题，下方图注。",
+      "material": "暖黑褐刻线，线距约画幅 0.25%，暗部线更粗且交叉，圆润过渡用点刻。线内平涂透明水彩，饱和度中等，不盖住线。物下有排线投影，其余留纸色。图版四周压一道斜边版框，纸带淡霉点。冷暖只靠整体色温偏移 5–8%。",
+      "type": "标题用思源宋体，字距拉开 20%，占高 4–5%；图注用 Noto Serif SC，图一、图二式编号，最小 2.5% 高；旁批用马善政楷书。竖屏把主体放上半屏，小图排成 2×2 放下半屏，图注压缩到每图 6 字以内。",
+      "motion": "静止为主，30fps 下只有一样东西在动：翅膀轻扇、叶片一颤、齿轮转半圈，幅度小于 3%。标本从线稿到上色 1.2 秒，由一端刷向另一端。小图 0.3 秒落位，错开 0.2 秒。引线 0.4 秒画出。其他元素完全不动。",
+      "camera": "每张图版先给 2 秒全版，再匀速慢推到一处细节，用时 3–5 秒，放大不超过 2.5 倍。换场是抽走图版露出下一张，或翻页。切到细节时可用放大镜圆框，保持版框可见以便观众定位。",
+      "narration": "分类句逐个落编号小图；结构句推近并拉引线；对比句让图二图三并列；结论句退回全版。一张图版不超过六个知识点。把内容当标本观察，语气要冷静。不适合激烈情绪、强节奏混剪和没有实物形象的抽象论述。"
+    },
+    "concept_prompt": "一张薄涂手绘水彩的博物学图版，泛黄纸面带淡霉点和压印斜边版框。中央的大图是一台老式机械怀表拆开后的内部结构，被画成昆虫标本一样对称展开，由暖黑褐细密排线和点刻塑形，线内薄涂赭红与铜黄水彩。四周环绕五个编号小图：一枚齿轮、一根发条、一颗螺丝、表盖和指针，各带小小的排线投影。上方字距拉开的中文短标题，下方编号图注。均匀日光，正面平视。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/naturalist-plate.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/naturalist-plate/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O64"
+  ]
+}

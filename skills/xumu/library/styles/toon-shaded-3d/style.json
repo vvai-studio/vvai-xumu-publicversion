@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "toon-shaded-3d",
+  "name": "卡通渲染 3D",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "三维模型配两到三阶硬边色块阴影，黑色外描边，明亮平涂天空与简化物件",
+  "signature": "光阶随转身跳变；描边随距离增减粗细；动作逐拍定格；环绕镜头保持顺滑；拖影帧甩出转折",
+  "fits": "科技概念、游戏话题、青年文化、机械结构",
+  "implementation": "Three.js 色阶材质加背面外扩描边；`gn:stepped-motion` `gn:smear-frame` `gn:camera-orbit`；近亲 `opuscar-scifi-toon`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:stepped-motion",
+    "gn:smear-frame",
+    "gn:camera-orbit"
+  ],
+  "spec": {
+    "palette": [
+      "#7fd0ec",
+      "#fdf6e6",
+      "#ee5a3e",
+      "#2b3a67",
+      "#f7c744",
+      "#141318"
+    ],
+    "fonts": {
+      "title": "站酷快乐体",
+      "body": "思源黑体",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "光阶随转身跳变",
+      "描边随距离增减粗细",
+      "动作逐拍定格",
+      "环绕镜头保持顺滑",
+      "拖影帧甩出转折"
+    ],
+    "forbidden": [
+      "柔和渐变阴影",
+      "写实贴图",
+      "景深虚化",
+      "体积雾",
+      "金属反射"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "看起来像手绘动画，骨子里是真三维：物件几何简化，表面只留大色块，细节靠线条画。主体占画面高 40–60%，配 1–2 个辅助物，背景是平涂天空或几块几何建筑，便于镜头绕转时仍然清爽。",
+      "material": "明暗限 2–3 阶：亮面、暗面，可选一道高光，阶间不过渡。外描边用法线外扩，宽约画幅 0.25–0.5%，远景减半。内线只画结构转折。阴影色取底色压暗并偏蓝紫，不用黑。整体无颗粒。",
+      "type": "标题用站酷快乐体，占高 8–12%，加同款黑描边和硬投影；说明字思源黑体 Bold，不小于高度 3.5%。竖屏主体放中段，占宽 80%，标题放上部，描边按短边重新计算，避免变细。",
+      "motion": "角色动作按 12fps 抽帧，每个关键姿势停 2–3 帧；镜头和背景保持 24fps，形成手绘动画特有的动静差。转折处插 1–2 帧拖影变形。大动作用缓入急出，落定不过冲超过 4%。",
+      "camera": "单镜头 2–4 秒。环绕每秒 15–30 度，是这种风格的卖点，平面动画做不到。常用低角度仰拍显气势。换场用整屏色块擦除或闪白 2 帧。同一场景不换光阶方向，避免阴影形状乱跳。",
+      "narration": "概念句让物件转一圈展示结构；转折句用拖影甩到新姿势；数字句弹出描边大字；结论句定格加放射线。不适合需要写实质感的产品展示，也不适合奢侈品和严肃新闻，轻快语气最合适。"
+    },
+    "concept_prompt": "一台圆角方身的小型送货机器人在街角仰拍构图中转身，车身亮橙色平涂，暗面是硬边深紫蓝色块，一道窄白高光，所有外轮廓有均匀黑描边，内部只画几条结构线；背后是平涂天蓝色天空和几栋简化成几何块的奶油色楼房，白云是带硬边的两阶色块；地面投出一块边缘锐利的影子；没有虚化，没有颗粒，像手绘动画赛璐珞帧，又有明确的三维透视"
+  },
+  "gallery": {
+    "frame": "assets/gallery/toon-shaded-3d.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/toon-shaded-3d/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:K26"
+  ]
+}

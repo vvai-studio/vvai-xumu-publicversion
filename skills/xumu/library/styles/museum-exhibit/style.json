@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "museum-exhibit",
+  "name": "博物馆展陈",
+  "family": "A. 教学解说",
+  "kind": "style",
+  "look": "近黑展厅、单束暖光切出展台，米色展签，铜锈青只给当前展品与导览点",
+  "signature": "光束从顶部缓缓打亮，展品在台上慢转，展签淡入定位，解说条逐字打出，灯灭移步下一展厅",
+  "fits": "物品史、文明史、产品回顾、作品集导览",
+  "implementation": "Three.js 低面数展品或生图抠图；`gn:object-turntable` `gn:ambient-particle-drift` `gn:typewriter`；近亲 `luxury-dark`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:object-turntable",
+    "gn:ambient-particle-drift",
+    "gn:typewriter"
+  ],
+  "spec": {
+    "palette": [
+      "#0d0b0a",
+      "#e8dfcc",
+      "#8c744f",
+      "#3f9c8f",
+      "#c9a24d"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "光束从顶部缓缓打亮",
+      "展品在台上慢转",
+      "展签淡入定位",
+      "解说条逐字打出",
+      "灯灭移步下一展厅"
+    ],
+    "forbidden": [
+      "明亮白墙",
+      "界面仪表盘",
+      "普通柱状图",
+      "彩色灯光",
+      "展品堆叠"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "每一段是一间暗厅，只有一束灯照亮一件展品：一个实物、一张图、一段数字都放到展台上。展品位于画面中轴或偏右 1/3，左侧或右下贴一块墙面展签，底部一条解说字幕。其余空间全黑，让观众只能看这一件。",
+      "material": "暗部占画面 70% 以上，近黑但带暖意。光束为锥形，顶部窄底部宽，亮度 15–25%，内有 30–60 粒浮尘。展品可用切面低模、单色石膏感或修过的实物照，受光面明亮，背光面迅速进入暗部。展台是素面圆柱。强调色占比低于 3%。",
+      "type": "展签用米色实底，高度约画面 24%，标题思源宋体 Bold 不低于 3.6%，说明 Noto Sans SC 不低于 2.6%，写编号、年份、一句话。解说字幕不低于 3.4%。竖屏让展品居中偏上，展签移到展台下方，解说放展签下面，不超过 2 行。",
+      "motion": "灯亮用 0.8–1.2 秒 ease-in-out，先微闪一次再稳住。展品每 8–12 秒转一圈，匀速。浮尘极慢漂移。展签 0.4 秒淡入并上移 1%。解说每秒 5–6 字。数字做成展柱，1 秒内 ease-out 生长，柱顶放小铭牌。全片不用硬弹跳。",
+      "camera": "单间 6–10 秒。镜头几乎不动，缓推 3–6%。换场不切：旧灯渐灭、黑场 0.4 秒、新灯在下一位置打亮，可配一小段侧向移动，像观众走到下一件。片头和片尾用同一张入口标题画面收束。",
+      "narration": "讲一件东西占一间展厅；举例句换上另一件展品；年份和数字写进展签；比较句把数字做成不同高度的展柱；转折句让灯灭再从另一侧打亮；结论句回到入口。不适合快节奏、密集信息和需要画面持续变化的内容。"
+    },
+    "concept_prompt": "一间几乎全黑的展厅，一束温暖的锥形灯光从上方落下，光柱里悬浮着细小尘粒。素面圆柱展台上放着一台切面清晰的低面数老式机械钟，受光面明亮，背光面沉入暗部，周围罩着极细线条的玻璃罩。展台左后方墙上贴一块米色小展签，写着很短的编号和标题。远处地面隐约有木地板反光，右上角一排小圆点的导览路线，当前一点是铜锈青色。庄重安静，暗部占画面大部分。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/museum-exhibit.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/museum-exhibit/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:X20"
+  ]
+}

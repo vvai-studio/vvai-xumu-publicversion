@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "exhibition-yellow",
+  "name": "展览黄",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "暖羊皮纸、一轮巨大太阳黄光晕、靛蓝宋体大标题与发丝细线，像展览画册封面",
+  "signature": "黄色光晕缓缓胀开；发丝线从中心划向四边；标题逐行浮现；光晕滑到关键词身后；页码翻动",
+  "fits": "艺术人文、行业观察、纪录片章节卡",
+  "implementation": "Canvas 2D 径向渐变加纸纹缓存；`gn:line-draw` `hf:blur-in` `hf:grain-overlay`；近亲 `editorial-light`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:line-draw",
+    "hf:blur-in",
+    "hf:grain-overlay"
+  ],
+  "spec": {
+    "palette": [
+      "#efe5c9",
+      "#f2b92c",
+      "#1b2560",
+      "#7a6a4a",
+      "#fbf3df"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "霞鹜文楷",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "黄色光晕缓缓胀开",
+      "发丝线从中心划向四边",
+      "标题逐行浮现",
+      "光晕滑到关键词身后",
+      "页码翻动"
+    ],
+    "forbidden": [
+      "黑体大字",
+      "第二种强调色",
+      "粗边框",
+      "照片满铺",
+      "弹跳动画"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "每一屏都是一张展览画册封面：上下各一行页眉页脚，中间两行大标题，一轮直径约 70–90% 画高的黄色光晕偏置在一侧。光晕是全片唯一的图形主角，需要配图时把图裁成圆形放进光晕中央。",
+      "material": "纸色偏暖，叠 4–8% 的细碎纸纤维。光晕中心饱和，向外在半径 60% 处开始柔化，到边缘融进纸色，叠印感约 85%。字和线全用靛蓝，线宽约 0.15% 画高。除靛蓝和太阳黄外不再加色。",
+      "type": "标题用思源宋体 Heavy，字高 14–18%，字距收紧到 -2%；第二行换霞鹜文楷并右移一格，代替西文斜体的变化。页眉 2.2% 高加大字距。竖屏把光晕放上半屏裁出画面，标题改三行压在下半屏。",
+      "motion": "24fps，全部缓慢。光晕用 1.5–2 秒从 60% 胀到 100%，缓出；细线 0.8 秒从中点向两端划出；标题每行错开 0.3 秒，轻微模糊转清晰。定格后光晕保持 1% 幅度的呼吸，周期约 4 秒。",
+      "camera": "镜头锁定，单屏 3–5 秒。章节切换时光晕缩小成一点，再在下一张封面的新位置胀开，这一过程约 1 秒。全程不用推拉，变化只来自光晕位置，它在版面的落点本身就在提示重点。",
+      "narration": "章节开场用完整封面；关键词句让光晕滑到该词身后；引用句放大成单行居中，页脚写出处；数字句把数字放进光晕中心。不适合快节奏、连续数据和屏幕录像，这时只保留页眉细线作外框。"
+    },
+    "concept_prompt": "一张铺满画面的展览画册封面：暖羊皮纸底带细碎纤维，画面右侧偏上有一轮巨大的太阳黄圆形光晕，边缘柔和地融入纸色，中心饱和。靛蓝色的宋体大字分两行压在光晕之上，第二行是楷体并向右错开。上下各一条发丝细线，线外是很小的靛蓝页眉和编号，光晕中央隐约有一座城市天际线的靛蓝细线剪影。平面印刷质感，正午般均匀的光"
+  },
+  "gallery": {
+    "frame": "assets/gallery/exhibition-yellow.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/exhibition-yellow/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:H1"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "cobalt-grid",
+  "name": "钴蓝网格",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "浅米坐标纸、钴蓝细网格铺满全屏、格内衬线字与蓝色实心单元，像测绘表",
+  "signature": "钴蓝网格逐线画满；内容吸附到格点；单元格逐格填蓝；标尺游标走到数值；网格平移一格换场",
+  "fits": "系统拆解、研究方法、比较表、技术报告",
+  "implementation": "SVG 网格加 HTML 逐帧；`gn:grid-draw` `hf:grid-card-assemble` `hf:dynamic-grid`；近亲 `swiss-grid`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:grid-draw",
+    "hf:grid-card-assemble",
+    "hf:dynamic-grid"
+  ],
+  "spec": {
+    "palette": [
+      "#ece4d0",
+      "#1a48e0",
+      "#0f1a45",
+      "#a9b6de"
+    ],
+    "fonts": {
+      "title": "Noto Serif SC",
+      "body": "Noto Sans SC",
+      "handwriting": "Caveat"
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "钴蓝网格逐线画满",
+      "内容吸附到格点",
+      "单元格逐格填蓝",
+      "标尺游标走到数值",
+      "网格平移一格换场"
+    ],
+    "forbidden": [
+      "大面积蓝色铺底",
+      "斜线构图",
+      "圆角卡片",
+      "偏离格点的元素",
+      "暖色强调"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "全屏铺一张 12×8 的钴蓝细网格，一切内容都住在格子里：标题占 6×2，数据占 3×3，配图占整数格。网格本身可读，边缘标着行列编号。这里的主体是线和格子，蓝色实心只作局部标记。",
+      "material": "底色偏冷的浅米，比羊皮纸更淡。网格线宽约 0.1% 画高，蓝色透明度 55%，每 4 格加粗一道。实心单元用纯钴蓝，占比不超过 15%。可加 2% 细颗粒。图片转成单色钴蓝网线，融入纸面。",
+      "type": "标题用 Noto Serif SC Medium，字高 5–8%，基线落在格线上。表格和编号用 Noto Sans SC，不低于 2.6% 高，手写批注用 Caveat 写西文与数字。竖屏改为 6×12 网格，内容纵向堆叠，单元格保持正方形。",
+      "motion": "30fps，步进感。网格 0.6 秒从左上向右下逐线画出。内容入场时走直角路径，到格点吸附，用 4 帧减速。单元格按行逐格填色，每格 2 帧。游标沿标尺匀速移动。任何元素都不走斜线，也不回弹。",
+      "camera": "镜头沿格点平移，每次移动整数格，用时 0.5 秒，缓入缓出，单屏 3–5 秒。放大时按 2 倍步进，把某个单元推到全屏，看到更细一层的网格，这样可以做层级下钻，返回时原路退出。",
+      "narration": "分类句把内容归到不同行列；比较句用同列填色；占比句逐格填蓝，数格子读比例；层级句放大到一格内部；结论句圈出一个蓝格并写批注。不适合抒情和人物故事，也不适合曲线形态的数据，这时改用分屏。"
+    },
+    "concept_prompt": "浅米色坐标纸铺满画面，上面是一张规整的钴蓝色细线网格，每四格一道加粗线，边缘印着细小的行列编号。左上六格内是一行深蓝色宋体标题，基线压在格线上。右侧一组格子被逐格填成实心钴蓝，形成阶梯状的柱形，其中一格旁有手写的蓝色小批注和箭头。下方三格内是一张单色蓝网线的机器零件图。平面俯视，线条精密，像工程测绘表"
+  },
+  "gallery": {
+    "frame": "assets/gallery/cobalt-grid.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/cobalt-grid/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:H8"
+  ]
+}

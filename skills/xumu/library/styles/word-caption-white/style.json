@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "key": "word-caption-white",
+  "name": "白底逐字口播",
+  "family": "J. 口播呈现",
+  "kind": "style",
+  "look": "纯白底，一种字体的黑字，字幕逐词跟口播打出，穿插真实图片，镜头缓慢漂移",
+  "signature": "字幕按录音逐词出现；每段只漂移一次；图片踩十六分音符切换；关键句音乐抬起",
+  "fits": "口播主线、产品发布、观点讲述、知识分享",
+  "implementation": "HTML 逐帧排字，时间取语音转写时间戳，图片需素材；`gn:word-rise-fade` `gn:ken-burns` `gn:beat-sync`；近亲 `koubo-layout-card`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:word-rise-fade",
+    "gn:ken-burns",
+    "gn:beat-sync"
+  ],
+  "spec": {
+    "palette": [
+      "#ffffff",
+      "#0b0b0b",
+      "#8d8d8d"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "思源黑体",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "字幕按录音逐词出现",
+      "每段只漂移一次",
+      "图片踩十六分音符切换",
+      "关键句音乐抬起"
+    ],
+    "forbidden": [
+      "句号",
+      "选区式底色",
+      "第二种字体",
+      "花字描边",
+      "灰色底"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "白底就是舞台。主画面只有一组字，或一组字加一张图。字占画面宽 60–80%，图片占 40–60%，出现时字让位。全片没有装饰元素，没有边框，靠口播和节奏撑住，适合做整片主线，也能穿插其他风格。",
+      "material": "底色纯白，字纯黑，只有一种灰用于次要说明。图片用真实照片或产品实拍，不加圆角和投影，按原色显示。整片不用颗粒和光效。声音规范：人声出现时音乐自动压低，成片响度控制在 -14 LUFS。",
+      "type": "思源黑体 Medium，一种字重到底，主字占高 6–10%，最小 4%。屏上不要句号，换行按语义，一屏不超过 12 字。词间不打底色，也不做选中框。竖屏字放中上部，字宽占 85%，每行 6–8 字。",
+      "motion": "时间来自录音的语音转写时间戳，不按文案平均分配。每词出现 2–3 帧，用极短淡入加 0.5% 位移。图片切换锁定音乐细分，节奏紧时一拍换一张。整段镜头缓慢推拉不超过 4%，每段方向一致。",
+      "camera": "每段口播一个镜头，3–8 秒，只做一次匀速漂移。换段直接硬切白底。图片连切 3–6 张时形成密集段落，随后回到纯文字。全片从头到尾保持同一种字位，不要左右乱跳。",
+      "narration": "主线句逐词打出；举例句快切图片；数字句单独占一屏放大；结论句抬音乐并留白 0.5 秒。字幕必须对上口型和录音。不适合无人声的片子、情绪氛围片，文案太长时要先删减，不要缩小字号。"
+    },
+    "concept_prompt": "纯白背景的视频帧，几乎全空，正中偏左一行黑色黑体中文“真正的问题在这里”，字体粗细统一，末尾没有标点，最后两个字刚出现、略带淡入；右侧一张无边框的真实照片，拍一只手放在笔记本电脑键盘上，色彩自然，没有圆角和投影；大量留白，没有任何图形装饰，平光，干净，像一支极简的发布视频截图"
+  },
+  "gallery": {
+    "frame": "assets/gallery/word-caption-white.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/word-caption-white/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:M8"
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "key": "neon-rain-alley",
+  "name": "霓虹雨夜",
+  "family": "G. 科技与氛围",
+  "kind": "style",
+  "look": "一点透视的雨夜窄巷、竖招牌成排、青雾吞没远处，湿地倒影占下半屏",
+  "signature": "招牌逐块亮起；倒影被雨点打碎；青雾吞掉远处；镜头沿巷推向暖光；卷帘门掠过换场",
+  "fits": "都市悬疑、深夜情绪、赛博议题、行业暗面",
+  "implementation": "WebGL 雾与倒影，或生图分层后 Canvas 2D 合成，需素材；`gn:neon-sign-flicker` `gn:dynamic-reflection` `gn:rain-streaks`；近亲 `neon`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:neon-sign-flicker",
+    "gn:dynamic-reflection",
+    "gn:rain-streaks"
+  ],
+  "spec": {
+    "palette": [
+      "#07161c",
+      "#0f4a55",
+      "#37c8c3",
+      "#ff3f7f",
+      "#ff7a2f",
+      "#ffc27a",
+      "#e7f6f2"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "招牌逐块亮起",
+      "倒影被雨点打碎",
+      "青雾吞掉远处",
+      "镜头沿巷推向暖光",
+      "卷帘门掠过换场"
+    ],
+    "forbidden": [
+      "干燥地面",
+      "平涂彩字霓虹",
+      "描边线",
+      "持续频闪",
+      "真实商号",
+      "明亮天空"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "摄影机站在窄巷中央，消失点位于画面中线偏上，尽头一团暖光是全片唯一的目的地。两侧竖招牌层层后退，近处店铺的卷帘门都放下来，让前景沉入暗部。下半屏全是湿地面。人物只留背影或伞下剪影，走向尽头。招牌上写的就是当前关键词。",
+      "material": "冷青做底，品红招牌和尽头橙光做主光，占亮部 80%。雾按距离指数加浓，第 5 层后只剩色块。倒影竖向拉长 2–3 倍，被雨纹打断，亮度约原物 50–60%。招牌是玻璃灯管，带白热芯和管卡，辉光半径 1–2%。颗粒 ±3%，暗角 15%。",
+      "type": "竖排招牌字用思源黑体 Bold，占画面高 14–22%，贴在两侧楼面，透视随巷子走；说明字用 Noto Sans SC，白色，放地面倒影区，最小 3% 高，避开强反光。竖屏天然合适：巷子加长，倒影区保持 40%，字改放中线左右。",
+      "motion": "30fps。招牌逐块亮起，每块 3–6 帧带一次跳闪，错开 0.2 秒，之后稳定，5–10 秒才轻闪一次。雨丝倾斜 8°，分近中远三层，近层快且长。倒影持续波动，雨点涟漪 0.5 秒散开。人物慢走，步速每秒约 1% 画幅。",
+      "camera": "单镜头 3–6 秒，一路匀速向巷深推进，幅度 8–12%。同一条巷换角度，低机位贴地看倒影是重要变化。换场用近处卷帘门掠过遮住全屏，或雨滴落镜头模糊后切换。全片保持同一方向前进，不回头。",
+      "narration": "悬念句推向暖光；关键词句点亮对应招牌；数字句写在招牌上并让倒影翻转显示；独白句切低机位看水面。结论句到达尽头，暖光铺满。不适合明快教学、产品卖点和白天内容，字太多时会被反光吃掉。"
+    },
+    "concept_prompt": "一点透视的雨夜窄巷，摄影机站在巷子中央，消失点偏上。两侧挂满层层后退的竖向玻璃灯管招牌，粉红与橙色发光，上面是很短的中文，青色雾气越远越浓，尽头一团暖橙光。最近两家店拉着深色卷帘门，把前景压暗。下半屏是湿漉漉的石板路，招牌倒影被拉成长竖条，被雨点打出涟漪。一个撑伞的背影走向尽头，斜雨细密，暗角和细颗粒，无描边。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/neon-rain-alley.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/neon-rain-alley/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:R1",
+    "code-animation-prompts:O97"
+  ]
+}

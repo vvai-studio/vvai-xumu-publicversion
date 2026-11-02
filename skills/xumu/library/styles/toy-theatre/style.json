@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "toy-theatre",
+  "name": "玩具纸剧场",
+  "family": "F. 复古年代",
+  "kind": "style",
+  "look": "镀金台口与红帷幔框住的卡纸小舞台、石印黑线加手工上色、纸人留剪刀白边",
+  "signature": "帷幔向两侧拉开；景片沿滑槽推入；纸人滑到台前微晃；脚灯把影子投到后景；暗场拉远见桌面",
+  "fits": "寓言式解说、历史故事、儿童教育、品牌故事",
+  "implementation": "Three.js 平行片层，人物景片需素材；`gn:papercut-placement` `gn:layer-separation` `hf:curtain-reveal`；近亲 `paper-craft`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:papercut-placement",
+    "gn:layer-separation",
+    "hf:curtain-reveal"
+  ],
+  "spec": {
+    "palette": [
+      "#f2e8d2",
+      "#b92a30",
+      "#d4a63c",
+      "#2c5592",
+      "#7c6a55",
+      "#1b1410"
+    ],
+    "fonts": {
+      "title": "Noto Serif SC",
+      "body": "思源宋体",
+      "handwriting": "霞鹜文楷"
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "帷幔向两侧拉开",
+      "景片沿滑槽推入",
+      "纸人滑到台前微晃",
+      "脚灯把影子投到后景",
+      "暗场拉远见桌面"
+    ],
+    "forbidden": [
+      "真三维建模人物",
+      "亮黄金属色",
+      "矢量鲜艳色",
+      "无白边人物",
+      "摄影级柔光"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "台口宽占画面 85%，上方垂幔，下方一排小烛脚灯，两侧是画出来的包厢和小观众。舞台内 3–5 张平行景片，前后排开。角色是带底座的纸人，只能沿插槽水平滑动，不能转身。一句旁白对应一次上场或换景，就像一出小戏。",
+      "material": "全部是印刷卡纸：黑线约画幅 0.25%，每张背光一边加几笔蜡笔短线。上色偏旧，色块略出线。纸人和景片外留 0.4–0.5% 白边，带纸厚和小投影。烛光阴影放大 1.4–1.6 倍投到后层，柔边，亮度随火苗起伏约 6%。",
+      "type": "片名像戏单，用 Noto Serif SC Heavy，占高 7–9%，印在台口上方的匾额里；台词用思源宋体印在卷轴纸条上，由小杆从侧面推入，最小 3% 高。竖屏时台口收窄到近方形，上下加暗场，字幅放在舞台下方的台裙上。",
+      "motion": "按 12fps 定格节奏。纸人平移带 1–2% 上下颠动和小角度晃动，到位后再晃两下停住。景片从侧槽滑入 0.6–0.8 秒。帷幔开合 1 秒。翻面替换代表变化：纸人转到背面变成另一张。烛火影子持续不规则抖动。",
+      "camera": "视点在观众席正中，单镜头 4–6 秒，慢推或横移幅度不超过 10%，近景时加极小手持微震。换场必有动作：落幕、抽走景片或从顶上放下新景片。全片结束时拉远，露出放在暗房间桌上的整座小剧场。",
+      "narration": "人物句让纸人上场；转折句快速抽换背景；对比句左右两张纸人对望；结论句落幕后在幕布上印字。数据用小道具牌由纸人举着。不适合快切、精确图表和现代科技质感，上场人物不超过三个。"
+    },
+    "concept_prompt": "一座放在暗色桌面上的小型卡纸玩具剧场，镀金雕花台口和深红帷幔框住舞台，下方一排小烛脚灯，两侧画着包厢里的小观众。舞台内是几层平行的印刷景片：远处蓝灰色城市街景，中景一排工坊和烟囱。台前一个带底座的纸人商贩和一辆纸手推车，黑色石印线加旧色手工上色，四周留一圈白色剪纸边，身后投出放大的柔边影子。纸张厚度可见，暖烛光，正面平视。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/toy-theatre.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/toy-theatre/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O41"
+  ]
+}

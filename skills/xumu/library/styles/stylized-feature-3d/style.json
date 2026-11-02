@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "stylized-feature-3d",
+  "name": "动画长片 3D",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "圆润夸张比例的三维角色与道具，柔和透光材质，暖色主光，浅景深背景虚化",
+  "signature": "角色先压缩蓄力再弹起；视线转向关键物件；道具落地挤压回弹；焦点从背景拉到表情",
+  "fits": "儿童科普、品牌形象、类比讲解、情绪高光",
+  "implementation": "Three.js 圆润基础形拼角色，精细版需 Blender；`gn:squash-stretch` `gn:character-gaze-reaction` `gn:rack-focus`；近亲 `soft-3d`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:squash-stretch",
+    "gn:character-gaze-reaction",
+    "gn:rack-focus"
+  ],
+  "spec": {
+    "palette": [
+      "#f6d7a7",
+      "#e8743b",
+      "#3f8fb5",
+      "#fff4e2",
+      "#5a3b2e",
+      "#8fbf6a"
+    ],
+    "fonts": {
+      "title": "站酷庆科黄油体",
+      "body": "思源黑体",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "角色先压缩蓄力再弹起",
+      "视线转向关键物件",
+      "道具落地挤压回弹",
+      "焦点从背景拉到表情"
+    ],
+    "forbidden": [
+      "写实毛孔",
+      "硬边阴影",
+      "线框网格",
+      "成人写实身材",
+      "现成动画 IP 角色"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一个自创小主角配一件核心道具，站在像微缩布景的场所里。主角占画面高 35–50%，头身比 1:2 到 1:3，眼睛占脸宽 30% 左右。抽象概念都变成可以抱起来的道具，主角与道具的互动就是讲解。",
+      "material": "材质像软胶和磨砂陶，开启次表面散射或用菲涅尔假边光。主光暖、补光冷，光比约 3:1，加一条边光把轮廓从背景分开。环境光遮蔽柔和。景深让背景模糊到只剩色块，圆形光斑直径约画幅 3%。",
+      "type": "标题用站酷庆科黄油体，占高 7–11%，做成立体字放进场景；说明字幕思源黑体 Medium，不小于高度 3.5%。竖屏主角居中偏下，占高 45%，文字放上部 25% 的虚化区，避开头顶。",
+      "motion": "24fps。遵循预备、动作、跟随：预备 4–6 帧，主动作 6–10 帧，落定用长尾缓出，末端过冲 3–5%。挤压拉伸保持体积不变。眼神先于头、头先于身体，各错 2 帧。待机时保留呼吸起伏 1%。",
+      "camera": "单镜头 3–5 秒，35–50mm 等效，贴近主角高度。常用缓推加轻微侧移，换到新情绪时拉焦。换场用道具遮挡擦过镜头，或主角走出画面接下一景。一段内最多切 3 个景别。",
+      "narration": "举例句让主角拿出道具；转折句主角愣住，视线转向新物件；数字句把数量变成成堆的小物；结论句推近到表情。不适合严肃灾难、医疗风险和财报细表，也不适合口型长时间对白，渲染成本高。"
+    },
+    "concept_prompt": "一个圆头圆身的小机器人站在书桌上，高度约占画面四成，身体是磨砂奶油色软胶，大眼睛是深色圆片带高光，双手抱着一颗比它还大的暖黄色灯泡，灯泡透出柔光照亮它的胸口；身后的书本和笔筒虚化成大块色团，形成圆形光斑；左上暖色主光，右侧淡蓝补光，轮廓有一圈细边光；低机位平视，地面有柔和接触阴影，整体温暖可爱"
+  },
+  "gallery": {
+    "frame": "assets/gallery/stylized-feature-3d.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/stylized-feature-3d/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:K25"
+  ]
+}

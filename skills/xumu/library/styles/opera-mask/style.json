@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "opera-mask",
+  "name": "京剧脸谱",
+  "family": "H. 东方传统",
+  "kind": "style",
+  "look": "近黑或戏台红底，朱砂靛青金粉重彩纹样，黑勾线沿中轴对称，漆面一道高光",
+  "signature": "色块沿中轴镜像铺开；黑线勾出眉眼纹样；亮相定格一震；绕竖轴翻面换配色",
+  "fits": "传统文化、性格对比、立场表态、品牌人格",
+  "implementation": "SVG 分层上色并中轴镜像，漆面高光用 Canvas 叠加；`gn:outline-then-fill` `gn:stamp-impact` `gn:hard-cut`；近亲 `guochao`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:outline-then-fill",
+    "gn:stamp-impact",
+    "gn:hard-cut"
+  ],
+  "spec": {
+    "palette": [
+      "#100e0d",
+      "#c42a20",
+      "#f1ebdd",
+      "#23408e",
+      "#d4a63a",
+      "#2c7a52"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "色块沿中轴镜像铺开",
+      "黑线勾出眉眼纹样",
+      "亮相定格一震",
+      "绕竖轴翻面换配色"
+    ],
+    "forbidden": [
+      "写实人脸",
+      "皮肤渐变",
+      "卡通表情",
+      "细碎小图标",
+      "血红滴落"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "主体是一张程序绘制的抽象纹样面，占画面高 70–85%，只有额、眉、双颊、鼻梁这些色区，不画真人五官，也不对应任何具体角色。把它当信息面板用：旁白说到哪层意思，哪个色区才上色，其余保持黑白线稿。",
+      "material": "色块全部平涂，不做渐变，同屏主色不超过 3 种，金色面积不超过 8%。黑勾线宽约画幅 0.4–0.8%，起收处有粗细。漆面只留一道竖向高光，亮度抬高 10–15%，底层叠 2–3% 细噪防止过于干净。",
+      "type": "标题用思源宋体 Heavy，竖排贴在纹样一侧，占画面高 6–10%；正文 Noto Serif SC，可读字不小于高度 4%。竖屏把纹样上移占上部 55%，字放下方，每行不超过 10 字。",
+      "motion": "24fps，色块铺色 8–12 帧，用强缓出；勾线 0.5–0.8 秒走完，左右严格同步。亮相动作：到位后静止 6 帧，再整体过冲 2% 回落，配一记重拍。其余时间几乎不动，只让高光慢慢滑过。",
+      "camera": "正面平视为主，单镜头 2–3.5 秒，慢推不超过 8%。换场让纹样绕竖轴翻转 180 度，背面露出新配色；段落之间可切黑 4 帧当顿挫。一支片子里配色方案控制在 5 套以内。",
+      "narration": "判断句触发亮相定格；对比句把两张纹样左右并置；转折句翻面换色；配色的寓意要先在片中讲明再用。只借视觉，不评价任何群体。不适合数据密集内容和轻松日常，图表多时改回其他风格。"
+    },
+    "concept_prompt": "正面居中的一张抽象戏曲纹样面，占满画面高度八成，底色近黑；额头一块朱红平涂，眉区用靛青和白色对称卷纹，双颊是金线勾边的色块，所有黑勾线有明显粗细变化，左右严格镜像；表面像上过漆，一道竖向窄高光从额心落到鼻梁；没有真人皮肤和眼睛，眼位是两块留白几何形；右侧一列竖排白色宋体短字“本色”，顶光，舞台暗场，色块边缘干净"
+  },
+  "gallery": {
+    "frame": "assets/gallery/opera-mask.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/opera-mask/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:Z11"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "candy-block",
+  "name": "糖果粗字",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "奶油底、堆成一摞的超宽粗字，每字一种饱和糖果色，像桌上的玩具积木",
+  "signature": "粗字逐个弹落堆叠；落地挤压回弹；单字吹胀顶开邻字；重拍轮换颜色；整堆倾倒换场",
+  "fits": "轻科普、儿童向、活动预告、节奏欢快的盘点",
+  "implementation": "HTML 逐帧或 Canvas 2D，简单 2D 刚体；`gn:squash-stretch` `gn:bounce-landing` `gn:kinetic-beats`；近亲 `pastel-playful`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:squash-stretch",
+    "gn:bounce-landing",
+    "gn:kinetic-beats"
+  ],
+  "spec": {
+    "palette": [
+      "#fff1d6",
+      "#ff2e63",
+      "#00b8d9",
+      "#ffc400",
+      "#6a2cff",
+      "#00c26e"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "站酷快乐体",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "粗字逐个弹落堆叠",
+      "落地挤压回弹",
+      "单字吹胀顶开邻字",
+      "重拍轮换颜色",
+      "整堆倾倒换场"
+    ],
+    "forbidden": [
+      "描边",
+      "投影硬块",
+      "灰色调",
+      "细字重",
+      "写实照片"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "画面中只有字：几个超粗大字从天而降，在地面堆成一摞，彼此压着、歪着。字就是实体积木，可以被推倒、被顶开。背景只有奶油色和一条隐约的地面线。需要图像时，画一个同样粗壮的几何色块代替。",
+      "material": "字面完全平涂高饱和色，不描边，不加高光。相邻两字不同色，同屏 3–5 色。字占画面 40–70%。地面处给字一条同色加深 15% 的压扁影子，保持柔和的色块感。底色奶油，无颗粒。",
+      "type": "主字用思源黑体 Heavy，横向拉宽 108–115%，字高 18–30%，每屏 2–6 字。小标签用站酷快乐体，不低于 3.5% 高。竖屏让字沿高度方向堆更高，每层 2–3 字，堆塔不超过 80% 画高，留出字幕位。",
+      "motion": "30fps，弹性最强。字下落 8–10 帧，落地压扁到 75%、拉宽到 120%，再回弹两次，总长约 0.5 秒。相邻字被震动带起 1–2%。吹胀的字 0.3 秒放大到 150%，把邻字挤开。全程可跟配乐重拍。",
+      "camera": "镜头不动，单屏 2–3 秒。换场用物理：抽走底下一个字，整堆倾倒滑出画面；或一个大字砸下把前一堆震飞。镜头最多在倒塌时轻晃 1%。连续多屏后要有一屏只放一个巨字，让节奏停一下。",
+      "narration": "列举句一词落一块；数字句落下巨大数字并压扁前面的字；重点词吹胀；否定句抽走该词，上方的字跟着塌；结论句落在顶端。不适合严肃、悲伤或专业财经内容，长句做不了，一屏超过 6 字就散。"
+    },
+    "concept_prompt": "奶油色空场中央，五六个超宽超粗的黑体汉字堆成一摞，每个字一种饱和的糖果色：玫红、湖蓝、明黄、亮紫、草绿，彼此歪斜地压着，最底下的字被压扁，顶上一个字正在下落、被拉长。字完全平涂，没有描边和高光，地面只有同色的压扁影子。没有其他物件，像一堆放在桌上的巨大玩具积木，明快的漫射光，平视正面"
+  },
+  "gallery": {
+    "frame": "assets/gallery/candy-block.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/candy-block/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:H10"
+  ]
+}

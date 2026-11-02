@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "key": "satirical-etching",
+  "name": "讽刺铜版",
+  "family": "F. 复古年代",
+  "kind": "style",
+  "look": "帘纹旧纸上的讽刺版画：起伏刻线、漫画式群像，鲜亮水彩刷得溢出线外",
+  "signature": "全幅群像定格两秒；急推到一处笑点；横滑到旁观小动物；手写气泡弹出；水彩溢出线外",
+  "fits": "行业吐槽、荒诞现象、消费观察、评论短片",
+  "implementation": "Canvas 2D 分版：线版加偏移水彩版；`gn:speech-bubble-reveal` `gn:hatch-fill` `gn:push-in`；群像需素材；近亲 `vintage-engraving`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:speech-bubble-reveal",
+    "gn:hatch-fill",
+    "gn:push-in"
+  ],
+  "spec": {
+    "palette": [
+      "#e9dcc0",
+      "#2b1c12",
+      "#b02a36",
+      "#d9a435",
+      "#f1c8a8",
+      "#5f7f9f",
+      "#4c7a55"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": "志莽行书"
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "全幅群像定格两秒",
+      "急推到一处笑点",
+      "横滑到旁观小动物",
+      "手写气泡弹出",
+      "水彩溢出线外"
+    ],
+    "forbidden": [
+      "真实人物漫画像",
+      "机械均匀排线",
+      "大片空白纸",
+      "严丝合缝的填色",
+      "脏灰色块"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一幅挤满虚构人物的场面：柜台、会议桌、广场都行，主角在中，鼻子和表情夸张，身边围着旁观者和搞笑小道具，比如打瞌睡的狗、翻倒的椅子。每幅藏 3–4 个小笑点，镜头逐个点破。一个手写气泡把话说破。只讽刺现象，不画真实人物。",
+      "material": "线色棕黑，轮廓宽约画幅 0.25%，起伏明显，背光侧加粗；排线顺形铺满，线距约 0.4%，暗部才交叉。水彩几乎铺满全幅，清透饱满，并整体偏移 0.3–0.5%，溢出线外。纸有帘纹和淡霉点，四周压版框和细刻线边框。",
+      "type": "标题用思源宋体，像版画下方的刻字题名，占高 4–6%，放在版框下缘；气泡用志莽行书，最小 3.2% 高，每个气泡不超过 12 字；图注用 Noto Serif SC。竖屏选取群像的中间一段，气泡放上方，题名压在底部。",
+      "motion": "画面基本静止，用镜头讲笑话。局部小动作 8–10fps：眨眼、摇尾、茶杯晃。气泡用 0.2 秒弹出并过冲 5%。水彩揭开时从线内向外溢 0.4 秒。急推 0.25 秒强缓出，到位后停 1–2 秒等观众反应。",
+      "camera": "全幅先停两秒，让人扫一遍。急推到第一处细节，横滑到第二处，再拉回全幅。单镜头 1.5–3 秒，节奏像讲段子，停顿比移动长。换场用下一幅版画从上方盖下，或翻开一叠版画。",
+      "narration": "吐槽句急推到主角表情；反问句弹气泡；举例句滑到旁边的小道具；包袱句拉回全幅揭示整体荒唐。评论针对现象不针对具体人和群体。不适合严肃灾难、悲伤题材和需要中立语气的报道。"
+    },
+    "concept_prompt": "一幅手工上色的 18 世纪讽刺铜版画，帘纹旧纸带淡霉点和版框压痕。场面是一间挤满虚构人物的账房：一个大鼻子掌柜高举一张长长的账单，周围一群夸张表情的旁观者探头，桌下一只狗打瞌睡，一把椅子翻倒。棕黑刻线粗细起伏，排线顺形铺满，酒红、黄铜、石板蓝的水彩清透饱满，略略溢出线外。上方一个手写气泡里只有很短的中文，光线均匀。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/satirical-etching.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/satirical-etching/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O36"
+  ]
+}

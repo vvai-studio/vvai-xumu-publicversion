@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "fog-castle-3d",
+  "name": "雾堡黑白 3D",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "深焦黑白石砌城堡，低雾贴地，湿石发亮，银灰天空，礁石浪沫与银盐颗粒",
+  "signature": "镜头慢漂靠近城垛；沿高处横移；低雾缓缓流过下部；低机位仰看主角；云后光柱隐现",
+  "fits": "悬疑叙事、历史谜题、沉思独白、未解之问",
+  "implementation": "Three.js 实例化石块加高度雾，后期黑白调色；`gn:atmospheric-depth` `hf:godrays` `gn:film-grain`；近亲 `cinematic-dark`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:atmospheric-depth",
+    "hf:godrays",
+    "gn:film-grain"
+  ],
+  "spec": {
+    "palette": [
+      "#0e0f10",
+      "#37393b",
+      "#7d8083",
+      "#b7babc",
+      "#e2e3e2",
+      "#2f6d8c"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "镜头慢漂靠近城垛",
+      "沿高处横移",
+      "低雾缓缓流过下部",
+      "低机位仰看主角",
+      "云后光柱隐现"
+    ],
+    "forbidden": [
+      "晴天硬影",
+      "平铺重复贴图",
+      "彩色光源",
+      "死白雾墙",
+      "血迹"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "海边或山巅的石砌建筑群，高塔、城垛、窄阶。深黑实体衬银灰天空，雾占下部三分之一，中景清晰，远景融到 60–70% 灰。主角小而独立，占高 12–25%，保留一种低饱和彩色，其余都是灰阶。",
+      "material": "石块逐块建模，带倒角和错缝，潮湿处颜色加深并反光。光线来自均匀云层，不见投影边界。后期高反差银调，有真黑，白不过曝。颗粒 3%，亮度闪烁 2–3%。水面用多层涌浪和细碎白沫，礁石上有雾状水气。",
+      "type": "标题思源宋体，占高 5–8%，浅灰白，字距 15–20%，放在天空或雾区；说明字 Noto Serif SC，不小于高度 3.5%。字可半隐入雾，但主体笔画不被遮。竖屏强调高塔纵深，文字落在下部雾层上。",
+      "motion": "24fps 慢动作感。雾层以每秒画幅 1–2% 流动，两层反向。浪涌周期 5–8 秒。人物动作少，站定、转身。文字随雾渐显 1 秒，渐隐 1 秒。没有快切和弹性动作，光柱强度缓慢起伏。",
+      "camera": "单镜头 5–9 秒，深焦，前后都清楚。三种走法：缓缓贴近、沿城墙顶平移、从脚下往上看。换场用雾层漫过整屏或暗石块擦过镜头。一段结束时可把镜头拉回到全景，留 1.5 秒无字。",
+      "narration": "设问句缓慢靠近城门；线索句沿城垛横移发现一处细节；转折句主角转身面向镜头；结尾留问题，让雾盖上。不适合轻快内容和数据播报。不写具体战事和立场，只用它的气氛。"
+    },
+    "concept_prompt": "海岬上一座石砌古堡的黑白画面，城墙由一块块带倒角的深色湿石砌成，表面发亮；厚重低雾贴着下部三分之一流过，塔楼上部从雾中露出，远处塔影融成中灰；天空是柔和的银灰云层，云后一处亮斑透出几道淡光柱；下方礁石上涌着多层海浪，白沫如细碎花边；低处一个披深蓝斗篷的小人影站在石阶上，是唯一的颜色，低机位仰望，深焦，银盐颗粒"
+  },
+  "gallery": {
+    "frame": "assets/gallery/fog-castle-3d.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/fog-castle-3d/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O21"
+  ]
+}

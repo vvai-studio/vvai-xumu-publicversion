@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "key": "star-network",
+  "name": "星空连线",
+  "family": "L. 诗意氛围",
+  "kind": "style",
+  "look": "靛黑夜空、冷白星点散布，细线按距离连成网，唯一一颗暖星居于网中",
+  "signature": "星点逐颗亮起；连线从暖星向外依次生长；一根线断开网络偏移；视角拉远见全网",
+  "fits": "人际关系、组织协作、生态系统、知识图谱",
+  "implementation": "Canvas 2D 节点图，弱力导向加固定种子；`gn:line-draw` `gn:ambient-particle-drift`；近亲 `particle-explainer`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:line-draw",
+    "gn:ambient-particle-drift"
+  ],
+  "spec": {
+    "palette": [
+      "#090c1f",
+      "#1d2850",
+      "#7f8fc0",
+      "#e8edfb",
+      "#f4b462"
+    ],
+    "fonts": {
+      "title": "Noto Serif SC",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "星点逐颗亮起",
+      "连线从暖星向外依次生长",
+      "一根线断开网络偏移",
+      "视角拉远见全网"
+    ],
+    "forbidden": [
+      "写实银河照片",
+      "粗箭头",
+      "流程框",
+      "彩色节点",
+      "全连接乱网"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "画面是一张有主角的关系图：暖星偏离中心约 10%，周围 30–80 颗冷星，由距离决定是否连线。图不是装饰，每颗星都能代表一个人、部门或概念，被讲到时才亮并带上短标签，其余退回背景，保持夜空的稀疏。",
+      "material": "底色靛黑带极淡的星云噪声，亮度起伏不到 4%。冷星直径 0.1–0.35% 画宽，暖星 0.8–1.2%，外晕 3 倍。连线宽 0.04–0.08%，不透明度随距离从 40% 衰减到 0。同屏连线不超过 90 根，否则网会发灰。",
+      "type": "节点标签用 Noto Sans SC，不小于画面高 2.6%，一次只亮 1–3 个标签。标题用 Noto Serif SC，占 5–7%，放在网的空旷一侧。竖屏把网改成上下纵长分布，暖星放上三分之一，标题压到底部。",
+      "motion": "连续 30fps。全体星点漂移周期 8–14 秒，幅度 0.5–1%。连线生长每根 0.4–0.7 秒，由暖星向外逐层延迟 0.15 秒。断线在 0.3 秒内变细消失，周围节点随后用 1.2 秒缓慢松开。星点闪烁幅度不超过 15%。",
+      "camera": "单镜头 6–10 秒。起手贴近暖星，只见两三颗邻居；随讲述缓慢拉远，到全网可见，缩放总量 1.5–2.5 倍。换场时沿一根连线飞向另一颗星，用 1 秒，那颗星成为新主角。",
+      "narration": "讲一个人时只亮暖星；讲关系时生长连线；讲断裂时断一根线；讲规模时拉远看全网；数字句把连线数滚成数字。不适合时间顺序的流程，也不适合严格层级的组织架构，这两类要用流程图或树状图。"
+    },
+    "concept_prompt": "深靛黑的夜空，极淡的云雾噪声，几十颗冷白星点疏密不均地散布，相邻的星之间连着发丝细的半透明淡蓝线，构成一张不规则的网；画面中偏左一颗明显更大的暖橙色星，线从它向外辐射，近处更亮，远处渐隐；右侧有一根连线中途断开，留下小段空隙；其中两颗星旁有极小的白色短标签；没有地平线和地面，纯净、安静、空阔，平面构图"
+  },
+  "gallery": {
+    "frame": "assets/gallery/star-network.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/star-network/concept.jpg"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:B4"
+  ]
+}

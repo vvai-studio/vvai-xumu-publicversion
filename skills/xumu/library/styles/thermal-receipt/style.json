@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "thermal-receipt",
+  "name": "热敏小票",
+  "family": "C. 界面与产品",
+  "kind": "style",
+  "look": "茄紫桌面、一卷灰白热敏纸从打印头长出，紫黑点阵字，锯齿撕边，蓝色印章",
+  "signature": "小票逐行打印向上长出，清单项逐条打勾，合计行加粗跳出，蓝章盖下，撕下纸条甩出画面",
+  "fits": "算账盘点、成本清单、权益对比、吐槽账单",
+  "implementation": "HTML 逐帧裁切纸条高度，字用阈值做点阵；`gn:perforated-tear` `gn:stamp-impact` `gn:stepped-motion`；近亲 `brutalist-mono`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:perforated-tear",
+    "gn:stamp-impact",
+    "gn:stepped-motion"
+  ],
+  "spec": {
+    "palette": [
+      "#4b2e4f",
+      "#332238",
+      "#f4f1e9",
+      "#2f2a38",
+      "#1f4fd1"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "小票逐行打印向上长出",
+      "清单项逐条打勾",
+      "合计行加粗跳出",
+      "蓝章盖下",
+      "撕下纸条甩出画面"
+    ],
+    "forbidden": [
+      "彩色图表",
+      "圆角卡片",
+      "渐变投影",
+      "衬线字",
+      "照片插图"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "画面底边是一台深色打印机的出纸口，一条窄长的纸从里面向上生长，占画宽 35–45%，居中。每段内容都是一张新小票：抬头、条目、虚线分隔、合计、条形码。左右的空桌面留白，只在出金句时放大。",
+      "material": "桌面深茄紫，细微布面纹 3%。纸面灰白，略带卷曲，下方有 0.4% 软阴影，上沿是锯齿撕边。字是热敏点阵，笔画有细横纹，约每画高 0.1% 一条，局部淡化。虚线 0.1% 粗。整张纸唯一的彩色是蓝章，盖印面积不超过纸的 15%。",
+      "type": "条目用 Noto Sans SC，等宽排列，左名右价，不低于 2.8%。大标题和合计用思源黑体 Heavy，不低于 6%，像加粗打印。小票一行不超过 16 字。竖屏是原生比例：纸宽可到 70%，字号放大到 3.4%，打印机仍在底边。",
+      "motion": "纸按行上升，每行 0.12 秒，阶梯式，不做平滑，配打印声；纸身轻微抖动 0.1%。打勾一笔 0.1 秒。合计行停 0.4 秒再打出。印章 3 帧砸下，纸晃一次。撕纸 0.25 秒，沿锯齿线向一侧甩出。15–24fps 更像机器。",
+      "camera": "固定俯视，纸长过画面后整张向上滚动，画面跟着打印头。单张小票 5–10 秒。换场就是撕掉旧票，打印新票。需要强调一行时推近 1.5 倍，放大到字缘的点阵也看得清。片尾一整条长票从上滚落，收束全部账目。",
+      "narration": "“算一笔账”句开始打印；列举句一行一项；数字句对齐右栏；转折句插入一行优惠或负数；结论句打出合计并盖章。吐槽和反讽最合适，一本正经地列出荒唐条目。不适合情绪浓重的内容，也不适合需要图片的讲解。"
+    },
+    "concept_prompt": "俯视一张深茄紫色桌面，底边是一台深色小型打印机的出纸口，一条窄长的灰白热敏纸从里面向上伸出，略微卷曲，投下薄薄阴影。纸上是紫黑色点阵中文和数字，左名右价，几条虚线分隔，下方一行粗大的“合计”，再下是一段条形码。纸的上沿是锯齿撕边，一枚蓝色圆形印章歪斜地盖在合计旁。桌面留白很多，顶光柔和，纸张纤维和打印细横纹清楚可见。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/thermal-receipt.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/thermal-receipt/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:X15"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "underwater-caustics-3d",
+  "name": "水下焦散",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "青绿深水里焦散光网滑过物体，光柱向下探入，气泡微粒悬浮，一盏大暖灯",
+  "signature": "焦散光网滑过主体；光柱斜探入水；气泡上升带出文字；仰看水面慢推；暖灯亮起点题",
+  "fits": "科学科普、潜意识话题、情绪独白、沉浸式开场",
+  "implementation": "Three.js 投影动态焦散贴图加高度雾；`gn:caustic-ripples` `gn:water-refraction` `gn:ambient-particle-drift`；近亲 `liquid`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:caustic-ripples",
+    "gn:water-refraction",
+    "gn:ambient-particle-drift"
+  ],
+  "spec": {
+    "palette": [
+      "#06201f",
+      "#14514c",
+      "#4fa89a",
+      "#a6e0d0",
+      "#e6a94a",
+      "#2fd6d0"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "思源黑体",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "焦散光网滑过主体",
+      "光柱斜探入水",
+      "气泡上升带出文字",
+      "仰看水面慢推",
+      "暖灯亮起点题"
+    ],
+    "forbidden": [
+      "平板水面",
+      "溺水挣扎",
+      "血色水团",
+      "硬边投影",
+      "满屏暖色"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "把主题沉到水里：一间淹没的书房、一段沉没的长廊或一台静置的机器，都可以。主体占高约 40–50%，偏向光源一侧，四边压暗。讲解物可以悬浮，像被水托起。至少留一处大暖灯，约画幅宽 10%。",
+      "material": "青绿占绝对主导，红色随距离最先消失。焦散亮格约画幅宽 4–6%，只投在近处表面。雾色随深度变暗，能见距离短。气泡大小差 5 倍，微粒密度低。暖金面积不超过 12%，另加少量青色荧光点。颗粒 3%。",
+      "type": "标题思源宋体，占高 6–9%，浅青白色，随水波轻微折射，扰动幅度不超过字高 3%；说明字思源黑体，不小于高度 3.6%，不做扭曲。竖屏顺着光柱竖向构图，水面放顶部，文字放光柱旁暗区。",
+      "motion": "所有运动放慢：物体漂移周期 6–10 秒，缓入缓出。焦散循环不重复，流速每秒约画幅 2%。气泡上升每秒约画幅高 5–8%。文字随一串气泡上浮到位，1 秒内稳定。没有急停，也没有弹跳。",
+      "camera": "单镜头 4–8 秒。招牌是低机位向上看水面的慢推，推进不超过 10%。常用焦点转移，从前景气泡拉到主体。换场用气泡群或一团暗水掠过，或者升出水面闪白。整段保持 1 到 2 个主要深度。",
+      "narration": "沉思句慢推仰看；原理句让光网沿结构滑过，当作指示；转折句暖灯亮起；数字句写在气泡群里。声音要闷一点，配低通音乐。不适合快节奏带货和密集表格，长段落小字在水波里读不清。"
+    },
+    "concept_prompt": "一间沉在水下的旧书房，低机位向上望，一张木书桌和几把椅子静静立在沙底，青绿色水体包围一切；水面在顶部泛着波纹，强光从上方穿下形成扇形光柱，流动的焦散亮网爬过桌面和书脊；一盏老式台灯仍亮着暖金色光，照亮周围的一团水，是画面唯一的暖色；一串大小不等的气泡缓缓上升，四角压暗，浅景深，平滑材质，细颗粒"
+  },
+  "gallery": {
+    "frame": "assets/gallery/underwater-caustics-3d.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/underwater-caustics-3d/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O90"
+  ]
+}

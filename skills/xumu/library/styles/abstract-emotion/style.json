@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "abstract-emotion",
+  "name": "抽象情绪",
+  "family": "L. 诗意氛围",
+  "kind": "style",
+  "look": "单色场上几何形与文字互相挤压，颜色由一种状态漂向另一种，没有人物和物件",
+  "signature": "形状挤压文字；色场突然翻转；碎形积聚成压迫；字被撕开又重组；节奏由乱到稳",
+  "fits": "焦虑、恐惧、内耗、认知转变、片头情绪定调",
+  "implementation": "SVG 或 Canvas 2D 形变加逐字控制；`gn:shape-morph` `gn:kinetic-beats` `gn:wave-warp`；近亲 `morph`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:shape-morph",
+    "gn:kinetic-beats",
+    "gn:wave-warp"
+  ],
+  "spec": {
+    "palette": [
+      "#171717",
+      "#e8e3da",
+      "#d7402b",
+      "#2a4bd0",
+      "#f0c63a"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": "志莽行书"
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "形状挤压文字",
+      "色场突然翻转",
+      "碎形积聚成压迫",
+      "字被撕开又重组",
+      "节奏由乱到稳"
+    ],
+    "forbidden": [
+      "具象人物",
+      "表情符号",
+      "写实照片",
+      "图表坐标",
+      "渐变光晕"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "每段只有一个心理状态，用三件东西演：背景色场、一组形状、一个词。形状不比喻具体物，而是表现力：压下来、围过来、裂开、松开。开头和结尾是两种明确不同的状态，中间要看得见过程，段落长度 8–20 秒。",
+      "material": "底色全平，不加纹理或仅 1% 颗粒。一段内只用 2–3 色：一个场色、一个形状色、一个强调色。形状边缘锐利，尺寸差距要大，最大形占画面 60% 以上，最小形不足 1%。段与段之间可完全换色，形成情绪切换。",
+      "type": "关键词用思源黑体 Black，占画面高 12–30%，它就是图形，可被压扁、切开、重复。少量手写用志莽行书，只作破格的一笔。辅助字不小于 3.5%。竖屏把压迫方向改成上下，关键词竖排或拆成两行。",
+      "motion": "主动作 12–24fps 可变：焦虑段高频小幅颤动，平静段 2–3 秒长缓动。挤压动作 0.3–0.5 秒，带 10% 的形变。关键拍点硬切反色。末段要减速，把振幅收到前段 20% 以下，让观众感到状态变了。",
+      "camera": "镜头不移动，运动全交给形状。单镜头 1–3 秒快切，或一个 8–15 秒长镜连续变形，两种节奏不混用。换场用形状扩大占满全屏成为下一色场，或一个形状的负形吃掉上一画面。",
+      "narration": "描述感受时形状逼近；自问句让词重复堆叠；领悟句让压迫松开、留白变大；结论句换成平静色场。数字可变成不断增长的压迫数量。不适合事实讲解和具体流程，也要避开重度心理创伤表述，不做闪屏，防止不适。"
+    },
+    "concept_prompt": "没有任何具体人和物的抽象画面：深靛蓝底上，一大片暖橙色块从右下斜压向左上，两色交界处碎裂成数百片细小的三角形色屑，向左上飞散，一条细长的白色圆弧从碎屑中穿过并收成一个亮点。色块是平整的哑光印刷质感，带极细的纸纹和颗粒，边缘锐利，构图有强烈的方向感和张力，右下角一行很小的白字“靠近”"
+  },
+  "gallery": {
+    "frame": "assets/gallery/abstract-emotion.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/abstract-emotion/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:M10"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "backstage-oner-3d",
+  "name": "后台长镜头",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "狭窄旧走廊，暗红墙裙配烟黄灰墙，头顶管线，钨丝灯与闪烁日光灯交替",
+  "signature": "倒退领着主体前行；甩向门洞露出下一场；主体擦过镜头遮挡转场；转身跟上；冷暖灯光交替扫过",
+  "fits": "幕后揭秘、项目过程、一天工作流、连续叙事",
+  "implementation": "Three.js 走廊分段复用，样条镜头一镜走完；`gn:camera-flythrough` `gn:animated-lighting` `gn:whip-pan`；近亲 `opuscar-backrooms`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:camera-flythrough",
+    "gn:animated-lighting",
+    "gn:whip-pan"
+  ],
+  "spec": {
+    "palette": [
+      "#5f2a22",
+      "#c8b488",
+      "#e7a04e",
+      "#a9d0c8",
+      "#d92d1f",
+      "#34302c"
+    ],
+    "fonts": {
+      "title": "Noto Sans SC",
+      "body": "思源黑体",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "倒退领着主体前行",
+      "甩向门洞露出下一场",
+      "主体擦过镜头遮挡转场",
+      "转身跟上",
+      "冷暖灯光交替扫过"
+    ],
+    "forbidden": [
+      "固定三脚架机位",
+      "空白墙面",
+      "重复平铺贴图",
+      "死黑暗部",
+      "画面分屏"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一条不断延伸的室内通道把所有内容串起来：每扇门后是一个要讲的点，墙上的告示、门牌、白板承载文字。下部三分之一是暗红漆面，上方是有水渍的旧灰泥，头顶管道和线槽。主体走在画面中央，占高 40–60%。",
+      "material": "光只来自画内灯具，每 2–3 米一盏，暖钨丝灯为主，夹一根闪烁的冷日光灯和一盏红色指示灯。曝光居中，两灯之间也保持中灰以上，脚下始终可辨。环境光遮蔽柔和，辉光低，颗粒 3%。",
+      "type": "文字进场景：门牌、告示、白板手写，用透视贴面，Noto Sans SC，占高不小于 4%，可读内容放在灯下。必要时叠一行思源黑体字幕，不小于高度 3.5%。竖屏走廊天然适合，主体居中，文字贴在两侧墙面。",
+      "motion": "24fps，全程一条连续样条，无剪辑点。手持感用低频噪声，旋转约 ±1 度，位移不超过画幅 0.5%。日光灯闪烁频率不规则，每 2–4 秒一次。门开合 0.6–0.8 秒，主体步频稳定，不原地踏步。",
+      "camera": "一镜到底，20–40 秒，等效 18–24mm。次序自由组合：倒退领路、甩向门洞、主体擦过镜头、转身跟随。隐形接缝藏在黑门洞或擦镜瞬间。段尾推开一扇发亮的门，用强光白场收住。",
+      "narration": "每句旁白绑一个走位点：新话题推开一扇门；举例句甩向墙上告示；转折句主体转身，镜头绕到正面；结论句走向亮门。台词必须提前算准时长。不适合改稿频繁的项目，也不适合多线并列的内容。"
+    },
+    "concept_prompt": "一条狭窄的剧场后台走廊，下部三分之一是剥落的暗红漆面，上方是发黄带水渍的灰泥墙，头顶排着水管和线槽；铁丝笼里的钨丝灯投下暖光，远处一根日光灯发冷青色，一盏红色小灯亮着，尽头半开的门透出白光；一个穿深色外套的人影背对镜头走向前方，略有运动模糊；墙上钉着几张告示和一块写着“二号门”的牌子；广角，轻微倾斜的手持感，细颗粒"
+  },
+  "gallery": {
+    "frame": "assets/gallery/backstage-oner-3d.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/backstage-oner-3d/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O87"
+  ]
+}

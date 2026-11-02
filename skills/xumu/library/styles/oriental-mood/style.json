@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "oriental-mood",
+  "name": "东方意境",
+  "family": "H. 东方传统",
+  "kind": "style",
+  "look": "青灰夜色一轮薄月，江面碎银微光，楼阁远山淡成几层，大片留白",
+  "signature": "山水层次缓慢错动；月光在水面碎开摇动；薄雾横向漂过；诗句逐字浮出后淡去",
+  "fits": "心境独白、文化随笔、片头、诗词解读",
+  "implementation": "WebGL 水面加多层 Canvas 远景；`gn:deep-parallax` `gn:water-refraction` `gn:atmospheric-depth`；近亲 `opuscar-ink-wash`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:deep-parallax",
+    "gn:water-refraction",
+    "gn:atmospheric-depth"
+  ],
+  "spec": {
+    "palette": [
+      "#141c24",
+      "#2f3f4c",
+      "#6f8290",
+      "#c9d2d2",
+      "#e8dfc4",
+      "#b06a3c"
+    ],
+    "fonts": {
+      "title": "龙藏体",
+      "body": "霞鹜文楷",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "山水层次缓慢错动",
+      "月光在水面碎开摇动",
+      "薄雾横向漂过",
+      "诗句逐字浮出后淡去"
+    ],
+    "forbidden": [
+      "游客人群",
+      "现代招牌",
+      "高饱和霞光",
+      "粒子特效",
+      "信息图表"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一幅横向展开的古典夜景：天空占 50–65%，一轮薄月偏在黄金分割点，远山 3–4 层，中景一座楼阁只露剪影和一两点灯火，水面占下部 25%。没有人物特写，至多一个极小的背影，占高不超过 3%。",
+      "material": "整体青灰低饱和，明度集中在暗部，月与水光是最亮处，不过曝。远山每退一层明度抬高约 12%。水面用噪声法线做碎光，光斑小于画幅 0.5%。暖色只给灯火，面积不超过 1%。叠 2% 细颗粒。",
+      "type": "诗句竖排，龙藏体，占高 4–6%，字距放到 30–50%，放在天空留白里；注解霞鹜文楷，不小于高度 3%。竖屏把水面压到下部 20%，月移到上三分之一，诗句居中竖排，单列不超过 12 字。",
+      "motion": "60 帧时间轴上的慢运动：视差总量不超过画幅 4%，雾层每 10 秒移动画幅 3%。水光循环周期 3–5 秒。文字每字淡入 0.4 秒，字间隔 0.15 秒，停够后整体淡出 0.8 秒。没有弹性和过冲。",
+      "camera": "单镜头 6–12 秒，只做极慢的横移或推近，幅度不超过画幅 6%。换场用雾层漫过整屏，或月影在水中对位切到下一景。全段最多 3 个景，段落结尾留 1.5 秒无字空镜。",
+      "narration": "抒情句对应诗句浮现；思辨句镜头停住，只留水光；回忆句让雾漫过换景；收尾句配一盏灯亮起。语速要慢，句间留气口。不适合数字、榜单、强节奏带货，也撑不起超过 40 秒的连续信息讲解。"
+    },
+    "concept_prompt": "深夜的江面横贯画面下部，水光是细碎的银白小点，随波排成一条竖向光带；中景一座三层飞檐楼阁只剩青黑剪影，窗内一点暖橙灯火；后方四层远山依次变淡，融进青灰色夜雾；天空占画面六成，右上方一轮偏薄的月亮带极淡光晕，几缕横云从月前掠过；左侧留白处竖排一列淡米色小字“江月”，低饱和，宁静，细颗粒，无人物"
+  },
+  "gallery": {
+    "frame": "assets/gallery/oriental-mood.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/oriental-mood/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:M30"
+  ]
+}

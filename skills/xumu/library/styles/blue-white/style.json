@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "blue-white",
+  "name": "青花",
+  "family": "H. 东方传统",
+  "kind": "style",
+  "look": "温润白釉上单一钴蓝的深浅分水，缠枝纹满铺边带，开光框内绘事，釉面微反光",
+  "signature": "瓷坯在转台缓转；笔锋勾出缠枝；蓝色分水洇开；开光框展开内容；釉光扫过收住",
+  "fits": "器物工艺、品牌传承、海上贸易、东方美学",
+  "implementation": "Three.js 器形转台贴图；`gn:object-turntable` `gn:branch-growth` `gn:ink-bleed`；纹样程序生成；近亲 `opuscar-ink-wash`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:object-turntable",
+    "gn:branch-growth",
+    "gn:ink-bleed"
+  ],
+  "spec": {
+    "palette": [
+      "#f4f5f0",
+      "#a9bedd",
+      "#5b7fbf",
+      "#1c3f8f",
+      "#0f2350"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": "霞鹜文楷"
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "瓷坯在转台缓转",
+      "笔锋勾出缠枝",
+      "蓝色分水洇开",
+      "开光框展开内容",
+      "釉光扫过收住"
+    ],
+    "forbidden": [
+      "第二种色相",
+      "金色描边",
+      "彩色渐变",
+      "粗糙纸纹",
+      "投影过重的卡片"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "画面是一件瓷器或一张铺开的纹样。两种构图：器物法把瓶或盘放在素白台面，占画面 55–70%，内容画在器身开光框内；纹样法把缠枝铺满四周边带，中央留白放字。信息图也转成纹样：流程用缠枝连接，分类用花头。",
+      "material": "只有一种钴蓝，分 4–5 级浓淡，用分水表现，边缘微晕约画幅 0.15%，局部积成深蓝小斑。釉面白中微青，带一层柔和高光，反射亮度起伏约 8%。线宽 0.12–0.3%，粗细有笔锋。开裂和杂质都不要，保持干净温润。",
+      "type": "标题用思源宋体 Heavy，钴蓝色，占高 6–10%，可落在开光框内；说明用 Noto Serif SC，最小 3% 高；手写款识用霞鹜文楷，像底款方框竖排。竖屏选竖长瓶形，内容沿瓶身自上而下分三段开光，下缘放说明。",
+      "motion": "30fps，平滑克制。转台每 8–12 秒一圈，随旁白减速停在开光框正面。缠枝沿路径生长，每段 0.6–1 秒，末端长出花头。分水洇开 0.5 秒。开光框像窗一样从中线向两侧展开 0.5 秒。釉光 2 秒扫过一次。",
+      "camera": "单镜头 4–7 秒，低位平视器物，慢慢环绕 10–20°。换场用器物转到另一面，或镜头推进纹样，蓝线放大后变成下一场景的线条。微距段落贴近釉面，看蓝色晕开，节奏要静。",
+      "narration": "分类句长出花头；流程句沿缠枝走一段；转折句把器物转到背面；结论句停在开光框正面并扫釉光。单色限制下，强调靠浓淡而非换色。不适合需要红绿语义的数据、强情绪内容和快切，只有一种色相，不要塞太多字。"
+    },
+    "concept_prompt": "素白台面上一只青花瓷梅瓶，占画面六成高，白釉微青，温润有柔和高光。瓶身满绘单一钴蓝：肩部和足部是缠枝花纹边带，中段一个菱形开光框内画着小小的帆船和远山，分水有四五级浓淡，边缘微微晕开，局部积蓝成深点。背景极素净的灰白，柔和窗光从左上方来，瓶身一道细长反光，框内有很短的中文款识，构图居中，安静洁净。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/blue-white.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/blue-white/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:Z9"
+  ]
+}

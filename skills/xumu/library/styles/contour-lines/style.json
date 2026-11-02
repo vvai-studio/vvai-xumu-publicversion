@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "contour-lines",
+  "name": "心里的等高线",
+  "family": "L. 诗意氛围",
+  "kind": "style",
+  "look": "暖灰纸色底、细墨绿等高线铺满全屏并缓慢起伏，峰顶处线条收紧，一点朱红标记高点",
+  "signature": "等高线缓慢隆起成峰；线距收紧显出陡坡；朱红标记沿路径攀升；地形抹平换段",
+  "fits": "情绪曲线、起伏历程、增长高低点、心理话题",
+  "implementation": "Canvas 2D 噪声高度场逐帧提取等值线；`gn:wave-warp` `gn:line-draw` `gn:map-route-animation`；近亲 `line-art`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:wave-warp",
+    "gn:line-draw",
+    "gn:map-route-animation"
+  ],
+  "spec": {
+    "palette": [
+      "#e7e2d4",
+      "#2f4a3e",
+      "#7f9184",
+      "#c4493a",
+      "#b9b39f"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "等高线缓慢隆起成峰",
+      "线距收紧显出陡坡",
+      "朱红标记沿路径攀升",
+      "地形抹平换段"
+    ],
+    "forbidden": [
+      "实景卫星图",
+      "彩色高程渐变",
+      "粗轮廓",
+      "三维地形渲染",
+      "指南针装饰"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "画面是一张没有地名的地图。全屏 25–50 条闭合曲线围出 2–4 个峰谷，地形就是内容：一座峰是高点，一片平缓是停滞，一处陡壁是骤变。标记点放在关键位置，配短标签。留出约 25% 的平缓区放标题。",
+      "material": "纸色底带极淡纤维纹，噪声 2%。线色墨绿，宽 0.06–0.1% 画幅，每 5 条加粗一条至 0.16%，这是计曲线。线距代表坡度，最密不小于 0.5% 画高。朱红只用于标记和路径，面积不超过 2%。",
+      "type": "标题用思源宋体 SemiBold，占画面高 6–9%；标注字 Noto Sans SC，不小于 2.6%，沿线旁水平放置，背后衬纸色小块以遮线。竖屏把峰改成纵向山脊，路径自下而上，标题放顶部，标注减到 3 条以内。",
+      "motion": "主体 24fps 连续重算。起伏极慢，一次隆起 3–5 秒，高度场每秒变化不超 8%。路径画出每段 1–1.5 秒，缓入缓出。标记到位后涟漪一圈 0.5 秒。线条不抖不闪，等值线拓扑突变要用时间平滑盖住。",
+      "camera": "俯视不变，只做平移和缓推，每段位移不超过画幅 15%。单镜头 5–9 秒。换段时高度场在 1.5 秒内抹平成几条平行线，再隆起新地形；章节之间可从近处拉到全图，看见整段路线。",
+      "narration": "讲高峰时隆起；讲低谷时凹陷成闭合圈；讲骤变时线距收紧；讲历程时路径走过；数字句在峰顶标一个数。不适合需要精确读数的曲线图，也不适合瞬间爆发的情绪，它的语气永远是缓慢的。"
+    },
+    "concept_prompt": "俯视平铺的一张暖灰色纸，上面密布墨绿色细等高线，围出两座形状不规则的山峰和一片平缓地带，靠近峰顶线条收紧成同心闭合圈，每隔几条有一条略粗；一条朱红色细路径从左下平地蜿蜒爬向右上的主峰，顶端一枚小朱红圆点，旁边极小的中文标注「最高点」；纸面有淡淡纤维纹，均匀的柔和顶光，没有阴影，没有色块填充，精确安静"
+  },
+  "gallery": {
+    "frame": "assets/gallery/contour-lines.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/contour-lines/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:C3"
+  ]
+}

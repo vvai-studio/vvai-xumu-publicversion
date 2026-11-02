@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "movie-trailer",
+  "name": "电影预告片",
+  "family": "O. 结构手法",
+  "kind": "style",
+  "look": "2.39:1 遮幅、近黑暖褐天幕、漂浮尘埃、宽字距居中字卡、光晕呼吸",
+  "signature": "字卡从暗处亮起；经黑场换下一张；数字踩低频重音涌现；闪光后片名落定；淡出留日期",
+  "fits": "下期预告、频道宣传、产品预热、大事件开场",
+  "implementation": "HTML 逐帧或 WebGL 光晕；`gn:ambient-particle-drift` `hf:blur-in` `gn:film-grain`；音乐需授权；近亲 `cinematic-dark`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:ambient-particle-drift",
+    "hf:blur-in",
+    "gn:film-grain"
+  ],
+  "spec": {
+    "palette": [
+      "#120a07",
+      "#2a1a12",
+      "#e9dcc7",
+      "#d9a25a",
+      "#6e5a48"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "思源黑体",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "字卡从暗处亮起",
+      "经黑场换下一张",
+      "数字踩低频重音涌现",
+      "闪光后片名落定",
+      "淡出留日期"
+    ],
+    "forbidden": [
+      "花哨转场",
+      "满屏字幕",
+      "弹跳动效",
+      "亮底色",
+      "界面卡片"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "全片 30–60 秒，由 6–10 张居中字卡和少量画面组成。遮幅把画面切成 2.39:1，上下黑边恒定。结构是四段：一句低声提问，几句渐快的铺垫，一拍静默，片名加日期。每个想法独占一屏。",
+      "material": "底色近黑偏暖，径向暗角中心亮度 12%，边缘 3%。尘埃 40–80 粒，大小不一，亮度 5–15%，每秒移动 0.5% 画幅。字卡自带柔光，溢光半径 1.2%。颗粒 ±3%。片名闪光只用一次，色温偏琥珀。",
+      "type": "字卡思源宋体或思源黑体 Light，字高 4–7%，字距放宽 0.2–0.4 字，居中，不超过 12 字。片名字高 9–13%。全片最小 3% 高。竖屏放不下遮幅时，改成 16:9 窗口居中，字卡放窗口内，上下全黑。",
+      "motion": "24fps。字卡 0.8 秒由虚到清亮起，停留 1.5–2.5 秒，再 0.6 秒退到黑。铺垫段间隔逐张缩短，从 3 秒降到 1.2 秒。片名前静默 0.5–1 秒，闪光 6 帧冲到峰值再回落。结尾 2 秒淡出。",
+      "camera": "字卡屏缓慢推近 3–5%，全片不硬切，黑场是唯一连接词。画面屏 1.5–3 秒，取大景别或物件微距，不讲完整情节。声音：开头只有低鸣，中段低频重音渐强，片名一记重击，末尾衰减。",
+      "narration": "不走全程解说，最多 3–5 句低声旁白。疑问句开场；数字句踩重音；「这一次」类转折句接静默；片名后只说日期。把长稿提炼成几个悬念点。不适合教程和干货细讲，预告只给期待不给答案。"
+    },
+    "concept_prompt": "超宽银幕遮幅画面，上下两条纯黑边，中间是近黑的暖褐色天幕，中心略亮、四角更暗，细小的尘埃颗粒在微光里缓缓漂浮，大小不一，有的虚焦；正中央一行宽字距的米白中文「十一月」，字周围有柔和的光晕，一丝琥珀色横向镜头光从文字后方掠过；画面没有其他元素，细腻胶片颗粒，低调安静，克制而昂贵，像片名出现前的最后一张字卡"
+  },
+  "gallery": {
+    "frame": "assets/gallery/movie-trailer.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/movie-trailer/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:X30"
+  ]
+}

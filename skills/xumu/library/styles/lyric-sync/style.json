@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "key": "lyric-sync",
+  "name": "歌词卡点",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "午夜蓝底、极淡网格、居中一张图解、底部一行逐词点亮的唱词",
+  "signature": "重拍逐词点亮；每行唱词换一张图解；光点沿连线跑过；副歌回到同图换强调色；顶部进度线走拍",
+  "fits": "配乐段、片尾歌、把知识点唱出来的解说",
+  "implementation": "HTML 逐帧，按节拍表驱动；`gn:kinetic-beats` `hf:per-word-rise` `gn:dashed-flow`；近亲 `kinetic-type`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:kinetic-beats",
+    "hf:per-word-rise",
+    "gn:dashed-flow"
+  ],
+  "spec": {
+    "palette": [
+      "#0b1226",
+      "#1c2747",
+      "#dfe7ff",
+      "#2ee6d6",
+      "#ff5fa2",
+      "#ffd84d"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "重拍逐词点亮",
+      "每行唱词换一张图解",
+      "光点沿连线跑过",
+      "副歌回到同图换强调色",
+      "顶部进度线走拍"
+    ],
+    "forbidden": [
+      "卡拉 OK 彩球",
+      "实拍舞台",
+      "一屏多行唱词",
+      "满屏闪烁",
+      "脱离节拍的缓动"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "版面固定三层：顶部窄条放段落名和进度线；中部 60% 放一张图解，节点框、连线、数值或柱条都可以；底部放当前唱词。每行词只配一张图，图解把这句话的意思讲清楚，而不是配情绪画面。",
+      "material": "底色午夜蓝，叠一层间距约 4% 画高的网格，线亮度只比底高 6–8%，四角暗角 15%。图解线宽约 0.2% 画高。主歌用一种强调色，副歌每次回来换一种，三种强调色轮流用，同一时刻只亮一种。",
+      "type": "唱词用思源黑体 Bold，字高 5–7%，未唱到的字亮度 35%，唱到的转全亮。段落名用 Noto Sans SC，不低于 2.4% 高。竖屏把图解放中上，唱词放下方安全区之上，改两行，单行不超过 11 字。",
+      "motion": "动作吸附到节拍表，误差不超过 1 帧。30fps。字在起音帧点亮，无淡入；图解元素在强拍弹出，用 3 帧过冲 4%。光点沿连线每小节走完一段。主歌动作疏，副歌密一倍。没有音乐时按口播重音做节拍。",
+      "camera": "镜头不动，图解自己变化。一行词一个画面，2–4 秒，换行在小节线上硬切。副歌沿用同一张图，只换强调色并多加一层元素。桥段可把全图缩到 60%，留出空场作呼吸，进入尾声时图解逐层收回。",
+      "narration": "定义句配节点图；数字句配大数值加进度条；流程句配带光点的连线；副歌重复核心论点。歌词必须先按字对齐时间轴，才能动手。不适合没有节奏的长段口播，也不适合复杂图表，单图元素超过 6 个就跟不上拍。"
+    },
+    "concept_prompt": "午夜蓝底上铺着极淡的方格网，四角微暗。画面中央是三个细线方框节点，由一根线串起，一个青绿色光点正沿线移动，右侧节点旁有一根发亮的小柱条。顶部一条细进度线走到三分之一处，左上角是很小的段落标签“副歌”。底部一道细线下方有一行白色黑体唱词，前半句全亮，后半句暗淡。干净的矢量线条，平面正视，没有人物和实物"
+  },
+  "gallery": {
+    "frame": "assets/gallery/lyric-sync.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/lyric-sync/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:M25",
+    "code-animation-prompts:X4"
+  ]
+}

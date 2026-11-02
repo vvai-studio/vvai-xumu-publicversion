@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "eastern-cyber",
+  "name": "东方赛博",
+  "family": "H. 东方传统",
+  "kind": "style",
+  "look": "宣纸色天空悬朱红大日，飞檐楼阁挂霓虹竖招，淡墨未来塔群，倒影如墨晕散",
+  "signature": "霓虹竖招逐笔点亮；全息圆环绕檐顶旋转；淡墨塔群层层显出；灯串沿缆线亮起；水中倒影缓慢晕开",
+  "fits": "中国科技、新国货、未来城市、传统与算法",
+  "implementation": "分层生图加 Canvas 合成，霓虹与全息用 WebGL 叠加，需素材；`gn:neon-sign-flicker` `gn:layer-separation` `gn:ink-bleed`；近亲 `cyber-hud`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:neon-sign-flicker",
+    "gn:layer-separation",
+    "gn:ink-bleed"
+  ],
+  "spec": {
+    "palette": [
+      "#e9dfca",
+      "#c92f26",
+      "#2b2a30",
+      "#18c7c0",
+      "#ff4f7a",
+      "#6f7478"
+    ],
+    "fonts": {
+      "title": "龙藏体",
+      "body": "思源黑体",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "霓虹竖招逐笔点亮",
+      "全息圆环绕檐顶旋转",
+      "淡墨塔群层层显出",
+      "灯串沿缆线亮起",
+      "水中倒影缓慢晕开"
+    ],
+    "forbidden": [
+      "深蓝雨夜",
+      "满屏紫色霓虹",
+      "日文招牌",
+      "枪械机甲",
+      "数据面板堆叠"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "把水墨山水的构图换成未来城：前景一座传统建筑占画面 35–45%，中景缆线和灯串，远景淡墨塔楼和山体，上部保留 30% 纸色天空和一枚大日。旁白的关键词写成霓虹竖招挂在建筑上。",
+      "material": "底层是宣纸纹理的淡墨，明度偏高，这是与常见暗夜赛博的分界。霓虹只占画面 5–8%，发光半径不超过画幅 1%。全息用青色半透明线，线宽 0.2%。朱红日面平涂无渐变，水面倒影用墨晕扰动。",
+      "type": "招牌字用龙藏体竖排，占高 8–14%，霓虹描边宽 0.3%；说明文字思源黑体，不小于高度 3.2%，放在全息小牌上。竖屏让楼阁居中贯穿上下，日移到顶部，竖招沿建筑左右各一列。",
+      "motion": "24fps。霓虹点亮按笔画次序，每笔 3 帧，伴 1–2 次闪烁。全息圆环匀速旋转，每秒 20–30 度。灯串从左到右亮起，相邻灯间隔 2 帧。水墨层保持缓慢渗化，形成冷电光与慢水墨的速度差。",
+      "camera": "单镜头 3–5 秒，横向卷轴移动为主，速度约每秒画幅 3%，分层视差 3–4 层。换场用墨迹晕开盖住霓虹，或让一块全息屏推到满画。开场可从朱红大日拉开，见全城。",
+      "narration": "关键词句点亮一块竖招；传统对照新技术时，用水墨层与全息层分别承载；数字句浮在全息环上；结论句让全城灯串一起亮。不适合需要冷静中立的财经分析，也不宜放长段正文，招牌字每块最多 4 字。"
+    },
+    "concept_prompt": "米黄宣纸色的天空占上部三成，一枚平涂的朱红大日悬在右上方；水边一座三层钟楼飞檐层叠，木构件挂着青色和粉色霓虹竖招，写着“茶”“渡”，檐顶套着一圈青色全息细环；身后是淡墨晕染的高耸未来塔群与山影，一列悬空电车沿细轨穿过；缆线上垂着成串红灯；下方水面倒映楼影，倒影边缘化成墨晕；明亮高调，纸纹可见，没有夜色"
+  },
+  "gallery": {
+    "frame": "assets/gallery/eastern-cyber.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/eastern-cyber/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:R6"
+  ]
+}

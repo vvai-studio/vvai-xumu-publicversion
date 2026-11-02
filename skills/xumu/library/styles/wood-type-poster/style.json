@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "wood-type-poster",
+  "name": "木活字海报",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "米黄纸、三色凸版、满是木纹的粗字实地与刻刀线人物，套印错位",
+  "signature": "木字块逐行压印；红蓝黑三版依次套上；错位抖动后定住；实地木纹显出；横幅滑入托字",
+  "fits": "公开宣言、社区活动、地方故事、节庆开场",
+  "implementation": "Canvas 2D 分版加木纹贴图，人物可生图 + 分层；`gn:stamp-impact` `gn:stepped-motion` `gn:film-grain`；近亲 `opuscar-woodcut`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:stamp-impact",
+    "gn:stepped-motion",
+    "gn:film-grain"
+  ],
+  "spec": {
+    "palette": [
+      "#ece0c4",
+      "#1d4688",
+      "#c42a24",
+      "#1c191b",
+      "#d8752f"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "思源宋体",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "木字块逐行压印",
+      "红蓝黑三版依次套上",
+      "错位抖动后定住",
+      "实地木纹显出",
+      "横幅滑入托字"
+    ],
+    "forbidden": [
+      "平滑渐变",
+      "完全对齐的套色",
+      "细小灰调",
+      "发光效果",
+      "矢量干净边"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一张海报占满画面：图占绝大部分，蓝色担任远景和暗面，红色担任暖面和条带，黑色担任线条和文字。文字不单独成栏，而是长在图里的旗幅或牌匾上，字和图共用一块版。主体只用剪影或刻刀轮廓，形状简单，一眼认出。",
+      "material": "每色一版，错开 0.2–0.4% 画幅。实地有木纹和针孔缺墨，边缘挤墨。下层被上层挖空，只有网点处叠印。粗网点约画宽 0.5%，不超过画面三成。主角可多加一块橙色专色，全片只用一次。",
+      "type": "标题用思源黑体 Heavy，加粗外扩 0.2%，字高约 10–16%，字面叠木纹，错一层影。正文用思源宋体，不低于 3.2% 高。竖屏把横幅改成上下两条，主图放中间，每条不超过 5 字，字高约 8%。",
+      "motion": "12fps 量化。三版按蓝、红、黑顺序落下，相邻 0.3 秒，每版 2 帧。字块压印时下沉 1%，弹回。落版后错位抖动 2 帧，幅度 0.3%。木纹隔帧变化，每秒换 6 次。元素位移做成 3–4 档硬跳。",
+      "camera": "单屏 2–4 秒。镜头小幅推近或横移，不超过 8%。重点词用特写一震，时长 2 帧。换场用滚筒压过，或者新海报整张拍在旧海报上。无音乐时每 2 秒给一次轻重音，维持印刷机的机械节奏。",
+      "narration": "口号句做横幅大字；举例句切人物刻线图；数字句做成一个独立的木字块；号召句三版依次盖下；对立句左右蓝红分色。不适合精细数据和长段说明，主体如果层次过多，分版后会糊，要先简化造型。"
+    },
+    "concept_prompt": "一张米黄纸上的三色凸版海报：深蓝大块天空，朱红条纹铺成地面，黑色粗轮廓勾出一个举着灯笼的人物剪影，刀刻白线和月牙形阴影清晰，他身上是一块橙色专色。上方一条飘带形横幅内印着粗壮的黑体短句，字面布满木纹和针孔缺墨，有错位的红色影。各色版错开一点，边缘挤墨，暗部有粗网点，纸面微皱，平铺俯视"
+  },
+  "gallery": {
+    "frame": "assets/gallery/wood-type-poster.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/wood-type-poster/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O22"
+  ]
+}

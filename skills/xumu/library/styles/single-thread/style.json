@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "key": "single-thread",
+  "name": "一个元素串全片",
+  "family": "O. 结构手法",
+  "kind": "style",
+  "look": "素净底色、一个高饱和小元素、连续运动轨迹、场景随它变化",
+  "signature": "小方块滑入成为标点；拉长变成柱子；滚动化作窗格；收缩回到开场原位",
+  "fits": "全片串联、多风格混搭、概念递进、品牌短片",
+  "implementation": "SVG 或 HTML 逐帧，同一元素穿场；`gn:shape-morph` `gn:motion-hierarchy` `gn:spring-overshoot`；近亲 `morph`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:shape-morph",
+    "gn:motion-hierarchy",
+    "gn:spring-overshoot"
+  ],
+  "spec": {
+    "palette": [
+      "#f5f2ea",
+      "#1b1b1d",
+      "#d63f2a",
+      "#8b8880"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "小方块滑入成为标点",
+      "拉长变成柱子",
+      "滚动化作窗格",
+      "收缩回到开场原位"
+    ],
+    "forbidden": [
+      "第二个主角元素",
+      "瞬移跳切",
+      "粒子爆炸",
+      "随机转场",
+      "渐变发光"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "先定一个线索元素：朱红小方块、一滴水、一枚硬币、一根线头，占画面 1–3%。每个场景都由它完成一件事：成为句号、柱状图的一根、窗户的一格、一个按钮。背景和图形可以换风格，线索的颜色和身份全片不变。",
+      "material": "线索元素用全片唯一的饱和色，其他图形都在中性色内。背景按场景换，亮度差控制在两档内，保证线索始终最显眼。形状变化前后面积比不超过 8 倍。运动路径可留一条 0.1% 画幅的虚线残迹，停留 0.5 秒。",
+      "type": "文字配合线索：它落到哪，字就在哪出现。思源黑体 Bold，字高 5–9%，每屏 1 句，8 个字内；说明 Noto Sans SC，最小 3% 高。字与线索保持 2% 以上间距。竖屏把路径改成上下走向，线索从上一屏底部落入下一屏顶部。",
+      "motion": "30fps。线索始终在连续运动，不隐身、不跳位，过渡 0.4–0.8 秒，ease-in-out，到位时回弹不超过 4%。变形时先压缩 2–3 帧蓄力。新场景内容比线索晚 0.1–0.2 秒跟入，让眼睛先跟着它走。",
+      "camera": "一个场景 2–4 秒，全程不硬切。相机跟随线索平移或推进，或线索穿出画面边缘后从下一场景的对应位置穿入。片尾线索回到开场位置，最后一帧与第一帧构图相同。",
+      "narration": "概念句让线索入场定身份；每个要点句给它一个新形态；数字句让它变成柱或格；结论句回到原形。写稿时先列出线索的变化表。不适合大量并列信息，也不适合同时看多组数据的段落，元素会被淹没。"
+    },
+    "concept_prompt": "一帧米白色的素净画面，左上是一行黑色粗体中文短句「一个想法」，句尾的句号是一粒朱红小方块，它正被拉长离开句子，沿一条细虚线弧形轨迹滑向右下方；轨迹末端是一组灰色柱状图，其中最高的一根柱子位置空着，等待它落入；方块在运动中略微拉伸，边角干净；平面设计排版，均匀柔光，没有阴影和纹理，大量留白，全画面只有这一处饱和红色"
+  },
+  "gallery": {
+    "frame": "assets/gallery/single-thread.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/single-thread/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:M4"
+  ]
+}

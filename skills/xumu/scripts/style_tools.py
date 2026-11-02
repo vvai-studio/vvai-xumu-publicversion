@@ -26,7 +26,8 @@ STRENGTH = {'克制': 0, '中': 1, '强': 2}
 FREEDOM = ('L0', 'L1', 'L2', 'L3')
 CUSTOM_SHARE_L2 = 0.2
 # 大类 → 默认动作档位上限（规范里可改）
-FAMILY_STRENGTH = {'A': '中', 'B': '中', 'C': '中', 'D': '强', 'E': '中', 'F': '强', 'G': '强', 'H': '中', 'I': '强', 'J': '中', 'K': '中'}
+FAMILY_STRENGTH = {'A': '中', 'B': '中', 'C': '中', 'D': '强', 'E': '中', 'F': '强', 'G': '强', 'H': '中', 'I': '强', 'J': '中', 'K': '中',
+                   'L': '克制', 'M': '克制', 'N': '中', 'O': '中'}
 
 
 def load(path):
@@ -579,6 +580,9 @@ def cmd_learn(args):
 
 def concept_prompt(spec, aspect):
     orient = '竖屏 9:16' if aspect == '9:16' else '横屏 16:9'
+    written = spec.get('spec', {}).get('concept_prompt')
+    if written:
+        return f'{written}。{orient}，像真实的视频成片截图，构图完整，无水印、无 logo、不出现真实品牌、不画人脸特写。'
     return (f'一支{spec["name"]}风格解说视频的一帧截图，{orient}。画面观感：{spec.get("look") or spec["name"]}。'
             f'正在发生的动作：{spec.get("signature") or "画面元素按节奏登场"}。内容示意：{spec.get("fits") or "知识讲解"}。'
             '像真实的视频成片截图，有少量中文标题文字"示例"，构图完整，无水印、无 logo、不出现真实品牌、不画人脸特写。')

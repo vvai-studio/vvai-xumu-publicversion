@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "illuminated-manuscript",
+  "name": "泥金手抄本",
+  "family": "M. 绘画与古典媒材",
+  "kind": "style",
+  "look": "羊皮纸页、隆起贴金、青金与朱砂、宽边藤蔓花饰、窗口式小画",
+  "signature": "金箔随光扫过闪一下；大首字母逐笔描金；边框藤蔓沿页缘生长；小画窗口推入；翻页换章",
+  "fits": "编年史、行业起源、知识谱系、长期主义叙事",
+  "implementation": "Canvas 2D 分层，金箔用高光贴图；`gn:light-sweep` `hf:svg-stroke-trace` `gn:page-turn`；小画需素材；近亲 `opuscar-stained-glass`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:light-sweep",
+    "hf:svg-stroke-trace",
+    "gn:page-turn"
+  ],
+  "spec": {
+    "palette": [
+      "#eadcbc",
+      "#2b1d12",
+      "#234fa3",
+      "#b8321c",
+      "#c9a23f",
+      "#2f6b4f"
+    ],
+    "fonts": {
+      "title": "马善政楷书",
+      "body": "霞鹜文楷",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "金箔随光扫过闪一下",
+      "大首字母逐笔描金",
+      "边框藤蔓沿页缘生长",
+      "小画窗口推入",
+      "翻页换章"
+    ],
+    "forbidden": [
+      "圣像与光环人物",
+      "宗教符号",
+      "打斗与流血场面",
+      "电子发光线条",
+      "平滑渐变底"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一屏是一页或对开两页。四周留页边，中央一扇小画窗口约占页面 45%，旁边两栏文字，角上落一个大首字母。题材只取世俗内容：农事历、星象表、动植物、城市与行会，讲 AI 也画成机械钟和工坊。",
+      "material": "羊皮纸底带毛孔与刮痕，亮度起伏 ±4%。金面积占 10–20%，做出隆起与压花小点，高光只走金面。矿物色不超过 4 种，平涂后压一道深褐墨线，线宽约画幅 0.15%。边缘留 1–2% 的手工不齐。",
+      "type": "标题用马善政楷书，占画面高 6–9%，首字放大到 14–18% 并嵌入金底方块。正文霞鹜文楷，最小 3.2% 高，行距 1.6，朱蓝两色交替标记段首。竖屏取单页，窗口放上半，文字只留一栏。",
+      "motion": "24fps，插图与花饰按 12fps 逐拍。金高光一次扫过 1.5–2.5 秒，缓入缓出。藤蔓生长每段 1–1.5 秒，用描边显出。小画内的物件只动一两处，幅度不超过画幅 3%，保持手绘的僵直感。",
+      "camera": "单镜头 3–6 秒。从整页缓推到窗口，再穿过窗口做 2–3 层视差，位移不超过画幅 15%。换章用翻页，0.8–1.2 秒；同章内换段只在页面上平移到下一栏，不切黑。",
+      "narration": "概念句写成大首字母开段；举例句切小画窗口；数字句写进页边账目小栏；结论句描金落在页脚。不适合实时数据、界面操作和快节奏卡点，也不用来承载信仰类内容。"
+    },
+    "concept_prompt": "一页摊平的古代羊皮纸手抄本，纸面微黄，可见毛孔与刮痕；页面中央偏上一扇方形小画窗口，金箔底上以平涂矿物色画着一座带城墙的小城、一架水车和几块农田，深褐墨线勾边；窗口左上角一个巨大的金底中文首字「春」，金面隆起并压有细密小圆点；四周宽边是葡萄藤、小鸟和蜗牛，青金蓝与朱红叶片穿插；下方两栏墨色小字，朱红段首记号；俯视平铺，一道暖色侧光只在金箔上形成亮带"
+  },
+  "gallery": {
+    "frame": "assets/gallery/illuminated-manuscript.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/illuminated-manuscript/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O68"
+  ]
+}

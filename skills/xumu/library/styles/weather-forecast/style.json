@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "weather-forecast",
+  "name": "天气预报",
+  "family": "B. 新闻纪实",
+  "kind": "style",
+  "look": "海蓝陆绿的气象地图，白色等压线，冷暖锋符号，底部滚动预警条，一张卡一个指数",
+  "signature": "云团从卫星图旋入，等压线逐圈画开，风向虚线沿线流动，温度计升到位，斜切换到下一张",
+  "fits": "情绪趋势、市场冷暖、舆情走向、季度展望",
+  "implementation": "Canvas 2D 画等压线与云团，固定包装走 HTML；`hf:news-ticker` `gn:dashed-flow` `gn:rolling-digits`；近亲 `opuscar-news-package`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:news-ticker",
+    "gn:dashed-flow",
+    "gn:rolling-digits"
+  ],
+  "spec": {
+    "palette": [
+      "#0e5a8a",
+      "#0a2f5c",
+      "#5e9c6b",
+      "#f2c14e",
+      "#e4572e",
+      "#f3f6f8"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "云团从卫星图旋入",
+      "等压线逐圈画开",
+      "风向虚线沿线流动",
+      "温度计升到位",
+      "斜切换到下一张"
+    ],
+    "forbidden": [
+      "电视台台标",
+      "灾难现场画面",
+      "机位运动",
+      "衬线标题",
+      "胶片颗粒"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "把任何话题翻译成一张天气图：地图上的区域是业务线、人群或时间段，高压低压是情绪或热度，锋面是两股力量相遇的地方。固定包装框住内容：左上节目名，右上日期角标，底部一条滚动预警。每屏只有一张地图或一张指数卡。",
+      "material": "海面深蓝带由上到下的渐变，陆地平涂绿色加细白边。等压线白色，线宽约画高 0.15%，间隔均匀，中心写“高”或“低”。暖色从黄到橙红表示热度，阶梯式分 5 档。图标圆润，带 0.5% 软投影。卡片圆角约 1.5%，深蓝实底。",
+      "type": "标题用思源黑体 Heavy，不低于 6%，左侧配一条竖向色条。大数字高度 12–15%，用黄色或白色，单位缩小。图注 Noto Sans SC 不低于 2.8%。底部滚动条字高 3%，匀速，每秒 5–6 字。竖屏把地图裁成纵向，指数卡堆到下半屏，滚动条保留。",
+      "motion": "只有画面内部在动。云团 30fps 连续；等压线 0.8 秒逐圈描出；风向虚线流速恒定。温度计 1 秒 ease-out 升到位，数字同步滚动。换场用斜向色块 0.3 秒擦过。图标进场 0.25 秒缩放回弹，幅度 6%。",
+      "camera": "全片锁定机位，不推不摇。单张 4–6 秒，一段 5–7 屏。开场用 2 秒卫星视角旋云，结尾用一张明日展望多格条加晴天图标收。每次换场配同一个短促音效，建立节目感。",
+      "narration": "描述大势用气压图；“正在变化”句让锋面移动；数字句放进温度计或风速表；转折句切换成预警条并变红；展望句用多日预报条列出未来几步；结论句出晴天或雨天图标。不适合精确财务报表和严肃灾害题材。"
+    },
+    "concept_prompt": "电视气象节目的一屏：深海蓝背景上是抽象的陆地轮廓，绿色平涂加细白边，一圈圈白色等压线环绕一个写着“高”字的中心，一道带三角和半圆齿的红蓝锋面穿过画面，云团呈柔和旋涡状。右侧一张深蓝圆角卡片，一支粗胖的温度计升到橙红色，旁边是大号黄色数字。左上角粗白标题配竖向色条，底部一条红底滚动条写着很短的中文。图标圆润，有轻微投影，演播室图形的干净光泽。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/weather-forecast.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/weather-forecast/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:X25"
+  ]
+}

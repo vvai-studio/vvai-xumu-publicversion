@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "gothic-illustration",
+  "name": "哥特插画",
+  "family": "E. 插画与手作",
+  "kind": "style",
+  "look": "深紫黑底、细长尖锐的剪影、暗红点缀、骨白刮痕细线，枝杈和瘦塔向上刺",
+  "signature": "尖枝从四角爬向中心；影子拉长越过人物；冷烛一明一灭；裂纹沿画面蔓开；雾层缓慢横移",
+  "fits": "心理恐惧、悬疑故事、黑暗童话、行业阴暗面",
+  "implementation": "Canvas 2D 枝条生长加 SVG 剪影；`gn:branch-growth` `gn:atmospheric-depth` `gn:smoke-plume`；近亲 `cinematic-dark`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:branch-growth",
+    "gn:atmospheric-depth",
+    "gn:smoke-plume"
+  ],
+  "spec": {
+    "palette": [
+      "#110b17",
+      "#2c1738",
+      "#5c1426",
+      "#8f2036",
+      "#6e4c8c",
+      "#cfc3b4"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "尖枝从四角爬向中心",
+      "影子拉长越过人物",
+      "冷烛一明一灭",
+      "裂纹沿画面蔓开",
+      "雾层缓慢横移"
+    ],
+    "forbidden": [
+      "血迹与伤口",
+      "圆润可爱造型",
+      "暖黄大光",
+      "宗教符号特写",
+      "高饱和撞色"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "构图向上拉长：尖枝、瘦塔、长窗、长发长指，所有形状两头收尖，高宽比至少 3:1。主体是细长人影或一座孤立建筑，居中对称，占高 60–80%。前后分 3–4 层剪影，中间夹雾。恐惧只靠比例和阴影暗示，不出现伤害画面。",
+      "material": "底色接近黑的紫，主体剪影比背景暗或亮两档，没有中间过渡色块。骨白细线约 0.12%，带颤抖的刮擦感，像在黑纸上用针刻出。暗红占比不超过 8%，只给窗光或一件衣物。雾层不透明度 10–25%，颗粒 5%，四角暗化 20%。",
+      "type": "标题用思源宋体 Heavy，横向压窄到 85%，占高 9–12%，居中放在两道尖枝留出的空隙。说明用 Noto Serif SC，骨白色，不小于高度 3.4%。字不加发光。竖屏是最佳比例，把对称轴放中间，枝条从两侧收拢，字放在下方 1/4 的暗部。",
+      "motion": "慢而不安。枝条生长 1.5–3 秒，24fps 加细微停顿，像一点点爬过来。影子延伸 2–4 秒。烛光亮度随机抖动 8–15%。雾每秒横移不到画幅 0.5%。惊吓点用 2 帧全暗的硬切，不做晃动和闪屏。",
+      "camera": "一镜 4–8 秒，极慢推近，总量 6–10%，也可沿纵向缓缓上摇，从地面到尖顶。换场让前景枝条或暗影横过遮满画面，再退开。节奏整体偏慢，段落间给 1 秒黑场。",
+      "narration": "恐惧句让影子伸长；未知句让枝条逼近；揭示句让裂纹走到关键词前停住；数字句用骨白细字孤零零放在黑里；结论句让烛光熄灭。不要用于欢快话题和带货。避免宗教符号、伤口和针对任何群体的恶意隐喻。"
+    },
+    "concept_prompt": "深紫近黑的背景上，一座瘦高尖塔孤立在画面中轴，两侧是向上刺去、末端极尖的枯枝剪影，层层后退，中间夹着薄雾；塔下一个极其修长的人影背对观者提着一盏小灯，他的影子被拉得比塔还长，横过地面；塔顶一扇窄窗透出暗红微光，是唯一的彩色；轮廓边缘用骨白色细线刮出颤抖的排线，如同用针刻在黑纸上；上方一行窄长的中文“别回头”；严格对称构图，冷而弱的顶光"
+  },
+  "gallery": {
+    "frame": "assets/gallery/gothic-illustration.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/gothic-illustration/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:K37"
+  ]
+}

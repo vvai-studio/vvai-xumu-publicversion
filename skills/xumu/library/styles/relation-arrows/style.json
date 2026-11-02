@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "relation-arrows",
+  "name": "关系图箭头",
+  "family": "A. 教学解说",
+  "kind": "style",
+  "look": "深墨绿底、细描边圆形节点、带字的细箭头，全片只有一根珊瑚色关键箭头",
+  "signature": "节点依次弹出，箭头从起点生长到终点，话语沿箭头淡入，虚线箭头最后画，无关节点压暗",
+  "fits": "人物关系、因果链、利益博弈、组织结构",
+  "implementation": "SVG 画节点与箭头，Canvas 2D 也可；`gn:line-draw` `gn:scale-pop` `gn:motion-hierarchy`；近亲 `flat-diagram`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:line-draw",
+    "gn:scale-pop",
+    "gn:motion-hierarchy"
+  ],
+  "spec": {
+    "palette": [
+      "#12201d",
+      "#1c2e29",
+      "#e9e4d4",
+      "#7f8f88",
+      "#ff7a59"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "节点依次弹出",
+      "箭头从起点生长到终点",
+      "话语沿箭头淡入",
+      "虚线箭头最后画",
+      "无关节点压暗"
+    ],
+    "forbidden": [
+      "曲线飘带",
+      "立体圆球",
+      "图标贴纸",
+      "第二种强调色"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "全画面只放一张图：4–7 个圆形节点，主角居中略偏下，其余按亲疏排在四周，节点半径约占短边 7%。节点之间的箭头才是主角，每根箭头中段贴一句不超过 6 个字的话，说明这条关系到底是什么。",
+      "material": "底色纯平，不加纹理。节点填比底色略亮的墨绿，描边线宽约短边 0.2%；普通箭头灰绿色，线宽 0.2–0.3%，头部长度约 1.2%。主角节点反白实心。只有一根关键箭头用珊瑚色，可以是虚线，虚线段长约 0.6%。",
+      "type": "节点名用思源黑体 Medium，高度不低于画面 3%；箭头上的话用 Noto Sans SC，不低于 2.6%，贴在线的法线方向外侧，不压线。单图最多 6 句话。竖屏把节点改成上下三层排列，节点最多 5 个，箭头尽量走竖向。",
+      "motion": "节点用回弹弹出，单个 0.4 秒，间隔 0.1 秒。箭头用 ease-out 生长 0.6–0.7 秒，到位后文字 0.25 秒淡入。30fps 连续运动，不做循环呼吸。强调时其余元素 0.3 秒压到 30% 亮度，关键箭头线宽加到 1.5 倍。",
+      "camera": "整张图固定机位，一张图停留 6–12 秒，靠逐根箭头推进节奏，不切镜头。需要聚焦时缓推到一对节点，放大不超过 1.4 倍。换场时全图 0.5 秒淡出，或者把一个节点放大成下一张图的中心。",
+      "narration": "讲因果用一根实线箭头；举例在箭头上换一句话；转折时把旧箭头划断并反向重画；数字写在箭头上，并用线宽表示大小；结论句压暗其余，只留主路径。超过 8 个节点或纯时间顺序的内容不适合，改用时间轴。"
+    },
+    "concept_prompt": "深墨绿色纯平背景上，六个描着细浅线的圆形节点分散排列，正中一个反白实心圆写着“我”，周围的圆里写着短词。细灰绿色直线箭头从节点指向节点，箭头旁贴着很小的中文短句。一根珊瑚色虚线箭头从中心斜向右上方，是全图唯一的暖色。没有插图、没有阴影、没有纹理，线条精确均匀，节点之间留白宽裕，构图像一张干净的思维推演图，柔和均匀的平面光。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/relation-arrows.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/relation-arrows/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:F2"
+  ]
+}

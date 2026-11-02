@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "photo-silkscreen-repeat",
+  "name": "照片丝网复制",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "银灰刷漆底、并排重印的黑色网点照片、错位的手刷平涂色块，一张印得不匀",
+  "signature": "同一图并排连印两三次；色块先刷网点后压；刮板横扫过版；错版抖一下；末版褪成银色",
+  "fits": "名人与符号、消费文化、流量现象、量产与复制",
+  "implementation": "生图或授权图分层，需素材，Canvas 2D 阈值成网；`gn:halftone-motion` `gn:stepped-motion`；近亲 `opuscar-silkscreen-poster`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:halftone-motion",
+    "gn:stepped-motion"
+  ],
+  "spec": {
+    "palette": [
+      "#b6b8bd",
+      "#131313",
+      "#f4c20d",
+      "#ee8fa0",
+      "#2aa7b8",
+      "#ece3cf"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "同一图并排连印两三次",
+      "色块先刷网点后压",
+      "刮板横扫过版",
+      "错版抖一下",
+      "末版褪成银色"
+    ],
+    "forbidden": [
+      "精准套色",
+      "全彩照片",
+      "柔和阴影",
+      "均匀干净的网点",
+      "多个不同主体"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "重复就是构图：同一张黑白主图在银底上并排印 2–3 次，略有重叠，也可排成 2×2。每一份的墨色和错版都不同。一份拿最强的颜色，其余退淡。全屏不放第二个主体，文字只作很小的边注。",
+      "material": "分两层印：下层是手工刷出的色块，轮廓不规整；上层把照片转成斜 45° 的黑网，点径约 0.5% 画宽，只留亮暗两极。上下层故意偏移 1% 画宽。墨量时多时少，浓处结块，淡处露出白条。银底留刷痕，反光约 10%。",
+      "type": "文字少，用思源黑体 Bold，字高 5–8%，同样过网，带一点缺墨，贴画面下边或印在重复格之间。说明小字用 Noto Sans SC，不低于 3% 高。竖屏把并排改成上下连印 3 份，每份宽约 80%。",
+      "motion": "12fps 定格。色块 4 帧刷入，黑版跟一次横向刮板，0.4 秒扫过，网点随之显现。每印完一份，画面错版抖动 2 帧后定住。抖动幅度 0.3–0.5%。印到第三份时墨量降低，网点开始稀疏发虚。",
+      "camera": "镜头正面平拍，单屏 2–4 秒。可慢推，每屏不超过 6%。换场时再印一遍新图盖上去，旧图在缝隙里透出。结尾可让一排图从左到右逐份褪成银色，留下一片只有痕迹的空版。",
+      "narration": "重复句连印同一张图；稀释句让每份墨色变淡；数字句在格子里写规模，比如一图印成九宫格；反讽句把一张换一种刺眼色。不适合严谨解释和多角色叙事，主图轮廓不清时过网后认不出，要先换图。"
+    },
+    "concept_prompt": "刷着银漆的画布上，同一只老式公文包的高反差黑色网点照片并排印了三次，略有重叠。下层是歪歪扭扭的手刷色块，第一份是刺眼的亮黄，第二份是粉，第三份褪成淡蓝绿，色块与黑版明显错开。左侧墨太多，网点结成一团，右侧墨不足，露出一道道白痕和小孔，银底微微反光并留着刷痕，正面平视，没有文字，印刷痕迹粗粝不匀"
+  },
+  "gallery": {
+    "frame": "assets/gallery/photo-silkscreen-repeat.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/photo-silkscreen-repeat/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O42"
+  ]
+}

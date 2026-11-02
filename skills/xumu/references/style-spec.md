@@ -21,6 +21,8 @@
 | `spec.min_dwell_s` | 带文字的镜头最短停留，默认 1.2 秒 | 默认 + 人 |
 | `spec.signature_moves` | 标志动作，从目录拆出；整片自检"风格一致"按它逐条核对 | 自动 + 人 |
 | `spec.forbidden` | 这种风格里不该出现的东西（词），和栏目 `avoid`、品牌 `forbidden` 合并后检查 | 人 |
+| `spec.brief` | 文字参考，六段：`scene` 画面构成、`material` 色彩与材质、`type` 文字与版式、`motion` 运动语法、`camera` 镜头与节奏、`narration` 口播适配。有这一项的风格，写镜头 brief 时以它为准 | 人 |
+| `spec.concept_prompt` | 图片参考的提示词：一段直接描述画面的文字，`gallery concept` 优先用它出示意帧；为空时按观感和标志动作拼 | 人 |
 | `gallery.frame / sample / frame_kind` | 代表帧与样片路径；`frame_kind` 为 `render`（真渲染）或 `concept`（生图示意） | P5 第二步 |
 | `verified_in` | 在哪些项目里实际跑通过 | 人 |
 

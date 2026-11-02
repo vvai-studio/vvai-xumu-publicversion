@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "quiet-taupe",
+  "name": "留白灰褐",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "七成留白的暖米纸、一根发丝线、一行墨色细标题、一小块灰褐",
+  "signature": "一根细线缓慢划出；一行字在线上淡入；灰褐小方块挪一格；空场停一拍；线收回换场",
+  "fits": "哲思随笔、设计理念、个人叙述、高端品牌",
+  "implementation": "SVG 描线加 HTML 文字，几乎不用素材；`gn:line-draw` `gn:underline-draw` `gn:motion-hierarchy`；近亲 `line-art`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:line-draw",
+    "gn:underline-draw",
+    "gn:motion-hierarchy"
+  ],
+  "spec": {
+    "palette": [
+      "#eee8dc",
+      "#24201c",
+      "#9a8b7a",
+      "#c9bfb0"
+    ],
+    "fonts": {
+      "title": "Noto Serif SC",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "一根细线缓慢划出",
+      "一行字在线上淡入",
+      "灰褐小方块挪一格",
+      "空场停一拍",
+      "线收回换场"
+    ],
+    "forbidden": [
+      "饱和色",
+      "粗字重",
+      "弹跳缓动",
+      "满屏图片",
+      "图标"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "画面七成以上是空的。一根发丝线、一行字、一小块灰褐，三样东西按黄金分割或画面三分线放置，彼此保持很远的距离。一屏只讲一件事。需要配图时，图片不超过画面 25%，退成低饱和灰褐色调。",
+      "material": "暖米纸色接近素面，噪点不超过 2%。细线线宽约 0.08–0.12% 画高，墨色。灰褐块平涂，占比不超过 3%。全片不用投影，不用纹理叠加。灰度上保持四档：纸、浅灰褐、灰褐、墨。",
+      "type": "标题用 Noto Serif SC Light，字高 4–6%，字距放宽到 8–12%，靠左不居中。注释用 Noto Sans SC Light，不低于 2.8% 高，浅底上保持足够对比。竖屏把线改成竖线，文字竖排或贴下三分线放。",
+      "motion": "24fps，极慢。细线划出 1.2–1.8 秒，用平滑缓入缓出；文字淡入 0.8 秒，同时上移不超过 0.5%。灰褐块每次只平移一格，用时 0.6 秒。动作结束后保持静止，全片一半时间什么也不动。",
+      "camera": "镜头固定。单屏 4–7 秒，留出读后的空拍。换场不用转场特效：线缩回起点，字淡出，空画面停 0.5 秒，再开始下一屏。全片节奏平稳不提速，这种等待本身就是风格的一部分。",
+      "narration": "定义句写一行字加细线；停顿处留空场不放东西；对比句用两根线的长短表示；数字句写小，靠灰褐块的位置示意。结论句只留一行字。不适合信息密集、快节奏和带货，字一多就失去留白的价值。"
+    },
+    "concept_prompt": "一张几乎空白的暖米色纸面，光线柔和均匀。画面左侧三分之一处，一根极细的墨色水平线横向延伸到画面中部，线上方是一行细瘦的宋体短句，字距宽松。右下方远处有一个很小的灰褐色实心方块，旁边是一行更小的说明文字。其余区域完全空着，纸面只有极细微的纹理，没有投影和装饰，静谧克制，像一本极简建筑师文集的内页"
+  },
+  "gallery": {
+    "frame": "assets/gallery/quiet-taupe.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/quiet-taupe/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:H7"
+  ]
+}

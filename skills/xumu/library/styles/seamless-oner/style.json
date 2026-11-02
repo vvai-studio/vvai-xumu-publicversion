@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "seamless-oner",
+  "name": "一镜到底",
+  "family": "O. 结构手法",
+  "kind": "style",
+  "look": "连续空间、场景互相长出、无切点、单向连贯运镜、层层穿越",
+  "signature": "镜头穿入物体内部；物件展开成下一场景；色块铺满接力；同形物接过画面",
+  "fits": "流程串讲、前后变化、产品全程、城市漫游",
+  "implementation": "Three.js 或 HTML 大画布相机；`hf:cinematic-zoom` `gn:mask-reveal` `gn:shape-morph`；近亲 `whiteboard-world`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:cinematic-zoom",
+    "gn:mask-reveal",
+    "gn:shape-morph"
+  ],
+  "spec": {
+    "palette": [
+      "#101820",
+      "#f3efe6",
+      "#2f6fde",
+      "#f0b429",
+      "#7b8794"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "镜头穿入物体内部",
+      "物件展开成下一场景",
+      "色块铺满接力",
+      "同形物接过画面"
+    ],
+    "forbidden": [
+      "硬切",
+      "黑场过渡",
+      "整屏模糊转场",
+      "静止停留过久",
+      "重复同一过渡"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "全片想成一张连续地图，相机是一个观众在里面走。每个段落的终点就是下一段落的入口：一个字的笔画、一扇窗、一个杯口。写分镜时先排路径，给每一站标出「入口物」，再往里放内容，路径尽量走同一方向。",
+      "material": "全片用一个底色体系，站与站之间亮度或色相一次只变一项。穿越时前景层模糊不超过 0.5% 画幅。深度分 3–5 层，近景视差比远景大 3–5 倍。可沿用主风格的材质，本手法只要求连贯，不限定质感。",
+      "type": "字在世界里，不在屏幕上：字贴在墙面、地面或物体上，相机经过时读到。思源黑体 Bold，字高 5–10%，停留够读完再走，说明 Noto Sans SC，最小 3% 高。竖屏路径改为向下坠落或向上攀升，站点竖向排布。",
+      "motion": "30fps。相机速度分两档：站点内每秒 2–4% 画幅的缓动，穿越时 0.6–1 秒一次加速。用 ease-in-out，不用匀速。每次穿越只用一种手法，全片至少换 3 种。物件展开时先动边框，再动内容。",
+      "camera": "全片 0 个切点，单段 5–10 秒，一站一句话。换场手段轮换：穿入物体、前景遮挡擦过、形状匹配、色块铺满。接实拍素材时把接缝藏在遮挡或快速横摇里。中段转一次方向，防止单调。",
+      "narration": "因果句用穿入，原因里藏着结果；前后对比句走同一路径的新旧两站；总结句把相机拉起俯瞰走过的全程。稿子要线性推进，不适合频繁回跳、并列论点或需要定格细读的内容。"
+    },
+    "concept_prompt": "一帧连续穿越途中的画面：近景是一本摊开的书，纸面上一行中文大字占据下半部，其中一个字的圆形笔画内部已被放大成一扇圆窗，窗内是黄昏的城市街道，纵深透视一路延伸，书页的纸纹在窗沿弯曲过渡成街边建筑的墙面，一个小小的人物剪影正走向远方；镜头向窗内推进，前景边缘有轻微运动虚化；暖灰书页与深蓝城市形成层次，琥珀色光线从窗内透出"
+  },
+  "gallery": {
+    "frame": "assets/gallery/seamless-oner.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/seamless-oner/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:M5"
+  ]
+}

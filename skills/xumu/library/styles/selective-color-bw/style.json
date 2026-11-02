@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "selective-color-bw",
+  "name": "黑白唯一色",
+  "family": "N. 影像质感",
+  "kind": "style",
+  "look": "冷灰黑白、粗银盐颗粒、高光微晕、全画面只留一件物体有色",
+  "signature": "灰色画面里种下一点颜色；有色物穿过灰色物群；颜色漫开铺满再收到下一物；结尾褪回灰",
+  "fits": "线索追踪、信息过滤、唯一变量、关键决策",
+  "implementation": "实拍或生图转灰 + 分割蒙版，WebGL 逐帧；`gn:film-grain` `gn:mask-reveal` `hf:cinematic-zoom`；近亲 `cinematic-dark`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:film-grain",
+    "gn:mask-reveal",
+    "hf:cinematic-zoom"
+  ],
+  "spec": {
+    "palette": [
+      "#141416",
+      "#4a4b4e",
+      "#9a9b9d",
+      "#e8e8e6",
+      "#e8a612"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "思源宋体",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "灰色画面里种下一点颜色",
+      "有色物穿过灰色物群",
+      "颜色漫开铺满再收到下一物",
+      "结尾褪回灰"
+    ],
+    "forbidden": [
+      "第二种彩色",
+      "彩色字幕底板",
+      "发光描边",
+      "渐变调色",
+      "彩色图标"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "把这个手法当视觉上的荧光笔：画面全灰，只给旁白正在说的那一件东西留色。它可以是一把伞、一张纸、一条曲线、一个按钮。每屏只许一个有色对象，面积占 1–8%，靠小而唯一吸引视线，周围用大量同类灰色物体衬托。",
+      "material": "灰阶偏冷，S 曲线，黑白两端各留 6–8%。颗粒 ±5%，每帧刷新，闪烁 ±2%。强调色全片只选一种，饱和度 70–90%，默认琥珀黄，可按内容换青绿或钴蓝。有色物保留自身明暗，蒙版羽化约 0.2% 画幅，边缘不发光。",
+      "type": "字默认白或浅灰，思源黑体 Bold，字高 5–9%，只有一个关键词用强调色。说明思源宋体，最小 3% 高。每屏最多 1 个彩色词，它与有色物要讲同一件事。竖屏把有色物放在上三分之一，字放中下。",
+      "motion": "24fps。留色过程 0.4–0.8 秒，从物体中心向外渗开，不整块弹出。有色物的运动比周围慢半拍或方向相反，用运动差再拉开一层。转场让颜色漫开铺满 0.6 秒，再收到下一个物体上。",
+      "camera": "单镜头 3–6 秒。长焦压缩，俯拍或隔着前景看主体，有色物常在物群中央。推近时从 5% 面积推到 20%。全片最后一个镜头可以让颜色褪去，表示这条线索收束。",
+      "narration": "「关键是这一个」类句子用留色；排除句让其他选项依次变灰；对比句让两屏同位置的颜色一隐一现；结论句让颜色铺满一次。不适合同时比较多个类别，也不宜滥用，超过半数镜头留色就失去唯一性。"
+    },
+    "concept_prompt": "高处俯瞰雨中的城市十字路口，黑白胶片质感，冷灰色调，粗颗粒，地面湿亮反光；几百把灰色雨伞组成的通勤人流从各个方向穿过斑马线，全部是灰阶，其中偏右上方只有一把琥珀黄色的雨伞保留鲜明色彩，面积很小但一眼可见；长焦压缩空间，前景是虚化的路灯杆，街灯高光微微泛晕，画面没有其他任何颜色，平静的上班日清晨"
+  },
+  "gallery": {
+    "frame": "assets/gallery/selective-color-bw.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/selective-color-bw/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O66"
+  ]
+}

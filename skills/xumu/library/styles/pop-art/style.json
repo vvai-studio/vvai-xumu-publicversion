@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "pop-art",
+  "name": "波普",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "红黄蓝原色平涂、纯黑粗轮廓、满版圆点底纹、爆炸框与对话框",
+  "signature": "爆炸框弹出拟声字；圆点底纹涌动扩张；对话框尾巴戳向主角；四宫格轮流换色；粗线先勾后填",
+  "fits": "抓眼球的转折、观点碰撞、消费话题",
+  "implementation": "SVG 加 Canvas 网点，主体可生图后分层；`hf:halftone-field` `gn:radial-speed-lines` `gn:stamp-impact`；近亲 `halftone-comic`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:halftone-field",
+    "gn:radial-speed-lines",
+    "gn:stamp-impact"
+  ],
+  "spec": {
+    "palette": [
+      "#e4002b",
+      "#ffd500",
+      "#0057b8",
+      "#111111",
+      "#ffffff"
+    ],
+    "fonts": {
+      "title": "站酷快乐体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "爆炸框弹出拟声字",
+      "圆点底纹涌动扩张",
+      "对话框尾巴戳向主角",
+      "四宫格轮流换色",
+      "粗线先勾后填"
+    ],
+    "forbidden": [
+      "柔和渐变",
+      "粉彩色",
+      "细线",
+      "写实光影",
+      "灰色调"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一格放大的连环画：主体占画面 50–60%，身后是单色圆点底，一角一个对话框或爆炸框。这里只用一到四格，不做长分镜，每格都是单独一幅放大的画。主体可以是日常物件，商品、电话、数字都行。",
+      "material": "只用红黄蓝加黑白，全部平涂。轮廓线粗 0.8–1.2% 画高，纯黑，线条粗细有变化。圆点网直径约 1.2–1.8% 画高，排成 45°，占画面 30–50%，这种放大的网点是本风格的识别点。不加纸纹。",
+      "type": "拟声字和标题用站酷快乐体，字高 12–20%，加黑描边和错位色影，倾斜 5–10°。对话框文字用 Noto Sans SC Bold，不低于 3.6% 高，黑字白底。竖屏改上下两格，爆炸框压在两格接缝上，起到连接作用。",
+      "motion": "12–15fps 定格感。爆炸框 3 帧弹到 110%，再回到 100%。圆点底纹半径循环涨缩，幅度 20%，周期 1 秒。轮廓先勾 6 帧，平涂再一次落下。四宫格换色时，四格按顺时针依次翻色，每格 2 帧。",
+      "camera": "镜头不动，单屏 2–3 秒。强调时用 3 帧猛推到 130%，配放射速度线。换场用圆点从小到大铺满全屏，用时 8 帧，或在四宫格之间跳切。同一主体可四格连续重复，每格换一组底色，作为一种节奏点。",
+      "narration": "转折句弹爆炸框写短词；反问句用对话框戳向主角；重复句走四宫格换色；数字句放在爆炸框中央；结论句黑底黄字整版打出。不适合细腻抒情和长数据，连续用超过 20 秒会累，要穿插平静画面。"
+    },
+    "concept_prompt": "一格放大的连环画，一部红色老式电话听筒占据画面中央偏左，纯黑粗轮廓，亮黄色平涂，身后铺满明蓝色放大圆点。右上角一个锯齿状红色爆炸框，框内是巨大的黄色拟声字“叮”，带黑色描边和错位色影，一个白色对话框的尾巴指向听筒。只有红、黄、蓝、黑、白五色，全部平涂，圆点清晰可数，强烈饱和，正面特写构图"
+  },
+  "gallery": {
+    "frame": "assets/gallery/pop-art.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/pop-art/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:K14"
+  ]
+}

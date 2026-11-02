@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "key": "breathing-circle",
+  "name": "呼吸的圆",
+  "family": "L. 诗意氛围",
+  "kind": "style",
+  "look": "深灰绿底、画面正中一团柔软的粒子圆，随呼吸节拍胀缩，除它之外别无他物",
+  "signature": "圆团吸气胀大；屏息时停住；呼气收缩抖落外层粒子；一句字随呼气淡入",
+  "fits": "冥想引导、压力话题、慢节奏开场、章节之间的停顿",
+  "implementation": "Canvas 2D 径向分布粒子，半径由呼吸曲线驱动；`gn:ambient-particle-drift` `gn:motion-hierarchy`；近亲 `morph`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:ambient-particle-drift",
+    "gn:motion-hierarchy"
+  ],
+  "spec": {
+    "palette": [
+      "#1a2422",
+      "#33493f",
+      "#8fae9d",
+      "#dfe9e0",
+      "#f1d9b5"
+    ],
+    "fonts": {
+      "title": "霞鹜文楷",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 2.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "圆团吸气胀大",
+      "屏息时停住",
+      "呼气收缩抖落外层粒子",
+      "一句字随呼气淡入"
+    ],
+    "forbidden": [
+      "第二个主体",
+      "快速脉冲",
+      "硬边圆环",
+      "节拍器式跳动",
+      "图标"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "构图只有一个圆团，居中，静止时直径约占画面高 30%，吸满时 48%。周围大面积留空，四周不放任何元素。它不代表具体事物，而是全片的呼吸器官，在长片里当作喘口气的段落，时长可控也可循环。",
+      "material": "圆团由 1200–3000 颗柔点构成，中心密外缘疏，边缘没有轮廓线，只是自然稀释。主色灰绿到浅绿白，核心偏暖米色，占比低于 10%。底色有极慢的亮度起伏，幅度 3%。颗粒 2%，不加辉光。",
+      "type": "只放一句话，霞鹜文楷，占画面高 4.5–6%，放在圆团正下方或圆心，字距放宽 10%。圆胀大时字不能被盖住，留足间距。竖屏把圆缩到画宽 60%，文字下移到下三分之一，其余不变。",
+      "motion": "30fps，曲线用正弦而非线性。一次完整呼吸 8–12 秒：吸 4 秒，停 1–2 秒，呼 4–6 秒。粒子各自有 ±5% 的相位差，轮廓才不像刚体。呼气末端外层约 3% 的粒子脱离飘散，下一次吸气再补回。",
+      "camera": "机位完全固定，全段不推不摇，镜头 16–40 秒是常态，至少走完两个呼吸。进入时从全黑用 2 秒亮起，退出时在呼气末尾淡出。换段只选在呼气结束的静止点，绝不在胀大途中剪走。",
+      "narration": "放慢语速的句子跟呼气对齐，一句话配一次呼气；提问句放在屏息处；结论句放在呼气末端。口播要留气口，音频与胀缩对位，误差控制在 0.2 秒内。不适合快节奏、信息量大或有强烈情绪起伏的段落。"
+    },
+    "concept_prompt": "深灰绿色的空旷画面，正中一团由无数细小柔软光点组成的圆形云团，中心密集偏暖米色，向外逐渐稀释成灰绿，边缘没有轮廓线，几粒细点正从外缘飘离；周围大片空白，没有任何其他元素；下方有一行极小的浅色文字「慢一点」；光线均匀柔和，像雾中的一团呼吸，四角微微变暗，细腻颗粒，正面平视，绝对居中"
+  },
+  "gallery": {
+    "frame": "assets/gallery/breathing-circle.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/breathing-circle/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:B5"
+  ]
+}

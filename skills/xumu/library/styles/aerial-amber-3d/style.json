@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "aerial-amber-3d",
+  "name": "琥珀低空飞行",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "逆光琥珀薄雾，淡奶油天空，赭黄大地与三四层远山，上千飞鸟错落惊起",
+  "signature": "越肩望向前方大地；贴水面低空掠过；鸟群分波错开起飞；转向太阳逆光；远山层层退开",
+  "fits": "旅行叙事、行业全景、回望历程、地域介绍",
+  "implementation": "Three.js 地形加实例化鸟群，噪声错峰起飞；`gn:camera-flight` `gn:atmospheric-depth` `gn:particle-force-field`；近亲 `3d-scene`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:camera-flight",
+    "gn:atmospheric-depth",
+    "gn:particle-force-field"
+  ],
+  "spec": {
+    "palette": [
+      "#f1e4c8",
+      "#dcae68",
+      "#b57d40",
+      "#8e7c68",
+      "#57443a",
+      "#e7b7a0"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "思源黑体",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "越肩望向前方大地",
+      "贴水面低空掠过",
+      "鸟群分波错开起飞",
+      "转向太阳逆光",
+      "远山层层退开"
+    ],
+    "forbidden": [
+      "低多边形地形",
+      "冷蓝日光",
+      "整齐鸟阵",
+      "深褐暗调",
+      "地图标注框"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "从一架轻型飞行器上看世界：滑翔机、热气球、无人机都行。机身一角留在前景，占画面 10–20%，其余是开阔大地、水面和远山。讲到一件事，飞到一处地貌；地貌本身就是章节，湖、河谷、盐滩各承载一段话。",
+      "material": "低斜太阳在主角身后，逆光发雾。画面以中高调为主，占比约 70%；暗部落在暖灰，不走深褐，近白面积压在 20% 内。远山 3–4 层，逐层提亮。饱和度压低，S 形影调，颗粒 2–3%，轻暗角。鸟群用粉白加一点深红提色。",
+      "type": "标题思源宋体 Regular，占高 5–7%，放天空，深棕色；说明字思源黑体，不小于高度 3.5%。字距放到 10–20%，配缓慢淡入。竖屏改成俯瞰偏多，地平线放到上部 25%，文字落在天空或平整水面。",
+      "motion": "24fps 全平滑。飞行器轻微上下起伏，周期 3–4 秒，幅度约画幅 0.5%。上千只鸟实例化，主体经过时分 3–5 波错开起飞，每只有随机延迟 0–1.5 秒和翅频差。水面拖影随速度变化。",
+      "camera": "单镜头 4–8 秒，三种机位：越肩向前、高出地面十几米的追拍、对着太阳的逆光。转向用大半径弧线，倾角不超过 15 度。换场穿过雾层或鸟群遮挡满屏。一段里只安排一次鸟群起飞。",
+      "narration": "全景句放开阔飞行；转折句转向太阳，光线变化带情绪；分布或数量句用鸟群数量表达；回顾句越肩向远方。不适合快节奏和细节讲解，小字数据放在这里读不清，这类内容切到其他风格。"
+    },
+    "concept_prompt": "从一架轻型滑翔机的后座越过机翼望出去，米白机翼占画面左侧一角，能看到拉线和铆钉；下方是宽阔河谷和平静的浅水湖，赭黄大地铺着长长柔影；低斜太阳在前方云雾里，空气是奶油琥珀色，远处四层山脊逐层变淡；湖面上千只白鹭错落飞起，一波一波散开，翼尖带一点粉红；画面明亮，阴影暖灰，宽银幕构图，细颗粒"
+  },
+  "gallery": {
+    "frame": "assets/gallery/aerial-amber-3d.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/aerial-amber-3d/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O58"
+  ]
+}

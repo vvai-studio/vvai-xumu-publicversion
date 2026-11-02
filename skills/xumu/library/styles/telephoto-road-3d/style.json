@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "telephoto-road-3d",
+  "name": "长焦公路",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "漂白日光下的沙地公路，超长焦把坡谷压成层叠波浪，热浪扭曲，深色沥青",
+  "signature": "超长焦看主体沉入又冒出；热浪随距离加重；坡顶低机位掠过；车载机位贴路面；扬尘轻落",
+  "fits": "长期趋势、周期波动、赛道竞争、旅程叙事",
+  "implementation": "Three.js 窄视角 2–5 度加起伏地形，着色器热浪；`gn:camera-follow` `gn:wave-warp` `gn:film-grain`；近亲 `3d-scene`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:camera-follow",
+    "gn:wave-warp",
+    "gn:film-grain"
+  ],
+  "spec": {
+    "palette": [
+      "#8cb8de",
+      "#e9dfc8",
+      "#cfb38a",
+      "#2a2826",
+      "#7fae9e",
+      "#3f6b3e"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "超长焦看主体沉入又冒出",
+      "热浪随距离加重",
+      "坡顶低机位掠过",
+      "车载机位贴路面",
+      "扬尘轻落"
+    ],
+    "forbidden": [
+      "撞车翻车",
+      "车辆腾空",
+      "枪战追逐",
+      "广角大透视",
+      "灰白天空"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一条笔直的路连续翻过坡谷，长焦把十几道起伏压成一叠波浪，天空至多留一条窄带。主体是一辆车，匀速行进，占高 6–15%，在波浪间时隐时现。这个图形本身就是周期曲线，可以直接用来讲涨跌。",
+      "material": "硬朗高位阳光，漂白但不发灰。浅沙色不偏橙。反差来自前景：开裂深色沥青、清晰影子、绿色灌木、路边桩。雾气只在最远地平线。越远的路面抖动越强，还泛起水样倒影，幅度 0.2–0.8%。细颗粒 2%。",
+      "type": "标题思源黑体 Heavy，占高 8–11%，叠在窄带天空或压在坡面上；坡谷读数用 Noto Sans SC，不小于高度 3.5%，贴在路边桩旁。竖屏窄视角依然成立，坡谷叠到画面上部 70%，文字放底部。",
+      "motion": "24fps。主体始终贴着路面，随坡起伏，车身轻微俯仰 1–2 度，悬挂回弹 6–10 帧，车轮不离地。车速恒定，靠坡形制造节奏。扬尘每次过坡顶轻扬一小团，1 秒内散开。多车时保持安全车距。",
+      "camera": "招牌镜头 3–5 秒，水平视角 2–5 度，机位几乎不动。之后穿插短镜头：贴着坡顶的低位、挂在车身上的机位，各 1–2 秒，再回到长焦。换场用车尾扬尘遮挡，或热浪把画面融开。每段长焦不少于一次完整沉浮。",
+      "narration": "周期句对应沉入与冒出，每个坡一轮；低谷句让主体消失 1 秒再出现；领先句并排两车拉开距离；结论句切车载看前路。这里是竞速比喻，不做对抗。不适合室内话题、细节演示和小字内容。"
+    },
+    "concept_prompt": "超长焦压缩的沙漠公路，一条笔直的深色沥青路翻过连绵起伏的坡谷，十几道坡叠成波浪状填满画面，天空只剩顶部一条窄带淡蓝；一辆褪色海绿色的旅行车稳稳行驶在中段，车身下半被坡顶遮住，车轮贴着路面；路面裂纹清晰，路边竖着白色短桩和绿色灌木；远处热浪让路面像水一样抖动，淡沙色土地，强烈高位阳光，硬朗阴影，细颗粒，宽银幕构图"
+  },
+  "gallery": {
+    "frame": "assets/gallery/telephoto-road-3d.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/telephoto-road-3d/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O98"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "key": "snow-ember",
+  "name": "雪与火星",
+  "family": "L. 诗意氛围",
+  "kind": "style",
+  "look": "蓝黑夜空下细雪缓慢落下，几粒橙红火星逆向升起，一冷一热穿过彼此，地面只有一线暗影",
+  "signature": "雪片向下飘落；火星逆向上升；火星掠过时照亮周围雪片；最后一粒熄灭成字",
+  "fits": "告别、收官、逆境里的坚持、季度或年度总结",
+  "implementation": "Canvas 2D 两组反向粒子，火星带拖尾；`gn:ambient-particle-drift` `gn:atmospheric-depth`；近亲 `cinematic-dark`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:ambient-particle-drift",
+    "gn:atmospheric-depth"
+  ],
+  "spec": {
+    "palette": [
+      "#0a0f1c",
+      "#22304a",
+      "#c4d0dd",
+      "#ff7a3c",
+      "#ffbf6e"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "雪片向下飘落",
+      "火星逆向上升",
+      "火星掠过时照亮周围雪片",
+      "最后一粒熄灭成字"
+    ],
+    "forbidden": [
+      "明火火堆特写",
+      "暴风雪",
+      "爆炸火花",
+      "大面积橙色",
+      "圣诞装饰"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "画面分上下两种气候：雪铺满全屏，火星只从底部一处细小来源升起，来源可以是看不清的余烬或一线地平。雪量 120–300 片，火星同时不超过 12 粒。冷色占 97% 以上，热度靠稀少才显得珍贵。",
+      "material": "夜空蓝黑，上浅下深，渐变幅度 6%。雪分三层，直径 0.08–0.5% 画宽，近层略虚。火星直径 0.1–0.2%，核心亮橙，带长度 0.8–1.5% 的短拖尾，亮度随上升衰减。火星周围 2% 半径内的雪片染上微暖。",
+      "type": "标题用思源宋体 Regular，占画面高 6–8%，放在中线上方，浅灰白。辅助字 Noto Sans SC，不小于 3%。一屏不超过一句。竖屏把火星来源放底部中线，字放中上，雪层减少两成，留出上升路径。",
+      "motion": "30fps。雪穿过全屏 10–16 秒，水平飘移 2–4 秒为周期。火星上升 4–7 秒，路径轻摆，末端在 0.5 秒内熄灭。两组运动各走各的，不做同步。终止动作：雪速减半，最后一粒火星停住，慢慢变成字的句号。",
+      "camera": "固定机位或极慢上摇，单镜头 6–12 秒。换场靠雪加密 1 秒盖住画面再散开，或全黑留一粒火星。结尾镜头时长要长，至少 8 秒，让最后的熄灭完成，再收音。",
+      "narration": "告别句配雪落；坚持句让一粒火星升起；对比句写在一冷一热之间；结尾句等最后一粒熄灭。数字只在年度总结时出现一次。不适合热闹喜庆、产品促销和需要大量图表的部分，火星一多就成了烟花。"
+    },
+    "concept_prompt": "深蓝黑色的冬夜，细密的雪片分远近三层从上方缓缓飘落，近处略虚；画面底部中央一线几乎看不清的暗色地平，地平上方一点余烬，几粒亮橙色火星拖着短短的尾迹逆着雪向上升起，路径微微弯曲；一粒火星旁的雪片被染上极淡的暖光；画面中上方空旷，只有很小的浅灰文字「再见」；寒冷、寂静，冷色占据绝大部分面积，细颗粒"
+  },
+  "gallery": {
+    "frame": "assets/gallery/snow-ember.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/snow-ember/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:D3"
+  ]
+}

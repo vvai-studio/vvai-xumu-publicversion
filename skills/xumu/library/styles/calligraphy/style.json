@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "calligraphy",
+  "name": "书法",
+  "family": "H. 东方传统",
+  "kind": "style",
+  "look": "米白宣纸或深墨底，一个大字占满画面，浓淡枯润的笔迹与飞白，一点朱印",
+  "signature": "笔锋按笔顺写出；行笔提按变粗细；枯笔处露出纸纹；朱印收尾落定",
+  "fits": "金句、章节标题、结论、文化主题",
+  "implementation": "Canvas 2D 沿笔顺路径连续盖毛笔印，字形作蒙版；`gn:tapered-stroke` `gn:handwriting-write-on` `gn:ink-bleed`；近亲 `ink-wash`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:tapered-stroke",
+    "gn:handwriting-write-on",
+    "gn:ink-bleed"
+  ],
+  "spec": {
+    "palette": [
+      "#efe8da",
+      "#171513",
+      "#5e574e",
+      "#b3301f",
+      "#a89c88"
+    ],
+    "fonts": {
+      "title": "志莽行书",
+      "body": "霞鹜文楷",
+      "handwriting": "马善政楷书"
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "笔锋按笔顺写出",
+      "行笔提按变粗细",
+      "枯笔处露出纸纹",
+      "朱印收尾落定"
+    ],
+    "forbidden": [
+      "等线黑体大标题",
+      "字形外发光",
+      "彩色墨迹",
+      "光滑无纹纸面",
+      "整字淡入"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "画面只做一件事：把一个字或一句短话写完。主字占画面高 55–75%，四周留白不少于 30%；短句竖排 2–6 字。写完后纸面退暗，让位给下一句。背景不放插图，最多一枚朱印和一行极小的落款。",
+      "material": "纸色带纤维噪点，强度 2–4%，受墨处轻微起皱。笔画用笔刷印章沿路径叠加，墨色分浓、中、淡三档；速度快的段落用噪声阈值挖出飞白，缺口占笔画面积 10–25%。墨边外渗不超过画幅 0.15%。",
+      "type": "主字用志莽行书，端正内容改马善政楷书，占高不小于 20%；说明文字霞鹜文楷，不小于高度 3.5%，放在角落。竖屏改成单列竖写，主字宽度占画幅 70%，一屏不超过 4 个大字。",
+      "motion": "30fps，严格按笔顺走，每笔 0.2–0.5 秒，横画起笔停 2 帧，捺和竖钩收笔加速。笔画之间留 3–5 帧空当，像提笔换气。朱印最后落下，3 帧到位，纸面下压 1% 回弹。写完的字不再抖动。",
+      "camera": "镜头基本不动，单镜头 3–5 秒，写字时缓推 3–5%。可从笔尖特写起，跟走一笔后拉开见全字，这种跟随全片最多用两次。换场用墨晕铺满整屏，或纸张横向抽走，不用硬切。",
+      "narration": "结论句写一个大字配朱印；金句逐字竖写，语速放慢；章节开头用字当标题；并列要点各写一字排成一列。一支片子写字段不超过总时长 20%，不适合连续长句、英文术语和数字表格。"
+    },
+    "concept_prompt": "暖白宣纸铺满画面，纤维和细小杂质清晰可见，正中一个巨大的行书墨字“定”，笔画浓黑处发亮，收笔转枯，飞白里露出纸纹，墨边有极细的晕痕；最后一笔尚未写完，一支毛笔的笔尖停在笔画尽头，只入画笔头和一小段笔杆；字的左下方一枚朱红方印，印泥略有缺损；俯拍平铺，左上方柔和窗光，纸面微微起伏，四周大片留白"
+  },
+  "gallery": {
+    "frame": "assets/gallery/calligraphy.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/calligraphy/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:Z12"
+  ]
+}

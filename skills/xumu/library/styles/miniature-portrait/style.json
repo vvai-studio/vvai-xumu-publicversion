@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "miniature-portrait",
+  "name": "宫廷细密画",
+  "family": "M. 绘画与古典媒材",
+  "kind": "style",
+  "look": "群青圆底、金线椭圆挂坠、羊皮纸上不透明水彩、极细排线、暗红织锦衬底",
+  "signature": "椭圆框从中心开窗；排线逐层压出暗部；金字铭文绕框写出；挂坠翻面换场",
+  "fits": "人物小传、品牌故事、藏品解读、一句箴言",
+  "implementation": "Canvas 2D 合成椭圆蒙版与排线；`gn:hatch-fill` `gn:mask-reveal` `gn:light-sweep`；主体需素材；近亲 `vintage-engraving`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:hatch-fill",
+    "gn:mask-reveal",
+    "gn:light-sweep"
+  ],
+  "spec": {
+    "palette": [
+      "#1b357f",
+      "#c9a757",
+      "#8f2430",
+      "#f2ecdf",
+      "#2f5d48",
+      "#3a2a20"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "椭圆框从中心开窗",
+      "排线逐层压出暗部",
+      "金字铭文绕框写出",
+      "挂坠翻面换场"
+    ],
+    "forbidden": [
+      "写实照片肖像",
+      "霓虹色",
+      "粗描边",
+      "厚重投影",
+      "扁平图标"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "媒材取自 16 世纪晚期欧洲宫廷的袖珍画。每屏只放一件主体，装进高度约 70% 的竖向椭圆挂坠，挂坠平放在织锦上，外围留暗色呼吸区。主体是器物、建筑、抽象符号或无五官的人物轮廓。大场景离开挂坠，铺成一块羊皮纸横幅。",
+      "material": "羊皮纸暖底透出约 5%。群青底平涂不留笔痕；暗部用 0.1% 线宽的平行细线，密度分 3 档。高光点铅白，金用细颗粒金粉加 2–3 处抛光点。主色不超过 5 种，轮廓线用红褐不用黑。",
+      "type": "铭文用思源宋体，沿椭圆上沿环排，字高约 3.5%，字距加宽 0.2 字，每圈不超过 12 字。说明文字放挂坠外下方，Noto Serif SC，最小 3% 高。竖屏挂坠放上方，宽占 78%，文字改到下半。",
+      "motion": "动作极小：24fps，排线按 8–12fps 分层压入，每层 0.4 秒。高光扫过 2 秒。枝叶只做 1% 幅度的摇动。挂坠翻面 1 秒，ease-in-out，背面是下一屏的主体，中途不加模糊。",
+      "camera": "单镜头 4–6 秒，近乎静止。缓推幅度不超过 8%，或由挂坠全景推到铭文。换场靠翻面，或整枚挂坠滑出织锦，下一枚滑入。全片挂坠总数控制在 3–6 枚，多了像相册。",
+      "narration": "介绍句对应开窗亮相；评价句写成环形铭文；转折句让挂坠翻面，背面给出另一面；数字句放在挂坠外作旁注。不适合流程拆解、多主体对比和连续数据，这些内容放不进一枚椭圆。"
+    },
+    "concept_prompt": "一枚竖向椭圆金边挂坠平放在暗红织锦上，俯视构图，挂坠内是深群青平涂底，底上画一架黄铜天平，暗部由极细平行排线构成，受光边缘点着铅白；天平身后月桂枝和白色小雏菊绕成半圈，枝叶铜绿色；椭圆上沿一圈细小金字「慎思」，金线边框带细颗粒金粉和两处抛光亮点；羊皮纸的暖色从颜料下隐约透出，织锦纹样压暗，柔和窗光从左上方来，工笔精细"
+  },
+  "gallery": {
+    "frame": "assets/gallery/miniature-portrait.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/miniature-portrait/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O71"
+  ]
+}

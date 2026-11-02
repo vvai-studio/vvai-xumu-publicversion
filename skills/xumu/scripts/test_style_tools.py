@@ -81,10 +81,21 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(iso['spec']['palette'], ['#112233'])
         self.assertIn('isometric', run('list', '--root', str(self.out)))
 
-    def test_real_catalog_has_127_entries(self):
+    def test_real_catalog_has_298_entries(self):
         rows = style_tools.parse_catalog(style_tools.CATALOG.read_text(encoding='utf-8'))
-        self.assertEqual(len(rows), 127)
-        self.assertEqual(len({r['key'] for r in rows}), 127)
+        self.assertEqual(len(rows), 298)
+        self.assertEqual(len({r['key'] for r in rows}), 298)
+
+    def test_styles_with_brief_are_complete(self):
+        specs = [s for s in style_tools.all_specs().values() if s.get('spec', {}).get('brief')]
+        self.assertEqual(len(specs), 171)
+        for s in specs:
+            self.assertEqual(set(s['spec']['brief']), {'scene', 'material', 'type', 'motion', 'camera', 'narration'}, s['key'])
+            self.assertTrue(s['spec']['concept_prompt'], s['key'])
+            self.assertTrue(s['spec']['palette'], s['key'])
+            self.assertGreaterEqual(len(s['spec']['signature_moves']), 3, s['key'])
+            self.assertEqual(s['gallery']['frame_kind'], 'concept', s['key'])
+            self.assertTrue((style_tools.SKILL / s['gallery']['frame']).is_file(), s['key'])
 
     def test_opuscar_styles_have_reference_source_and_packed_frame(self):
         rows = [r for r in style_tools.parse_catalog(style_tools.CATALOG.read_text(encoding='utf-8')) if r['key'].startswith('opuscar-')]
@@ -209,6 +220,10 @@ class RecommendTests(unittest.TestCase):
         self.assertIn('竖屏 9:16', prompt)
         self.assertIn('墨绿板面', prompt)
         self.assertIn('无水印', prompt)
+        written = style_tools.concept_prompt({'name': '字雨', 'spec': {'concept_prompt': '深色夜空落下文字'}}, '16:9')
+        self.assertTrue(written.startswith('深色夜空落下文字'))
+        self.assertIn('横屏 16:9', written)
+        self.assertIn('无水印', written)
 
     def test_gallery_html(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "sports-broadcast",
+  "name": "体育直播包装",
+  "family": "B. 新闻纪实",
+  "kind": "style",
+  "look": "炭黑底、角标记分牌、荧光黄绿与正红双方对阵色条，球衣斜纹，体育场光束",
+  "signature": "比分角标常驻角落，数字跳表翻到位，双方色条对冲填满，回放暂停画线标注，硬切进下一节",
+  "fits": "竞品对比、排名之争、产品 PK、年度回顾",
+  "implementation": "HTML 分层包装，数字用滚动组件；`gn:rolling-digits` `hf:news-ticker` `hf:bar-chart-race`；近亲 `opuscar-telestrator`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:rolling-digits",
+    "hf:news-ticker",
+    "hf:bar-chart-race"
+  ],
+  "spec": {
+    "palette": [
+      "#111214",
+      "#c8f031",
+      "#e5262b",
+      "#f5f5f2",
+      "#2a2c31",
+      "#0f7a3f"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "比分角标常驻角落",
+      "数字跳表翻到位",
+      "双方色条对冲填满",
+      "回放暂停画线标注",
+      "硬切进下一节"
+    ],
+    "forbidden": [
+      "柔和渐变底",
+      "手绘线条",
+      "慢速淡入",
+      "衬线字",
+      "真实联赛标识"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "把任意比较当成一场比赛：两方是两个产品、两种方案或两个人。画面分两种：球场或看台的开场大全景，以及深色数据屏。左上角比分条和右上角“直播”标全程固定，底部滚动条给出数据来源。每节只比一项，比完记一分。",
+      "material": "底色炭黑带 45° 细斜纹，像球衣布料，对比度约 6%。双方各一个高饱和颜色，面积均等。卡片是直角斜切形，切角约 12°。表头实色块。开场的体育场用点阵观众席和交叉光束，光束亮度不超过 30%。数字面白色，不加描边。",
+      "type": "标题用思源黑体 Heavy，拉宽 105%，略倾斜 6–8°，不低于 6%。数据用等宽数字，高度 14–20%。小标签 Noto Sans SC 不低于 2.6%，字距加大。中文用短词，一个标题不超过 8 字。竖屏把双方改为上下对阵，比分条移到顶部，中线横向，卡片单列。",
+      "motion": "元素 0.2–0.3 秒斜向切入，expo-out，不回弹。数字 0.6 秒跳表。对比色条从中线向两侧 0.5 秒填满，领先一侧闪一次。30fps 严格卡音乐重拍。胜方卡片放大 1.06 倍，败方压到 40% 亮度。片尾一次彩带，只用一次。",
+      "camera": "开场大全景 2–3 秒，之后全部平面包装，不做三维运镜。每节 3–5 秒，硬切连接，偶有一块色块斜向擦过。回放段暂停定格，在画面上画圈和箭头 2 秒，然后恢复。高潮处节奏压到每 1.5 秒一切。",
+      "narration": "“谁更强”开一局；数字句跳表；比较句色条对冲；“关键在这里”句暂停回放并画线；反超句让比分翻转；结论句出全场最佳卡。不适合没有对手的内容和需要安静思考的话题，硬做只会显得吵。"
+    },
+    "concept_prompt": "夜间体育转播画面的一帧：炭黑背景带细密斜纹，上半部是远处看台的点阵灯光和两道交叉的冷白光束，下方浮着一张斜切角的深灰数据卡。卡片左右两端分别是荧光黄绿和正红的实色块，中间一组巨大的白色等宽比分“3 : 2”。下方三条水平对比条从中线向两侧伸出。左上角一条窄窄的比分角标，右上角一个红色小方块写“直播”，底部细长滚动条。倾斜的粗黑体中文标题，高对比，锐利。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/sports-broadcast.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/sports-broadcast/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:X27"
+  ]
+}

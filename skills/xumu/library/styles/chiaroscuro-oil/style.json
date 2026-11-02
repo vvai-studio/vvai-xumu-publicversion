@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "chiaroscuro-oil",
+  "name": "顶光明暗油画",
+  "family": "M. 绘画与古典媒材",
+  "kind": "style",
+  "look": "17 世纪荷兰明暗法油画：七成琥珀暗部，一盏顶光落成光池，亮处厚涂，暗处薄罩",
+  "signature": "主体从暗部被光池托出；顶光缓慢下压；手部特写推进；一点暗红落下定调；光池收窄",
+  "fits": "权力结构、决策内幕、家族企业、严肃人物评述",
+  "implementation": "生图 + 分层，需素材；Canvas 2D 叠光池遮罩和画布纹；`gn:ken-burns` `gn:layer-separation` `gn:film-grain`；近亲 `opuscar-impasto`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:ken-burns",
+    "gn:layer-separation",
+    "gn:film-grain"
+  ],
+  "spec": {
+    "palette": [
+      "#1c120c",
+      "#0a0605",
+      "#7a4f26",
+      "#d9ad6b",
+      "#8e2320"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "主体从暗部被光池托出",
+      "顶光缓慢下压",
+      "手部特写推进",
+      "一点暗红落下定调",
+      "光池收窄"
+    ],
+    "forbidden": [
+      "平均打光",
+      "纯黑死块",
+      "第二个主光",
+      "冷蓝阴影",
+      "数码光晕"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一个房间、一盏头顶的光、一个主体。主体站在光池中，受光区占画高 20–30%，背后可有一处小的暖色门洞。讲公司就画成一张长桌，讲人物就画成一个背影。其余一律沉入暗部，靠手、桌面边缘交代情节。",
+      "material": "暗部占 65–75%，以赭褐为主，最深处才到近黑。暗部薄涂透明，亮部厚堆，笔宽 0.7–1.3%，亮脊明显。过渡要柔，不留硬边。上琥珀光油，暗角重，亮度压 30%，画布纹 2–3%。全片只有一处暗红，面积 3% 以内。",
+      "type": "标题思源宋体 SemiBold，占画面高 6–9%，暖米色，放在暗部里，字边略带笔触磨损。正文 Noto Serif SC，不小于 3.2%。字不要压进光池。竖屏把光池移到上半幅，主体占画高 45%，字幕放下方暗区。",
+      "motion": "画面整体静止，只做 2–3 个局部：光油微反射、烟雾缓慢上升、手指轻动，局部循环 4–8 秒。24fps 播放，主体动作 8fps。光池开合 2–3 秒，缓入缓出。不要让人物大幅运动，这是一张活过来的画。",
+      "camera": "单镜头 6–10 秒，持续慢拉或慢推，每 10 秒不超过 8%。换场用暗部吞没：光池收成一点再亮起下一幅，时长 1.2 秒。特写只给手、文件、桌上的物件，不切人脸大特写。",
+      "narration": "铺垫句从大暗部缓慢拉开；揭示句让光池落到主体；数字句写在纸上，由手推进光里；结论句收窄光池。不适合轻松、科普和产品功能讲解。崩点是提亮暗部后变成普通棕色插画，或暗到手机上完全看不清。"
+    },
+    "concept_prompt": "一间几乎沉入暖褐色黑暗的旧董事会议室，一盏隐蔽的顶光从正上方落下，在长木桌中段形成一个琥珀色光池；一个穿深色外套的人从背后看去，坐在桌尾，肩线和后颈被光勾亮，脸隐没在暗处；桌上摊开一本账册，一只手压在纸页上，亮部颜料厚堆带笔脊，暗部薄而透明；桌角一只暗红色蜡封是唯一饱和色；画布纹隐约，琥珀光油，厚重暗角"
+  },
+  "gallery": {
+    "frame": "assets/gallery/chiaroscuro-oil.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/chiaroscuro-oil/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O45"
+  ]
+}

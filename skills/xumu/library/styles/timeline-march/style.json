@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "timeline-march",
+  "name": "时间轴推进",
+  "family": "A. 教学解说",
+  "kind": "style",
+  "look": "奶白底、贯穿全屏的钴蓝粗轴、明黄圆点节点，到点放大成整屏事件卡",
+  "signature": "时间轴持续向左推移，节点到中点弹开，镜头推进成事件卡，讲完缩回轴上，年份按位滚动",
+  "fits": "发展史、项目复盘、人物生平、行业大事记",
+  "implementation": "HTML 逐帧或 SVG，一条长轴做世界坐标；`hf:pan-stations` `gn:rolling-digits` `gn:scale-pop`；近亲 `map-journey`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:pan-stations",
+    "gn:rolling-digits",
+    "gn:scale-pop"
+  ],
+  "spec": {
+    "palette": [
+      "#f5f2ea",
+      "#1f3fbf",
+      "#ffc933",
+      "#15171c",
+      "#c9ccd3"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "时间轴持续向左推移",
+      "节点到中点弹开",
+      "镜头推进成事件卡",
+      "讲完缩回轴上",
+      "年份按位滚动"
+    ],
+    "forbidden": [
+      "竖向瀑布长图",
+      "多条并行轴",
+      "卡片阴影堆叠",
+      "全彩照片"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "画面只有一根横穿全屏的粗轴，位于高度 58–62% 处，过去在左，未来在右，节点按真实时间间距排列。当前年份固定在中点上方。走到节点就放大成一张事件卡，占画面 70%，讲完再缩回轴上继续走，空白的年份也要留出来。",
+      "material": "平面印刷感：奶白底无纹理，轴线粗约画面高度 1%，走过的段落是钴蓝，未走过的段落是浅灰。节点是明黄圆点，直径约 2.5%，带 0.3% 黑描边。事件卡里可以放图，但要单色化成钴蓝双色调，保证全片只有三种墨色。",
+      "type": "年份用思源黑体 Heavy 等宽数字，高度 12–16%，放在中点上方。事件标题思源黑体 Bold，不低于 5%；补充说明 Noto Sans SC，不低于 3%，一张卡不超过 20 字。竖屏把轴改成纵向，从下往上推进，年份放左上角，事件卡占屏宽 88%。",
+      "motion": "轴匀速推移，到节点前 0.3 秒减速，ease-out 停稳。节点 0.25 秒弹出，过冲 8%。放大 0.6 秒 ease-in-out，缩回 0.5 秒。年份走过时按位滚动，不淡入淡出。30fps，轴在整段里不能完全静止超过 6 秒。",
+      "camera": "整段是一个连续长镜头，没有切点。行进段每段 1.5–3 秒，驻停段 3–6 秒。节奏用节点间距控制：真实时间隔得久，走的路就长。章节结束时拉远看全轴 1.5 秒，所有走过的节点排成一列。",
+      "narration": "“那一年”句走到节点；举例句放大事件卡；数字句把数字写进卡片并按位滚动；转折句让轴突然加速或变色；结论句拉远看全轴。不适合没有先后的并列内容，节点超过 10 个要分章，否则每个节点都讲不透。"
+    },
+    "concept_prompt": "奶白色平面背景上，一根粗钴蓝色横线穿过画面中部偏下，左半已走过的线是实蓝，右半未到达的线是浅灰。线上排着几个带黑细边的明黄圆点，间距不等。中央一个圆点展开成一张大矩形事件卡，里面是钴蓝双色调的小型城市天际线图片和一行粗黑短标题。卡片上方是一串巨大的粗黑年份数字“1998”。没有阴影和渐变，纯平印刷质感，构图稳定，横向展开。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/timeline-march.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/timeline-march/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:M20"
+  ]
+}

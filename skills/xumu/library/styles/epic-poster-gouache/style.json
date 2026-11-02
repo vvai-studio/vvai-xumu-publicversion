@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "epic-poster-gouache",
+  "name": "史诗海报水粉",
+  "family": "M. 绘画与古典媒材",
+  "kind": "style",
+  "look": "1960 年代手绘片场海报：不透明水粉铺底，油性亮笔收边，蓝天压琥珀地，主角居中斜势",
+  "signature": "主角带斜线势入场；布料随风扬起；受光边压亮一笔；片名大字从底部升起",
+  "fits": "大事件、里程碑、人物宣传片、片头片尾、大决定",
+  "implementation": "生图 + 分层，需素材；HTML 逐帧分层视差加片名；`gn:deep-parallax` `hf:headline-slam`；近亲 `opuscar-silkscreen-poster`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:deep-parallax",
+    "hf:headline-slam"
+  ],
+  "spec": {
+    "palette": [
+      "#1d4a92",
+      "#adc6d8",
+      "#ecc07c",
+      "#b1673a",
+      "#6e6596",
+      "#fbeccd"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "主角带斜线势入场",
+      "布料随风扬起",
+      "受光边压亮一笔",
+      "片名大字从底部升起"
+    ],
+    "forbidden": [
+      "均匀刮擦线",
+      "平涂数码色",
+      "全冷色调",
+      "细小杂乱道具",
+      "写实摄影"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一张海报就是一幕：主角居中最大，占画高 50–70%，身体或手势形成一条斜线，布料或旗帜顺势飘起。身后人群或车队更小更松，向远处退去。讲公司就让创始团队站成一线，讲项目就让主体迎着光，下方留给片名。",
+      "material": "底层先用中明度实色把形体盖满，再顺结构上笔，大面宽约画宽 1.5–2%，五官和手换小笔。任何形体只用三个明度，交界柔接。飞白留给尘土与远景。收尾用奶油色在受光边拉一道锐线。冷暖要对冲，颗粒 2–3%，薄雾加暖色暗角。",
+      "type": "片名思源宋体 Heavy，占画面高 12–18%，宽字距，奶油色，有手绘标题的体量。说明用 Noto Sans SC，不小于 3.2%，放在片名下方。竖屏本就合适，主角占上三分之二，片名放下三分之一，横屏则主角偏一侧。",
+      "motion": "分层视差 24fps，主角微幅上下起伏 1%，布料 12fps 循环 2–3 秒。片名升起 0.8 秒缓出，无回弹。尘土横向吹过。主角入场用 1 秒推出，从 96% 放大到 100%，带 0.1 秒定格。",
+      "camera": "缓慢推到仰角近景，每段 4–7 秒，然后用甩镜出画 0.3 秒切下一张。一段可连出 3–4 张海报，形成连环推进。章节结尾回到全海报构图，定格 2 秒。不用手持，不用俯拍，保持纪念碑感。",
+      "narration": "开篇句出全海报；宣告句升片名；数字句以海报副标题形式出现；人物句推到近景；结论句回到全幅定格。一片用两三次即可。不适合日常、幽默和数据细讲。崩点是冷暖都弱了变成灰扑扑，或人物造型与时代题材冲突。"
+    },
+    "concept_prompt": "一张手绘老海报，深蓝天空向下过渡到浅蓝，低垂的太阳周围转暖；一位穿工装夹克的工程师从侧后方看去站在画面中央最大处，手臂斜指前方，长围巾被风扬成一条斜线；脚下是琥珀色的巨型大坝工地，远处几队小人影和塔吊松松地退向天边，影子呈淡紫；笔触顺着形体走，受光边缘压一道锐利的奶油色亮线；底部一行巨大的奶油色中文「开工」，轻颗粒，薄雾"
+  },
+  "gallery": {
+    "frame": "assets/gallery/epic-poster-gouache.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/epic-poster-gouache/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O35"
+  ]
+}

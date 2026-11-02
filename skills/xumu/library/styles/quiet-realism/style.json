@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "quiet-realism",
+  "name": "静默写实",
+  "family": "M. 绘画与古典媒材",
+  "kind": "style",
+  "look": "20 世纪中期美国写实绘画：大块淡绿与奶油平面、低角度硬边光块，人物相隔而立",
+  "signature": "长时间静止；地面光块缓慢移动；不到一秒的突发打破平静；人物各自站开不接触",
+  "fits": "职场疏离、制度与个体、等待、城市孤独",
+  "implementation": "生图 + 分层，需素材；SVG 或 Canvas 2D 做硬边光块移动；`gn:hard-cut` `gn:light-sweep` `gn:layer-separation`；近亲 `editorial-light`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:hard-cut",
+    "gn:light-sweep",
+    "gn:layer-separation"
+  ],
+  "spec": {
+    "palette": [
+      "#a7bda6",
+      "#6a8570",
+      "#efe7d3",
+      "#f7dfa8",
+      "#838d7c",
+      "#3e4a43"
+    ],
+    "fonts": {
+      "title": "Noto Serif SC",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "长时间静止",
+      "地面光块缓慢移动",
+      "不到一秒的突发打破平静",
+      "人物各自站开不接触"
+    ],
+    "forbidden": [
+      "粗轮廓线",
+      "矢量卡通人",
+      "柔焦光斑",
+      "拥挤人群",
+      "饱和深色墙"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "静止的一点透视室内或街角，大块平面占据八成，人物比例写实，多人时彼此隔开。真正的主角是投到墙上和地上的平行四边形光块。讲办公室、机构或城市都行，几何越规整越有压迫感，画面里留大片没有事情发生的空间。",
+      "material": "底色偏浅，明度 60–85%。每块平面留三五道长拖笔，宽 1–1.5%，明暗偏差 4–8%，可见布纹 2%。光块暖黄，边缘硬，压着窗框的清晰影子。人物用 3–4 块柔边色块堆成，不描线，肤色略暖。",
+      "type": "标题 Noto Serif SC Regular，占画面高 4–6%，深灰绿，放在空墙上，低调如同门牌。说明 Noto Sans SC，不小于 3%。一屏最多一句。竖屏改成走廊或高窗的纵深，光块放在下半幅的地面，字放上方空墙。",
+      "motion": "绝大部分时间是静帧，24fps 只留布纹微动。光块在 10 秒内挪动约 3%。人物最多有一个缓慢动作，比如转身。然后一件不足 0.8 秒的突发：甩镜、强光闪过或门突然打开，随后回到静止，这个反差就是节奏。",
+      "camera": "固定机位，单镜头 6–14 秒，长到略不舒服。转场全部硬切，切到同一空间的另一角度。突发时可用 0.3 秒甩镜换一幕。不用推拉，不用手持，时间只由光块记录。一段内同构图最多重复 3 次。",
+      "narration": "陈述句对着静止画面；停顿时让光块动；转折句触发一次突发；结论句回到空房间。数字写成墙上的表或门牌。不适合热闹、炫技和信息密集的片段。崩点是人物线条化变成扁平插画，或者光块边缘柔化后失去力量。"
+    },
+    "concept_prompt": "一点透视的安静办公走廊，淡绿色墙面和灰绿地面是大块克制的平面，低角度阳光从左侧窗户射入，在地面和右墙投下硬边的暖黄平行四边形，光块被窗框影子切开；远处一个穿深绿外套的人背对画面站着，另一个人在走廊另一端坐着等待，两人相隔很远，身形由几块柔边明暗构成，没有轮廓线；墙上挂一只小钟；可见画布纹和少量长拖笔，极度安静"
+  },
+  "gallery": {
+    "frame": "assets/gallery/quiet-realism.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/quiet-realism/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O48"
+  ]
+}

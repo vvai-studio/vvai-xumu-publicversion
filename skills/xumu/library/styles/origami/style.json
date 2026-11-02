@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "origami",
+  "name": "折纸",
+  "family": "E. 插画与手作",
+  "kind": "style",
+  "look": "素净浅灰台面、一张彩纸折出多面体、清晰折痕、明暗分面、纸边露白芯",
+  "signature": "整张纸沿折痕翻起；三角面逐片折成形；展开留下折痕再折新形；受光面随折角转变；纸背换色进入下一段",
+  "fits": "变化与转型、结构原理、产品迭代、数学科普",
+  "implementation": "Three.js 面片铰链；`gn:origami-fold` `gn:plane-transformation` `hf:facet-morph`；近亲 `paper-craft`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:origami-fold",
+    "gn:plane-transformation",
+    "hf:facet-morph"
+  ],
+  "spec": {
+    "palette": [
+      "#ecebe6",
+      "#d8402e",
+      "#1f6f96",
+      "#f1b22f",
+      "#fdfcf8",
+      "#34363a"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "整张纸沿折痕翻起",
+      "三角面逐片折成形",
+      "展开留下折痕再折新形",
+      "受光面随折角转变",
+      "纸背换色进入下一段"
+    ],
+    "forbidden": [
+      "撕裂毛边",
+      "胶水拼接",
+      "曲面软褶",
+      "手绘线稿",
+      "照片贴图"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "全片只用一张纸。画面中央一张方纸，通过折叠变成本段的主角：房子、箭头、数字、飞鸟，下一段展开再折成别的，纸上留着前面所有的折痕。台面空无一物，主体占高 45–65%。变化这件事本身就是内容。",
+      "material": "纸厚约画幅 0.1%，边缘可见白色纸芯，正反两色。每个面单色，靠受光角度差 8–25% 的明度分面。折痕是一条细亮线加一侧细暗线。主光从左上 45 度，投影柔和，不透明度 25%。纸纹细腻，强度 2%。",
+      "type": "标题用思源黑体 Medium，占高 6–8%，放在主体左下，像展览标签，安静。说明用 Noto Sans SC，不小于高度 3.2%。文字不折、不扭，始终平放。竖屏主体上移到画面 40% 处，字放下方；横向展开的步骤改成自上而下的折叠序列。",
+      "motion": "每一折是铰链旋转，0.35–0.6 秒，缓入缓出，到位时纸略微回弹 3 度。多折串行，相隔 0.1 秒，节奏像手在操作。全部 30fps，面片不变形不拉伸，只绕折线转。展开比折叠快 1.5 倍。",
+      "camera": "三分之一俯视，固定或极慢环绕，每段环绕不超过 20 度。一镜 3–5 秒。换场时主体完全展开成平面铺满屏，纸背的新颜色翻上来，再折出下一段。高潮处可拉到正俯视，看全部折痕形成的图案。",
+      "narration": "转型句展开再重折；步骤句每说一步折一下；翻倍句对折一次，层数与面积同步显示；对比句把旧折痕亮出来；结论句折完后绕一圈展示。不适合信息量大的清单和人物情感戏；折叠算不出来时宁可简化形状，别让面穿插。"
+    },
+    "concept_prompt": "浅灰台面中央，一张红色方纸刚折到一半，正在从平面变成一只立起的多面体飞鸟，左半边已经折出清晰的三角面，右半边还平摊着，能看到交错的折痕；每个面明暗不同，纸边露出白色纸芯，背面是深蓝色；一束从左上方来的柔光投下淡而清晰的影子；纸的右下方有一个小小的中文标签“第三折”；简洁的三分之一俯视，干净的摄影棚光，细腻纸纹"
+  },
+  "gallery": {
+    "frame": "assets/gallery/origami.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/origami/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:K22"
+  ]
+}

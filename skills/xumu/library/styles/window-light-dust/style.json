@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "key": "window-light-dust",
+  "name": "窗光与尘",
+  "family": "L. 诗意氛围",
+  "kind": "style",
+  "look": "老灰泥墙的暗室，一束斜光穿过窗棂落在地面，浮尘在光柱里缓慢翻动，光块随时间移动",
+  "signature": "光柱缓慢扫过墙面；尘粒在光里翻飞；地上窗格影子拉长；字被光块照亮再退暗",
+  "fits": "时间流逝、老行业、家族记忆、沉思段落",
+  "implementation": "Canvas 2D 光柱遮罩加粒子，房间可代码画或生图；`hf:godrays` `gn:ambient-particle-drift`；近亲 `cinematic-dark`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "hf:godrays",
+    "gn:ambient-particle-drift"
+  ],
+  "spec": {
+    "palette": [
+      "#1f1a16",
+      "#4a3d32",
+      "#8c7a63",
+      "#efd6a4",
+      "#fff2d6"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "光柱缓慢扫过墙面",
+      "尘粒在光里翻飞",
+      "地上窗格影子拉长",
+      "字被光块照亮再退暗"
+    ],
+    "forbidden": [
+      "多束彩色光",
+      "舞台追光",
+      "快速飞舞的粒子",
+      "现代灯具",
+      "人物正脸"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "取景是一面墙和一块地板，窗在画外或只露一角。光柱斜切画面，占 15–25% 面积，其余落入暗部。讲述的物件放进光里：一本账册、一把椅子、一张旧表格。全景只留一件主物，别的只是暗处的轮廓。",
+      "material": "暗部暖褐，亮度不低于 8%，看得清墙面肌理。光柱内亮度比暗部高 3–4 倍，边缘半影宽 1–2% 画幅。尘粒 80–200 颗，只在光柱内可见，直径 0.05–0.15%。地面窗格影清晰，颗粒 2–3%。",
+      "type": "字直接投在墙上或地上的光块里，思源宋体，占画面高 5–8%，顺墙面微调透视不超过 6 度。次要说明 Noto Serif SC，不小于 3%。竖屏把光柱改成从右上斜下，主物放下半幅，字放在光柱顶端的墙面。",
+      "motion": "30fps。光块移动代表时间，10 秒内移动不超过画幅 6%；需要表现几小时流逝时，用 3–4 秒快进一次，并同步变色。尘粒速度极低，受缓慢对流影响，偶有一颗折射闪亮。字随光块亮起，用时 1 秒。",
+      "camera": "固定机位或极慢横移，单镜头 6–12 秒。换场用整体变暗 0.8 秒，或光块滑走后墙上换了一幅内容。转章节时让光从暖黄转灰蓝，表示一天结束，同一取景重复出现，形成时间的刻度。",
+      "narration": "讲岁月时光块移动；点到某物时光落在它身上；引述句投字到墙上；结论句让光退去留下字。数字适合做成墙上的日期或刻度。不适合快节奏、科技感和要同时展示多个主体的内容，也不适合明亮欢快的基调。"
+    },
+    "concept_prompt": "一间昏暗的老屋内部，斑驳的灰泥墙和旧木地板，一束暖黄阳光从画外的窗斜射进来，穿过空气形成清晰的光柱，地板上投出拉长的窗格光影；光柱里悬浮着许多细小尘粒，个别闪亮；光落在一张旧木桌的一角，桌上放着一本合起的账册和一支钢笔；其余空间沉入暖褐色暗部，仍可辨认墙面裂纹，空气安静，细颗粒，略低的平视角度"
+  },
+  "gallery": {
+    "frame": "assets/gallery/window-light-dust.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/window-light-dust/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:D2"
+  ]
+}

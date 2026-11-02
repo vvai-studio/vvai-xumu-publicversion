@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "key": "magazine-realism",
+  "name": "杂志封面写实",
+  "family": "M. 绘画与古典媒材",
+  "kind": "style",
+  "look": "1930–50 年代美国周刊封面插画：块面塑造的人物、暖主光冷阴影，背景藏小故事",
+  "signature": "封面框收入刊头；次要人物各忙各的；焦点推向手上小物；一个表情定格成封面",
+  "fits": "消费史、职业故事、社区生活、怀旧主题、商业案例",
+  "implementation": "生图 + 分层，需素材；HTML 逐帧叠刊头与景深；`gn:deep-parallax` `gn:ken-burns` `gn:page-turn`；近亲 `editorial-light`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:deep-parallax",
+    "gn:ken-burns",
+    "gn:page-turn"
+  ],
+  "spec": {
+    "palette": [
+      "#e4cda0",
+      "#7a4a2a",
+      "#26332d",
+      "#d9a93f",
+      "#3a221a",
+      "#9c4b37"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": "霞鹜文楷"
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "封面框收入刊头",
+      "次要人物各忙各的",
+      "焦点推向手上小物",
+      "一个表情定格成封面"
+    ],
+    "forbidden": [
+      "卡通大眼",
+      "重纹理滤镜",
+      "等粗描边",
+      "空白背景",
+      "发脏的灰色"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "每一幕都是一张能当杂志封面的画：一个主角，一件能说明事态的小物，身后是做着自己事的路人。人物接近写实，头身比 1:6.5 到 1:7.5，表情读得出。讲商业案例可以是柜台前的一刻，讲技术普及可以是一家人围着一台新机器。",
+      "material": "块面分受光、背光、下方反光三层，塑形平滑，笔宽 0.5–0.8%，明度差不超过 6%。深色轮廓在背光侧加粗，宽 0.1–0.35%。左上暖主光，阴影偏冷蓝灰。深色约占三分之一，颗粒板纹 2–3%，暖暗角轻。",
+      "type": "封面版式：顶部刊头思源宋体 Heavy，占画面高 8–12%，人物可压住刊头一角。标题正文 Noto Serif SC，不小于 3%。批注可用霞鹜文楷。竖屏更贴近原版，全幅当封面，字幕放底部三分之一的衣物或地面上方。",
+      "motion": "人物是一张画，整体做呼吸、微摆、沿路径滑行，幅度不超 1.5%，24fps。路人分层慢速移动。表情切换用 2–3 张替换图，6–8fps。翻到下一期用翻页，0.8 秒，纸面有弯曲和阴影。",
+      "camera": "典型是一次 8–12 秒的长推，从全景平滑推到手或脸的近景，不到大特写。一镜到底优先，必要时用四分之三视角换景。章节用翻杂志换场，刊头改成对应年份或主题，形成连续出版的感觉。",
+      "narration": "开场句出封面全景；情节句让路人反应；细节句推到手上小物；数字句写在小黑板或收据上；幽默句定格一个表情。不适合严肃灾难、抽象技术架构。崩点是人物像剪纸一样僵硬，或背景空掉失去讲故事的趣味。"
+    },
+    "concept_prompt": "一张老式周刊封面插画，顶部有粗衬线中文刊头「周末」，下方是傍晚的街角杂货铺，暖色主光从左上照来，店主系围裙弯腰把一只纸袋递给柜台前的小女孩，两人都从侧面看去，表情可读；身后一个邮差和一位妇人各忙各的，橱窗映出街景；阴影冷蓝灰，人物用平滑块面塑造，背光侧有深色轮廓，暖砖红配瓶绿，细颗粒画板纹，温暖有趣"
+  },
+  "gallery": {
+    "frame": "assets/gallery/magazine-realism.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/magazine-realism/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O46",
+    "code-animation-prompts:O62"
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "detective-board",
+  "name": "线索板",
+  "family": "B. 新闻纪实",
+  "kind": "style",
+  "look": "台灯下的软木板，歪钉的卡片、便签与打印图，红线绷直把线索连成网",
+  "signature": "镜头横移扫过板面，新卡片钉上抖一下，红线从图钉拉紧到下一张，红笔圈出数字，闪白揭晓结果",
+  "fits": "商业调查、事实核查、悬疑解读、推理式科普",
+  "implementation": "HTML 大画布平移，红线 SVG 描线；`gn:line-draw` `gn:stamp-impact` `hf:hw-callout-circle`；近亲 `opuscar-visual-investigation`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:line-draw",
+    "gn:stamp-impact",
+    "hf:hw-callout-circle"
+  ],
+  "spec": {
+    "palette": [
+      "#9a6b42",
+      "#1a120c",
+      "#efe6d2",
+      "#d8b84a",
+      "#c22a24"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": "站酷小薇"
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "镜头横移扫过板面",
+      "新卡片钉上抖一下",
+      "红线从图钉拉紧到下一张",
+      "红笔圈出数字",
+      "闪白揭晓结果"
+    ],
+    "forbidden": [
+      "血迹",
+      "真人嫌疑照片",
+      "数字界面",
+      "干净白底",
+      "暴力现场图"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一块软木板比画面大 2–3 倍，镜头只看局部。板心是一张问号卡，代表还没弄清的那个人、公司或原因。周围钉着写线索的索引卡、便签、打印截图，红线把它们连向中心。看到最后拉远，才见到整张网。",
+      "material": "软木颗粒细密，四角暗角压到接近黑，模拟单盏台灯，中心亮度是边缘 3–4 倍。卡片米色带横格，倾斜 ±3–6°，有 0.3% 的短投影。红线粗约短边 0.25%，绷直无弧度。图钉红色，带一点高光。便签黄色，面积只占 10% 左右。",
+      "type": "卡片标题用思源黑体 Bold，不低于 3.6%，正文 Noto Sans SC 不低于 2.6%，一张卡不超过 16 字。便签用站酷小薇手写问句。红笔批注只圈和划，不写长句。竖屏让板面纵向铺开，镜头上下移动，卡片放大 1.3 倍，单屏最多 3 张卡。",
+      "motion": "卡片飞入 0.25 秒，钉上时轻晃一次，幅度 2°。红线 0.35–0.5 秒从图钉拉到图钉，到位有一次绷紧的小抖。红笔圈 0.4 秒手绘抖动。节拍 24fps。揭晓用全屏闪白 2–3 帧，白后换成结果卡，盖章 3 帧砸下。",
+      "camera": "除一次闪白外不切镜头，整段是一个缓慢平移和推进：每秒移动约画宽 3–5%，到新线索处减速停 2–3 秒。机位带极轻微的手持漂移，幅度 0.2%。收尾前拉远到全板，所有红线同时可见。",
+      "narration": "每个证据句钉一张卡；“这两件事有关”句拉一根红线；数字句写在卡上并用红笔圈出；“但这里不对”这类转折句划掉旧数字改写；结论句闪白揭晓并盖章。不适合答案早已公开的内容，也不适合流水账，没有悬念这张板就没有张力。"
+    },
+    "concept_prompt": "一块铺满画面的软木板，被单盏台灯从上方照亮，四角沉入近黑。中央钉着一张灰色问号卡片，周围是六七张微微歪斜的米色横格索引卡和几张黄色便签，每张只有很短的中文字。绷直的红线从一颗颗红色图钉之间拉过，汇向中心，形成放射状的网。一张卡上有红笔画的圈，角落里露出一张被裁切的打印图表。近景，略有景深，软木颗粒和纸张边缘清晰，气氛紧张而安静。"
+  },
+  "gallery": {
+    "frame": "assets/gallery/detective-board.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/detective-board/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:X22"
+  ]
+}

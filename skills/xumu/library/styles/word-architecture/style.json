@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "word-architecture",
+  "name": "文字建筑",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "炭灰暗场、纸色粗字当梁柱地板的文字构筑物、一条地平线、一道琥珀色",
+  "signature": "地基词横落震地；词柱竖起撑高；词梁架上压实；末句走上平台站定；镜头拉出看全貌",
+  "fits": "结尾金句、论证推进、把理念一层层搭起来",
+  "implementation": "SVG 或 HTML 逐帧，用字形轮廓做碰撞与对齐；`gn:piece-assembly` `gn:shape-built-letters` `gn:bounce-landing`；近亲 `kinetic-type`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:piece-assembly",
+    "gn:shape-built-letters",
+    "gn:bounce-landing"
+  ],
+  "spec": {
+    "palette": [
+      "#15171c",
+      "#3a3f4a",
+      "#ece4d2",
+      "#e8a33d"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "地基词横落震地",
+      "词柱竖起撑高",
+      "词梁架上压实",
+      "末句走上平台站定",
+      "镜头拉出看全貌"
+    ],
+    "forbidden": [
+      "实拍素材",
+      "人物与麦克风",
+      "人群剪影",
+      "旗帜",
+      "装饰性图标"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "画面只有文字和一条地平线。每个词领一个结构角色：地基、立柱、横梁、台阶。前面几句搭起一座构筑物，最后一句站到顶上。构筑物高度从画面 20% 长到 70%，读完就是一张可截图的海报。",
+      "material": "暗场为炭灰，亮度 8–10%，不用纯黑。文字是实心纸色，地面有一道长度约 80% 画宽的细线。落地时在字底投一条硬边阴影，长度约字高 30%。琥珀色只给最后一句，占比不超过 8%。无颗粒、无发光。",
+      "type": "用思源黑体 Heavy，横放的词当梁，字高 8–14%；竖放的词当柱，字宽按柱宽拉齐。可读下限 5% 高。辅助说明用 Noto Sans SC。竖屏天然更适合，把构筑物改成高塔，横梁不超过 86% 画宽。",
+      "motion": "30fps。词块下落 5–7 帧，用重力加速，落地过冲 3% 后回弹并让下方结构同步下沉 1%。立柱从地面向上生长 0.5 秒。每一步都要有承重反馈：新词压上时，下层微微受压。末句逐字走上平台，用时约 1.2 秒。",
+      "camera": "一个连续机位。每句一个新结构，用时 2–3 秒，镜头随高度缓慢上移，让新词保持在画面中上部。全部搭完后拉远 25%，展示整体并停 1.5 秒。不切镜头，下一段由构筑物整体下沉出画开场。",
+      "narration": "前提句当地基；论据句当立柱；因果词当横梁把两根柱子连起来；结论句走上去站定。转折句可抽掉一根柱子让结构倾斜，再由新论据扶正。只适合 10–30 秒的收束段，不适合叙事和数据，词要短，四字内最好。"
+    },
+    "concept_prompt": "炭灰色暗场中，一座完全由粗黑体汉字搭成的构筑物立在一条细地平线上：底部一个横放的巨大词语当地基，两个竖排的词语当立柱，上方一个加长的词横架成梁，字的笔画彼此咬合承重。最顶端的平台上站着一行较小的琥珀色短句。文字都是实心米白色，脚下投出短而硬的阴影，正面平视，构图居中对称，四周空旷，没有任何其他物件"
+  },
+  "gallery": {
+    "frame": "assets/gallery/word-architecture.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/word-architecture/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:M3"
+  ]
+}

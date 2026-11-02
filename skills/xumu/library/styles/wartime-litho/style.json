@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "key": "wartime-litho",
+  "name": "战时石印海报",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "奶油纸、灰蓝蜡笔颗粒阴影、墨绿轮廓线，小主体立在巨大徽章形前",
+  "signature": "巨型徽章从地平线升起；斜向光带扫过削去阴影；小主体在前方站定；色版错位后归位；纸纹逐帧跳动",
+  "fits": "公共倡议、集体行动、年代回顾、动员式开场",
+  "implementation": "生图 + 分层，需素材，蜡笔版用噪声阈值；`gn:deep-parallax` `gn:film-grain` `gn:ken-burns`；近亲 `opuscar-silkscreen-poster`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:deep-parallax",
+    "gn:film-grain",
+    "gn:ken-burns"
+  ],
+  "spec": {
+    "palette": [
+      "#e9dcbd",
+      "#7f93a3",
+      "#9e3d2b",
+      "#32503f",
+      "#1c2321"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "巨型徽章从地平线升起",
+      "斜向光带扫过削去阴影",
+      "小主体在前方站定",
+      "色版错位后归位",
+      "纸纹逐帧跳动"
+    ],
+    "forbidden": [
+      "武器",
+      "军服",
+      "伤亡场面",
+      "真实战争影像",
+      "大片饱和色",
+      "矢量干净边"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "舞台式构图：一个很小的主体正面站着，身后竖起一个大到几乎撑满画框的符号，比如徽章、齿轮、日出或地图轮廓。构图对称，地面平阔。主体可换成工人、学生或一座灯塔，通过尺度对比传达分量。",
+      "material": "三版套印，错开 0.1–0.2% 画幅。色版平涂；灰蓝蜡笔版用短而斜的颗粒压暗阴影；墨绿黑轮廓线约画宽 0.2%。奶油是纸和亮部，灰蓝是天空，砖红与深绿合计不超过画面 25%。不用网点。",
+      "type": "标题用思源黑体 Heavy，字高 8–12%，一行放在图形下方或顶端，字面带蜡笔颗粒。说明用 Noto Sans SC，不低于 3.2% 高。竖屏把巨大图形放上半屏，主体落在下三分线，标题放底部安全区之上。",
+      "motion": "主动作 24fps，纸纹以 12fps 单独跳动。巨型图形 1.2 秒从地平线缓升，缓出。光带沿斜向 0.8 秒扫过，照到处阴影版消失。主体走 3–4 步站定。色版在开场错位 0.5%，1 秒内归位。天空用缓慢的云层移动。",
+      "camera": "慢推带视差，单屏 3–5 秒，每屏推进不超过 8%。允许一次干脆的拉出，从主体拉到全貌，用时 0.8 秒。换场用光带铺满全屏，再收出下一张。层次分 3 层，地面、主体和背后图形速度各不同。",
+      "narration": "号召句让图形升起、主体站定；转折句让光带扫过；规模句缩小主体放大图形；数字句写进徽章中央；结尾句推到标题。只写视觉技法，不表达立场。不适合轻松话题和细数据，造型太碎会失去海报力量。"
+    },
+    "concept_prompt": "一张奶油纸上的石印海报：画面下方一片开阔的平原，一位提着工具箱的小小人影正面站着，身后一枚巨大的齿轮徽章从地平线升起，占满大半画面。灰蓝色天空和阴影由短而斜的蜡笔颗粒构成，一道浅色光带斜落，照到的地方阴影消失。砖红与深绿只在徽章内环和地面小块出现，墨绿黑轮廓线描出每个形，色版略微错开，纸纹粗粝，对称庄重"
+  },
+  "gallery": {
+    "frame": "assets/gallery/wartime-litho.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/wartime-litho/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O15",
+    "code-animation-prompts:O43"
+  ]
+}

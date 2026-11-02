@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "key": "script-poster",
+  "name": "花体海报",
+  "family": "D. 平面设计流派",
+  "kind": "style",
+  "look": "奶油纸底、满幅倾斜的朱红行书大字压住黑白主图，手写杂志封面",
+  "signature": "行书大字一笔写出；朱红横线收势；主图从字后探出；小字竖排贴边；整版微倾回正",
+  "fits": "人物专访、生活方式、品牌态度、情绪短片",
+  "implementation": "SVG 字形遮罩做书写，主图生图 + 分层，需素材；`gn:handwriting-write-on` `gn:layer-separation`；近亲 `poster-colorblock`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "gn:handwriting-write-on",
+    "gn:layer-separation"
+  ],
+  "spec": {
+    "palette": [
+      "#f6ecd9",
+      "#d8232a",
+      "#1a1413",
+      "#e9c9a8"
+    ],
+    "fonts": {
+      "title": "志莽行书",
+      "body": "Noto Sans SC",
+      "handwriting": "马善政楷书"
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "行书大字一笔写出",
+      "朱红横线收势",
+      "主图从字后探出",
+      "小字竖排贴边",
+      "整版微倾回正"
+    ],
+    "forbidden": [
+      "工整黑体标题",
+      "多色配色",
+      "分栏长文",
+      "图标列表",
+      "水平端正的版式"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一屏一张杂志封面：去底的黑白主图居中偏下，占画高 55–75%，一两个行书大字横跨全幅，部分压在主图前，部分藏到主图身后。边角有竖排小字和期号。整张版面向左倾斜 6–10°，带出速度感。",
+      "material": "奶油纸底，叠 3–5% 细颗粒。主图转高反差黑白，只留 3–4 档灰。大字用朱红实色，边缘带 0.1% 画幅的墨晕。全片只有朱红一个强调色，另有一档淡肤杏色作纸上大色块，占比不超过 20%。",
+      "type": "标题用志莽行书，字高 30–45%，一屏 2–4 字，字可出血。行书细处难辨，要读的词再配一行 Noto Sans SC 小字，不低于 3.2% 高。竖屏把大字改竖写两列，主图放下半屏。",
+      "motion": "24fps。大字按笔画顺序写出，每字 0.4–0.6 秒，起笔慢、收笔快，末笔甩出。写完 2 帧后主图轻轻上升 1.5%。整版在进场时从 -12° 回到 -8°，缓出 0.6 秒。小字用硬出现，不抢大字。",
+      "camera": "单屏 3–4 秒，一屏一个词。镜头做极慢推近，每屏不超过 5%。换场时让上一屏的朱红笔画扩成满屏红，用时约 8 帧，再揭出下一张封面。一组封面可以连续翻 3–4 张，像翻杂志。",
+      "narration": "情绪句写成一个大字；人物句配主图加名字；态度句写短语后朱红横线收势；对比句左右两张封面各写一词。不适合精确数据和教程步骤，大字太抽象时要配小字说明，否则观众读不出来。"
+    },
+    "concept_prompt": "奶油色纸面上，整张版面微微向左倾斜，两个巨大的朱红色行书汉字横贯全幅，笔锋飞白、墨边微晕，一部分压在人物之前，一部分被挡在人物身后。人物是高反差黑白的背影半身，穿风衣，站在画面中下方。左上角有很小的黑色期号，右侧贴边一列竖排小字，纸面带细微颗粒，只有红、黑、奶油三色，平面印刷质感，像一本手写字杂志的封面"
+  },
+  "gallery": {
+    "frame": "assets/gallery/script-poster.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/script-poster/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:H4"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "cosmic-zoom",
+  "name": "点到宇宙",
+  "family": "O. 结构手法",
+  "kind": "style",
+  "look": "黑场一点、层层尺度嵌套、角落读数、星点与灯光同构",
+  "signature": "黑屏一点展开成场景；连续拉远到地球再到星系；读数同步滚动；缩成一点推入新世界",
+  "fits": "尺度对比、规模感、系统全貌、小工具大影响",
+  "implementation": "WebGL 或 Three.js 嵌套贴图缩放；`hf:cinematic-zoom` `gn:rolling-digits` `gn:deep-parallax`；需素材；近亲 `opuscar-microscope`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": true,
+  "components": [
+    "hf:cinematic-zoom",
+    "gn:rolling-digits",
+    "gn:deep-parallax"
+  ],
+  "spec": {
+    "palette": [
+      "#05060c",
+      "#e8eef7",
+      "#4e7fd6",
+      "#f0a84a",
+      "#39414f"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "Noto Sans SC",
+      "handwriting": ""
+    },
+    "strength_max": "强",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "黑屏一点展开成场景",
+      "连续拉远到地球再到星系",
+      "读数同步滚动",
+      "缩成一点推入新世界"
+    ],
+    "forbidden": [
+      "层间跳切",
+      "编造的尺度读数",
+      "密集文字",
+      "相机抖动",
+      "彩虹星云"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "起点是黑屏上的一个亮点，展开成具体小物：一个光标、一粒芯片、桌上一张票据。然后一级级拉远：桌面、房间、城市、地球、星系，共 5–8 级。到最远处，整个世界缩成一点，再推进到另一个场景，落到结论。",
+      "material": "每级是一张贴图或小场景，尺度相差约 10 倍，按对数嵌套。最远层用深黑加细星点，亮星不超 3 个。主色只留蓝白，加一处暖橙标记起点并全程跟随，缩到极小时仍保留 0.3% 画幅的亮点。层间用薄大气或云层遮住接缝。",
+      "type": "尺度读数常驻一角：思源黑体，字高 3–4%，数字等宽，格式如「1 米」「10 公里」「1 光年」。结论句 Noto Sans SC Bold，字高 6–9%，全片最小 3% 高。竖屏读数放顶部中间，缩放中心放在画面中点偏上。",
+      "motion": "最好 60fps，至少 30fps。缩放必须是指数速度，每 2–3 秒一个 10 倍，保持体感匀速。单级过渡不减速，只在起点、最远点和落点用 0.8 秒缓动。读数跟随实际比例滚动。旋转最多 10 度，用来掩饰换层。",
+      "camera": "全段一个连续镜头，12–30 秒，不切。缩放中心始终锁在主线索上。到最远处停留 1.5–2 秒让观众感到空，再反向推入。推入的新落点与起点错开，完成比喻。长片里每章最多用一次。",
+      "narration": "「这只是一个小工具」类句子放在起点；每拉远一级，旁白加一层范围；最远处说规模数字或留白；推入时说「但回到你身上」类转折。不适合逐点讲细节，尺度数字要核对，不能编造。"
+    },
+    "concept_prompt": "一帧尺度穿梭途中的画面，深空黑背景，下半部是夜晚地球的弧形边缘，城市灯光连成暖橙色的细网，薄云层遮过海岸线；画面中心一处小矩形窗口嵌在城市灯光里，窗内隐约是一张书桌和亮着的屏幕，形成画中画的尺度嵌套，一个暖橙小亮点标在书桌上；上方是稀疏细星点和一条淡淡的银河带；左上角一小行白色读数「10000 公里」；沉静的冷蓝光，边缘有极轻的运动虚化"
+  },
+  "gallery": {
+    "frame": "assets/gallery/cosmic-zoom.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/cosmic-zoom/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:M33"
+  ]
+}

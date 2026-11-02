@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "key": "sunset-3d-void",
+  "name": "日落 3D 空镜",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "紫色积云压在日落海面，碎金光带从天边铺来，画面中央悬着一句短话",
+  "signature": "镜头贴海缓飞穿过云隙；云边由金转紫；海面光带随飞行摇晃；一句话逐词浮现并停住",
+  "fits": "情绪高点、收尾金句、品牌宣言、章节留白",
+  "implementation": "Three.js 着色器海面加程序积云，全程序；`gn:camera-flight` `gn:atmospheric-depth` `gn:word-rise-fade`；近亲 `3d-scene`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:camera-flight",
+    "gn:atmospheric-depth",
+    "gn:word-rise-fade"
+  ],
+  "spec": {
+    "palette": [
+      "#2c2147",
+      "#6a3f7c",
+      "#d0668a",
+      "#f7a35c",
+      "#ffe4b0",
+      "#16324a"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "思源宋体",
+      "handwriting": ""
+    },
+    "strength_max": "克制",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "镜头贴海缓飞穿过云隙",
+      "云边由金转紫",
+      "海面光带随飞行摇晃",
+      "一句话逐词浮现并停住"
+    ],
+    "forbidden": [
+      "正午蓝天",
+      "空战飞机",
+      "多行字幕",
+      "图表图标",
+      "人物特写"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "空镜就是全部内容：海占下部 35–45%，天空和云占上部，太阳压在地平线附近或藏在云后。画面中央偏上只放一句话，不超过 12 字。不放人物和图表，这一镜的任务是让观众停下来听那句话。",
+      "material": "天色从地平线的橙金过渡到顶部深紫，云底受暖光，云顶转冷。海面用多层法线波，光带宽约画幅 8–12%，由密集碎光组成。开启辉光，强度低，只让太阳附近溢出。整体 2% 细颗粒防止色带。",
+      "type": "思源宋体 Medium，占高 5–8%，米白色，字距 8–15%，不加描边，靠低亮度云区托住。一句一行，最小不低于高度 4.5%。竖屏改成两行，放在上部 40% 的天空里，海面占比提高到 50%。",
+      "motion": "全程平滑，无抖动。文字按词出现，每词 0.5 秒上浮加淡入，位移不超过高度 1%，词间 0.2 秒，整句出现后至少停 2 秒。云层相对镜头慢移，海面波速固定，保持时间流动感。",
+      "camera": "全段一个镜头，6–12 秒。离海面约 3–6 米高度匀速前飞，等效 28–35mm，末段抬升 3–5 度见到更多天空。入场用白场或上一镜的亮区匹配，收尾慢慢淡到暗紫。一支片子最多用 2 次。",
+      "narration": "只用在全片最重的一句：结论、宣言、发问。上一句收住，留 0.5 秒静音再起画面，文字与口播同步或晚半拍。不适合说明型内容、连续金句和带货节奏，频繁使用会冲淡分量。"
+    },
+    "concept_prompt": "黄昏的开阔海面，镜头离水面很近，前景波峰被染成橙粉，一条由无数碎金光点组成的光带从地平线铺到镜头前；天空上半部是厚重的紫色积云，云底被低太阳烧成金粉色，云隙透出奶油色天光；太阳半掩在云后；画面中央偏上悬浮一行米白色宋体短句“此刻正好”，字距开阔，没有描边；无人无船，空气通透，广角透视，细颗粒"
+  },
+  "gallery": {
+    "frame": "assets/gallery/sunset-3d-void.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/sunset-3d-void/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:M29"
+  ]
+}

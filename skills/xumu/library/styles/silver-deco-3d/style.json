@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "key": "silver-deco-3d",
+  "name": "银幕黑白 3D",
+  "family": "I. 三维空间",
+  "kind": "style",
+  "look": "三十年代银色黑白：大理石棋盘地、镀铬吊灯、对称纵深、分层转台，只留一个彩色主角",
+  "signature": "平视望进对称纵深；俯拍回廊同心收束；分层转台缓慢旋转；吊臂上升落到主角；光束从高处落下",
+  "fits": "品牌故事、行业历史、高端发布、人物群像",
+  "implementation": "Three.js 对称布景加去色调色，主角单独留色；`gn:camera-orbit` `gn:crane-tilt` `gn:film-grain`；近亲 `opuscar-art-deco`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:camera-orbit",
+    "gn:crane-tilt",
+    "gn:film-grain"
+  ],
+  "spec": {
+    "palette": [
+      "#0c0c0d",
+      "#2e2f31",
+      "#77797c",
+      "#c9cbce",
+      "#eceded",
+      "#b8332e"
+    ],
+    "fonts": {
+      "title": "思源宋体",
+      "body": "Noto Serif SC",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 3.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "平视望进对称纵深",
+      "俯拍回廊同心收束",
+      "分层转台缓慢旋转",
+      "吊臂上升落到主角",
+      "光束从高处落下"
+    ],
+    "forbidden": [
+      "第二种彩色",
+      "非对称杂物",
+      "玻璃幕墙",
+      "偏色灰阶",
+      "无脸锥形人"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "两种布景二选一：对称的圆形大堂，或一层层升高的圆形转台。构图永远中轴对称，地面与天花同时入画。主题里的人和物排在层台或回廊上，成行成列，主角在前排，占高不小于 18%，是全画面唯一有颜色的东西。",
+      "material": "深黑占约 40%，亮面白位约 90%，不到纯白，不发灰。光从一个高处成束落下，缎面和镀铬边缘勾亮。辉光只留在灯旁。灯火一律渲染成白光。地面要有倒影，棋盘格反射率约 30%。颗粒 3%，灯旁微晕。",
+      "type": "标题思源宋体，占高 6–9%，字距 15–25%，银白色，居中对称，可刻在拱门或台口；说明字 Noto Serif SC，不小于高度 3.5%。竖屏改成从上往下看的同心圆，或中轴竖向纵深，文字放顶部拱形内。",
+      "motion": "24fps，优雅匀速。转台每秒 2–4 度，人物沿路线走，不原地踏步。帷幕上升用 3 秒，缓入缓出。文字整行淡入 0.8 秒。光束强度极慢呼吸，周期 8–10 秒。没有弹跳和闪切。",
+      "camera": "单镜头 4–8 秒。开场平视大全景，接 4–6 秒侧向跟拍；吊臂上升用 8–10 秒。俯拍同心圆全片只用一次。换场用帷幕开合或渐暗，主角留色贯穿，让观众始终知道看哪里。",
+      "narration": "历史句用对称大全景；人物句在层台上找到主角；转折句帷幕升起见新布景；结论句吊臂落到主角中景。节奏要稳。不适合短平快和年轻潮流内容，也不适合彩色数据图，图表需改成银灰单色。"
+    },
+    "concept_prompt": "三十年代风格的圆形大堂，正对中轴线平视，黑白棋盘格大理石地面亮如镜面，倒映上方层层环绕的回廊和一盏巨大的镀铬几何吊灯；光束从穹顶斜落，深黑背景衬出银灰石柱；回廊上排列着穿正装的小人影，全部银灰；正中一位身穿茜红长外套的人物背对镜头，是整张画面唯一的颜色，占高约五分之一；构图严格对称，高反差，细颗粒，灯旁微微泛光"
+  },
+  "gallery": {
+    "frame": "assets/gallery/silver-deco-3d.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/silver-deco-3d/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:O5",
+    "code-animation-prompts:O9"
+  ]
+}

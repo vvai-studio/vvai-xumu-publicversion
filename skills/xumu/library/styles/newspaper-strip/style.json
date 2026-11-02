@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "key": "newspaper-strip",
+  "name": "报纸四格",
+  "family": "E. 插画与手作",
+  "kind": "style",
+  "look": "发黄新闻纸、黑墨笔锋线、四格等分、灰网点铺底、手写气泡，不用彩色",
+  "signature": "四格依次落下；气泡逐句弹出；第四格静一拍再抖包袱；网点铺满压暗；整条剪下滑走换场",
+  "fits": "职场段子、行业吐槽、概念类比、热点点评",
+  "implementation": "SVG 分格加网点蒙版；`gn:speech-bubble-reveal` `gn:hard-appearance` `gn:halftone-motion`；近亲 `halftone-comic`",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:speech-bubble-reveal",
+    "gn:hard-appearance",
+    "gn:halftone-motion"
+  ],
+  "spec": {
+    "palette": [
+      "#ece5d3",
+      "#121212",
+      "#8a8474",
+      "#c9c1ad"
+    ],
+    "fonts": {
+      "title": "思源黑体",
+      "body": "站酷快乐体",
+      "handwriting": "站酷快乐体"
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "四格依次落下",
+      "气泡逐句弹出",
+      "第四格静一拍再抖包袱",
+      "网点铺满压暗",
+      "整条剪下滑走换场"
+    ],
+    "forbidden": [
+      "彩色填充",
+      "渐变阴影",
+      "大段对白",
+      "超过两个气泡的格子",
+      "写实背景"
+    ],
+    "notes": "",
+    "palette_status": "draft",
+    "brief": {
+      "scene": "一条四格，格子大小相同，格框手绘略歪。固定两三个原创小人物，造型简单到两秒能认出，每格人物占格高 60%。结构严格：起、承、转、合，第四格是笑点。背景只画必要的一两件物品，多余细节全部删掉。",
+      "material": "纯黑墨加一档灰网点，无彩色。线条有笔锋，粗约画幅宽 0.3–0.5%，外框更粗。网点密度 15–30%，只铺地面或衣服。新闻纸底带 3–4% 颗粒，边缘微微发黄，可露出相邻栏目的一点铅字，当作裁切痕。",
+      "type": "对白用站酷快乐体，不小于高度 3.8%，每个气泡不超过 14 字，一格最多两个气泡。条头标题用思源黑体 Bold，占高 5%。竖屏反而是原生形态：四格上下堆叠，每格宽占 90%，依次落下并向上推移。",
+      "motion": "12fps 硬出现，格子带 2 帧下压，不做淡入。人物每格只有一个姿势，最多再切一张。气泡 0.15 秒弹开，按对白顺序出。第四格落下前留 0.5 秒空白，抖包袱后再停 1.5 秒给笑声。",
+      "camera": "横屏时全条常驻，用高亮当前格的方式推进，其他格降到 60% 明度；也可一格一屏。每格 2–3 秒，一条不超过 14 秒。讲完把整条当报纸剪报滑出，或被下一条盖住。全片穿插 2–3 条，不宜连用。",
+      "narration": "适合把一个观点压成段子：铺垫句放前两格，反常放第三格，结论放第四格。旁白要让位，让气泡说话，或者旁白只念条头。不适合长论证、情绪铺陈和严肃事故；笑点不成立的话，四格只是放慢的幻灯片。"
+    },
+    "concept_prompt": "一条横排的四格黑白报纸漫画，印在发黄的新闻纸上，四个等大的手绘方框略微歪斜；两个线条简单的原创小人物，一个戴圆眼镜，一个顶着乱发，前三格在办公桌旁对话，表情逐格变化，第四格戴眼镜的人僵在原地，头上冒出一小团乌云；衣服和地面铺着灰色网点，线条带笔锋；每格上方一个手写对白气泡，只有两三个中文字；画面边缘露出一小截相邻栏目的铅字；平视，平光扫描质感"
+  },
+  "gallery": {
+    "frame": "assets/gallery/newspaper-strip.jpg",
+    "sample": "",
+    "frame_kind": "concept",
+    "original": "styles/newspaper-strip/concept.png"
+  },
+  "verified_in": [],
+  "inspired_by": [
+    "code-animation-prompts:K12"
+  ]
+}
