@@ -81,10 +81,10 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(iso['spec']['palette'], ['#112233'])
         self.assertIn('isometric', run('list', '--root', str(self.out)))
 
-    def test_real_catalog_has_126_entries(self):
+    def test_real_catalog_has_127_entries(self):
         rows = style_tools.parse_catalog(style_tools.CATALOG.read_text(encoding='utf-8'))
-        self.assertEqual(len(rows), 126)
-        self.assertEqual(len({r['key'] for r in rows}), 126)
+        self.assertEqual(len(rows), 127)
+        self.assertEqual(len({r['key'] for r in rows}), 127)
 
     def test_opuscar_styles_have_reference_source_and_packed_frame(self):
         rows = [r for r in style_tools.parse_catalog(style_tools.CATALOG.read_text(encoding='utf-8')) if r['key'].startswith('opuscar-')]

@@ -12,7 +12,7 @@
       "name": "xumu",
       "source": "./",
       "description": "序幕（剪辑成片助手）：素材或想法 → 成片，替代编剧、导演、剪辑师。含频道档案与创作决策书、xumu 总控、Video Use 剪辑 helper、Video Shotcraft 镜头卡库。",
-      "version": "0.22.0",
+      "version": "0.23.0",
       "license": "MIT",
       "keywords": ["video", "editing", "remotion", "shotcraft", "口播"]
     }

@@ -2,7 +2,7 @@
 name: xumu
 description: 序幕免费版（剪辑成片助手；装了完整版时以完整版为准）：把素材或想法剪成成片，替代编剧、导演、剪辑师。输入是任意组合的口播视频、录音、文案、零散片段、照片或只有一个想法；先建频道档案、出创作决策书（编剧页定脊梁与故事线，导演页定风格与节奏），再剪辑，按内容从 Video Shotcraft 选镜头、从手法库调用学过的手法，按风格选绘制技术（SVG、Canvas、WebGL、Three.js、p5、Manim、人物抠像等）制作 B-roll 与 MG，最后合成验收。支持短篇与章节式长片。也用于学习用户发来的剪辑视频、风格案例或教程，归纳成手法卡入库。用于成片、B-roll/动效设计、动态包装或学习剪辑手法；只转录、润色文案或选题研究时不走完整流程。
 metadata:
-  version: "0.22.0"
+  version: "0.23.0"
   edition: free
 ---
 
@@ -58,11 +58,11 @@ metadata:
 | 序幕总控 | 内容判断、授权、风格统一、唯一时间线；依次以编剧、导演、剪辑师三个身份工作（`agents/`） |
 | 频道档案与创作决策书 | 品牌层 / 栏目层 / 本片层三层继承；编剧页定脊梁与故事线，导演页定风格与节奏；`director.py` 管结构、渲染与合并 |
 | 剪素材链 | 没有旁白做脊梁时：`footage.py` 切镜头、可用度打分、节拍、按故事线选段、粗剪预览；clip / beat 锚点进 `cue.py` |
-| 风格规范与合规检查 | `library/styles/<key>/style.json`（126 条，由风格目录生成）；`style_tools.py check` 按自由度 L0～L3 与主风格检查计划和静帧，不通过不进合成 |
+| 风格规范与合规检查 | `library/styles/<key>/style.json`（127 条，由风格目录生成）；`style_tools.py check` 按自由度 L0～L3 与主风格检查计划和静帧，不通过不进合成 |
 | 本地看板 | `board.py serve`：决策书、频道档案、素材墙、风格画廊、镜头与确认点 |
 | Video Use | 视频输入的转录与主剪辑 |
 | Video Shotcraft | 动态段落的镜头候选、动作配方、整片编排方法 |
-| 风格技术栈 | SVG / Canvas / WebGL / Three.js / p5 / Manim / 抠像等绘制手法；126 种风格目录（含 59 套 Opuscar 开源风格包） |
+| 风格技术栈 | SVG / Canvas / WebGL / Three.js / p5 / Manim / 抠像等绘制手法；127 种风格目录（含 59 套 Opuscar 开源风格包） |
 | 组合配方与表达指导 | 18 类配方给故事线结构（决策书第 4 格），64 项表达给镜头局部手法的参数与检查（`craft.py`，来自 chaojifeng-video-design） |
 | 解说语法与动效参考库 | 句子作用 → 画面组织；gongnyang 动效卡、HyperFrames 组件库、mg-styles-15 参考片、Lemo-Opuscar 风格规则与源码（本机只读，`motion_index.py` 检索） |
 | 手法库 | 从用户发来的案例中学到的剪辑、动效、风格手法 |

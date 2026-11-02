@@ -15,7 +15,7 @@ python <skill>/scripts/board.py serve --workspace <工作区> [--edit <edit>] [-
 | 创作决策书 | 当前模式、归属格、编剧页五格、导演页四格、理由记录；第 6 格的方向带代表帧 | `<edit>/director.json` |
 | 频道档案 | 品牌层、每个栏目、最近改动 | `<工作区>/channel/` |
 | 素材 | 剪素材链的缩略图墙 | `<edit>/footage/scan.html` |
-| 风格画廊 | 126 种风格的代表帧、色板、模板 / 参考片标记、开源风格包的在线样片链接，按大类分组 | `library/styles/*/style.json` + `assets/gallery/` + 媒体目录 |
+| 风格画廊 | 127 种风格的代表帧、色板、模板 / 参考片标记、开源风格包的在线样片链接，按大类分组 | `library/styles/*/style.json` + `assets/gallery/` + 媒体目录 |
 | 镜头与确认点 | 五个确认点按模式的必过与状态；visual-plan 的镜头、状态、静帧；最近一次风格合规检查 | `director.json`、`visual-plan.json`、`verify/` |
 
 看板只读文件，文件变了刷新页面即可。

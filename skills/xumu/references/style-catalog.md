@@ -56,6 +56,7 @@
 | key | 观感 | 标志动作 | 适合内容 | 实现与素材 |
 |---|---|---|---|---|
 | `clean-ui` 干净界面 | 真实截图或真实网页为底 | 镜头推到真实按钮；尺寸与圆角变化用弹簧 | 工具教程、产品功能 | `hf:ui-focus-zoom` `gn-recipe:product-demo` `hf:browser-device-stage` |
+| `keynote-ui` 发布会式界面动效 | 为这句话专门虚构的软件界面当主角：浅灰底、白色微倾斜圆角卡、一个蓝紫强调色、粗细对比强的黑体大字；讲钱切黑底香槟金，讲情绪切偏暗的全屏素材，三套皮肤硬切 | 带光晕的光标操作界面并牵动数据；新卡带模糊滑入盖住旧卡；模糊转清晰换字并留空档；大字不动底下快切素材；彩色褪成灰表达态度 | 产品介绍、AI 工具、数据复盘、商业拆解、收入盘点、知识口播的 B-roll | HTML 逐帧或 HyperFrames；`gn:rolling-digits` `hf:data-chart`；先比较 Shotcraft：`cursor-flyover` `blur-slide` `orbit-ring-title-open` `list-stack-press` `doc-park-left-pill-deal` `aurora-bloom-bg-flip`；近亲 `clean-ui`（要真实截图）、`opuscar-dark-keynote`（全片暗色）；界面为示意重绘，数字来自来源文件 |
 | `white-catalog` 白底目录 | 白色网格、产品抠图、混排字体、涂鸦 | 网格逐格填入、盖章、日期块 | 产品介绍、品牌、合集盘点 | `hf:grid-card-assemble` `hf:mk-placeholder-grid` `gn:stamp-impact` |
 | `glass-ui` 液态玻璃 / 弥散渐变 **有参考片** | 半透明玻璃卡片、柔光、模糊背景 | 卡片浮起、折射扫光 | 科技产品、苹果风界面 | `hf:vfx-liquid-glass` `hf:ios26-liquid-glass` `gn:glass-refraction`；`mg15:12-aurora-glass` |
 | `terminal-code` 终端代码 | 深色编辑器或终端、等宽字、语法高亮 | 打字、逐行高亮、diff 对比 | 编程、AI 工具、开发教程 | `hf:code-typing` `hf:code-diff` `hf:code-highlight` `hf:terminal-simulator` |

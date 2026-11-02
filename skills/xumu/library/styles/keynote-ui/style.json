@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "key": "keynote-ui",
+  "name": "发布会式界面动效",
+  "family": "C. 界面与产品",
+  "kind": "style",
+  "look": "为这句话专门虚构的软件界面当主角：浅灰底、白色微倾斜圆角卡、一个蓝紫强调色、粗细对比强的黑体大字；讲钱切黑底香槟金，讲情绪切偏暗的全屏素材，三套皮肤硬切",
+  "signature": "带光晕的光标操作界面并牵动数据；新卡带模糊滑入盖住旧卡；模糊转清晰换字并留空档；大字不动底下快切素材；彩色褪成灰表达态度",
+  "fits": "产品介绍、AI 工具、数据复盘、商业拆解、收入盘点、知识口播的 B-roll",
+  "implementation": "HTML 逐帧或 HyperFrames；`gn:rolling-digits` `hf:data-chart`；先比较 Shotcraft：`cursor-flyover` `blur-slide` `orbit-ring-title-open` `list-stack-press` `doc-park-left-pill-deal` `aurora-bloom-bg-flip`；近亲 `clean-ui`（要真实截图）、`opuscar-dark-keynote`（全片暗色）；界面为示意重绘，数字来自来源文件",
+  "tags": [],
+  "template": null,
+  "reference": null,
+  "needs_assets": false,
+  "components": [
+    "gn:rolling-digits",
+    "hf:data-chart"
+  ],
+  "spec": {
+    "palette": [
+      "#f1f1f1",
+      "#e6e6e6",
+      "#ffffff",
+      "#111114",
+      "#040308",
+      "#5854fa",
+      "#e23fa6",
+      "#eba632"
+    ],
+    "fonts": {
+      "title": "Microsoft YaHei UI Bold",
+      "body": "Microsoft YaHei UI",
+      "handwriting": ""
+    },
+    "strength_max": "中",
+    "max_chars_per_s": 4.0,
+    "min_dwell_s": 1.2,
+    "signature_moves": [
+      "带光晕的光标操作界面并牵动数据",
+      "新卡带模糊滑入盖住旧卡",
+      "模糊转清晰换字并留空档",
+      "大字不动底下快切素材",
+      "彩色褪成灰表达态度"
+    ],
+    "forbidden": [
+      "弹跳入场",
+      "霓虹",
+      "多种强调色并用"
+    ],
+    "notes": "三套皮肤按语义切换：讲事实用浅灰卡片，讲钱用黑金，讲情绪用全屏素材。入场约 0.25 秒，blur 18→0 加 0.96→1 轻缩放，不弹跳；卡片倾斜 rotateX 6-8°、rotateY ±7-13°、rotateZ ±3-4°，整段缓慢漂移；快切组约 0.4 秒一刀。Shotcraft 优先：光标点击 cursor-flyover，模糊入场 blur-slide，封面绕圈 orbit-ring-title-open，堆叠计数 list-stack-press，新卡推入 doc-park-left-pill-deal，换句留空档 aurora-bloom-bg-flip；分支线 canvas-materialize-moves、多卡合一 card-flock-tumble、折线 chart-live-moves 要改造。Shotcraft 没有的光标牵引数据、褪色表态、大字快切素材走定制 MG。",
+    "palette_status": "verified"
+  },
+  "gallery": {
+    "frame": "assets/gallery/keynote-ui.jpg",
+    "sample": "styles/keynote-ui/sample.mp4",
+    "frame_kind": "render"
+  },
+  "verified_in": [],
+  "learned": {
+    "refs": 1,
+    "cuts_per_min": 10.2,
+    "motion_mean": 18.0,
+    "strength_hint": "强"
+  }
+}
