@@ -1,4 +1,4 @@
-"""Tests of avatar_cloud's decision gate and the speaking models (kling-v4 / wan-3-0: the model says the lines)."""
+"""Tests of avatar_cloud's decision gate and the speaking models (minimax-h3 / kling-v4 / wan-3-0: the model says the lines)."""
 import json
 from pathlib import Path
 import shutil
@@ -86,7 +86,7 @@ class SpeakTests(unittest.TestCase):
 
     def test_default_model_plans_from_the_script(self):
         plan = self.plan()
-        self.assertEqual(plan['model'], 'kling-v4')
+        self.assertEqual(plan['model'], 'minimax-h3')
         self.assertEqual(plan['kind'], 'speak')
         ref = self.edit / 'avatar' / 'voice_ref.mp3'
         self.assertLessEqual(av.probe(ref)['duration'], av.REF_MAX + 0.1)
@@ -107,8 +107,24 @@ class SpeakTests(unittest.TestCase):
         with self.assertRaisesRegex(ac.Refused, 'kling-avatar'):
             av.make_plan(self.edit, audio=self.edit / 'tts' / 'narration.wav', cfg=self.cfg)
 
-    def test_prompt_carries_the_line_and_no_face_words(self):
+    def test_h3_default_uses_the_official_format_and_fits_15_seconds(self):
         plan = self.plan()
+        a = av.settings(self.cfg, plan['model'])
+        self.assertLessEqual(max(s['duration'] for s in plan['segments']), 15)
+        s = plan['segments'][0]
+        p = av.seg_params(a, plan, s, av.prompt_of(plan, s, '中', ''))
+        self.assertEqual((p['mode'], p['resolution']), ('reference', '768p'))
+        self.assertIn('<d>[Mandarin Chinese] ' + s['text'] + '</d>', p['prompt'])
+        for field in ('subject_definitions:', 'summary:', 'retention_analysis:', 'detailed_description:',
+                      'overall_soundscape:', 'non_diegetic_music:'):
+            self.assertIn(field, p['prompt'])
+        for word in ('face', 'lips', 'mouth', 'smile'):
+            self.assertNotIn(word, p['prompt'])
+        with self.assertRaisesRegex(ac.Refused, '动作幅度'):
+            av.prompt_of(plan, s, '特大', '')
+
+    def test_prompt_carries_the_line_and_no_face_words(self):
+        plan = self.plan(model='kling-v4')
         a = av.settings(self.cfg, plan['model'])
         s = plan['segments'][0]
         p = av.seg_params(a, plan, s, av.prompt_of(plan, s, '中', ''))

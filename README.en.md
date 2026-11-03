@@ -6,7 +6,7 @@
 </p>
 
 ![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.24.1-orange?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.25.0-orange?style=flat-square)
 ![Skill](https://img.shields.io/badge/Skill-Agent-111111?style=flat-square)
 ![Remotion](https://img.shields.io/badge/Remotion-MG-0B84F3?style=flat-square)
 ![Claude](https://img.shields.io/badge/Claude-Supported-D97757?style=flat-square)
@@ -25,7 +25,7 @@ It is not a one-click black box but a creative workflow with confirmation points
 - **Shots with provenance** — compare first choices and alternatives from 124 cinematic shot-recipe cards; write custom MG only when there is a real expressive gap.
 - **Style and explanation with method** — a 127-style catalog (59 open-source style packs with full rules, native moves and sample films; 15 with mg-styles-15 reference films), an explainer grammar, 18 composition recipes and 64 expression guides cover everything from film structure and what a sentence does (define, compare, steps, data…) down to local techniques, each with concrete visuals and checks.
 - **What it learns, it reuses** — editing videos and tutorials you send become technique cards and style specs that ship with the pack (38 cards and 127 styles so far, including the talking-head presentation family) and are matched to your content automatically.
-- **The presenter can be a digital human** — one photo plus the script, Kling 4.0 by default (about 20⚡ a minute, Wan 3.0 as backup); made only when you ask, or when the brief suggests it with a reason and you confirm.
+- **The presenter can be a digital human** — one photo plus the script, MiniMax H3 by default (about 6⚡ a minute, Kling 4.0 and Wan 3.0 as backups); made only when you ask, or when the brief suggests it with a reason and you confirm.
 - **Verifiable at every step** — one master timeline, per-shot test renders, a plan checker, and review of real renders.
 
 > Distilled by **VVAI** from real talking-head video production, integrating and adapting [Video Use](https://github.com/browser-use/video-use) (MIT) and [Video Shotcraft](https://github.com/Vincentwei1021/video-shotcraft) (Apache-2.0).
@@ -98,7 +98,7 @@ A pack of **3 skills**. Normally you only start from the director entry point; i
 - 🔌 **One-step 造物社 (vvai) setup**: say "配置 API" and xumu walks you through setting the key on your own machine (it never passes through the chat), then writes the config, runs a free check and a tiny paid test (one line of voice, one image)
 - 🖼 **Images**: GT Image 2.5 Flare by default, every image at 4K and quality high; reference images and transparent backgrounds supported; refunded upstream hiccups retry on the same channel
 - 🔊 **Voice and music**: MiniMax speech-2.8 narration — your own cloned voice first, otherwise audition and pick from the platform's built-in voices; short sections are joined into one call to avoid the per-call minimum; Suno instrumental music. Synthetic narration is aligned to the script character by character (homophones and tongue twisters included); sound effects are synthesised locally, free and licence-clean
-- 🧑 **Digital presenter (on request)**: one photo of yourself plus the script becomes a talking presenter (Kling 4.0 by default, about 20⚡ a minute; Wan 3.0 as backup); made only when you ask, or when the decision doc suggests it with a reason and you confirm; one sample segment first, and the captions are re-aligned to what the presenter actually says
+- 🧑 **Digital presenter (on request)**: one photo of yourself plus the script becomes a talking presenter (MiniMax H3 by default, about 6⚡ a minute; Kling 4.0 and Wan 3.0 as backups); made only when you ask, or when the decision doc suggests it with a reason and you confirm; one sample segment first, and the captions are re-aligned to what the presenter actually says
 - 💰 **Paid calls follow rules**: always quoted first; the cheapest channel whose recent success rate passes the bar is used (not blindly the cheapest); it only pauses for you above the limit you set, and a failure never silently retries on another channel
 - ⏱ **Times written as "this sentence + offset"**: visual events follow the narration and shift automatically when the opening or the edit changes
 - 🎞 **Content-driven shots**: 124 Shotcraft shot-recipe cards (openings, camera moves, transitions, data, typography, rhythm…), comparing first choice and alternatives before committing

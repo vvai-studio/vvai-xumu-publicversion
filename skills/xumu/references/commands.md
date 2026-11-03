@@ -67,7 +67,7 @@ python <skill>/scripts/audio_cloud.py voice register <名字> --provider <服务
 python <skill>/scripts/audio_cloud.py voice estimate <文案.md> [--voice <名字>] [--edit <edit>]   # 报价，免费
 python <skill>/scripts/audio_cloud.py voice speak <文案.md> --edit <edit> [--section S1] --confirmed [--max-cost N]
 python <skill>/scripts/audio_cloud.py voice align --edit <edit>   # 逐字时间套回原文 → cue_chars.json、sections.json
-python <skill>/scripts/avatar_cloud.py check --image <照片> | plan --edit <edit> [--model kling-v4|wan-3-0|kling-avatar] | estimate --edit <edit>   # 数字人：查图、分段、报价
+python <skill>/scripts/avatar_cloud.py check --image <照片> | plan --edit <edit> [--model minimax-h3|kling-v4|wan-3-0|kling-avatar] | estimate --edit <edit>   # 数字人：查图、分段、报价
 python <skill>/scripts/avatar_cloud.py generate --edit <edit> --image <照片> --motion 中 --voice-ok "用户原话" [--only N] --confirmed   # 先样段再全量
 python <skill>/scripts/avatar_cloud.py finish --edit <edit>   # 拼接、质检、逐字对齐 → avatar/final_avatar.mp4 + anomalies.json
 python <skill>/scripts/audio_cloud.py music generate --edit <edit> --prompt … [--style …] --confirmed   # 配乐，一次两首

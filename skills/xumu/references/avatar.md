@@ -7,19 +7,20 @@
 **默认不用。** 只在两种情况下生成：
 
 - **用户自己要**：用户说要数字人、要"用我的照片说话"。有决策书时写进第 7 格 `avatar`（`source: user_asked`）；没有决策书的临时项目，第一次 `generate` 带 `--user-asked "用户原话"`，记进 `avatar/decision.json`。
-- **决策书建议、用户确认**：总控判断这条片子适合，比如用户没有出镜素材但栏目靠人脸建立信任、口播类内容只有文案、手上有本人的口播照片。第 7 格写 `avatar: {use: true, source: suggested, reason: "…", model: kling-v4}`，理由写给用户看：为什么需要人出镜、用哪张照片、大约多少钱（1 分钟约 20⚡）。**第 7 格经用户确认之后**才生成。
+- **决策书建议、用户确认**：总控判断这条片子适合，比如用户没有出镜素材但栏目靠人脸建立信任、口播类内容只有文案、手上有本人的口播照片。第 7 格写 `avatar: {use: true, source: suggested, reason: "…", model: minimax-h3}`，理由写给用户看：为什么需要人出镜、用哪张照片、大约多少钱（1 分钟约 6⚡）。**第 7 格经用户确认之后**才生成。
 
 `generate` 每次先查这一条：有 `director.json` 就看第 7 格（`director.py` 的 `avatar_allowed`），没写、没理由或没确认都直接拒绝；没有决策书就看 `avatar/decision.json`。
 
 ## 模型
 
-| 模型 | 方式 | 1 分钟约 | 实测（2026-10-27，本人照片 + VV 音色，7 秒一句） |
+| 模型 | 方式 | 1 分钟约 | 实测（本人照片 + VV 音色，7 秒左右一句） |
 |---|---|---|---|
-| `kling-v4` 可灵 4.0（**默认**） | 模型按提示词里的台词自己说，配音截一段（≤15 秒）当音色参考；每段最长 30 秒 | 20⚡（720p），26⚡（1080p） | 台词一字不差，人像没走样，手势明显；2.28⚡ |
-| `wan-3-0` Wan 3.0（**备选**） | 同上；时长只能取 5–15、20、25、30 秒 | 24⚡（720p） | 台词一字不差，30fps，手势克制；2.80⚡ |
+| `minimax-h3` MiniMax H3（**默认**） | 模型按提示词里的台词自己说，配音截一段（≤15 秒）当音色参考；每段最长 15 秒，所以段数比可灵多 | 6⚡（768p），约 15⚡（2K） | 2026-11-03：台词一字不差，人像、背景、衣服稳，手势配合列举；8 秒 768p 0.69⚡，约 5 分钟出片 |
+| `kling-v4` 可灵 4.0（备选） | 模型按提示词里的台词自己说，配音截一段（≤15 秒）当音色参考；每段最长 30 秒 | 20⚡（720p），26⚡（1080p） | 2026-10-27：台词一字不差，人像没走样，手势明显；2.28⚡ |
+| `wan-3-0` Wan 3.0（**备选**） | 同上；时长只能取 5–15、20、25、30 秒 | 24⚡（720p） | 2026-10-27：台词一字不差，30fps，手势克制；2.80⚡ |
 | `kling-avatar` | 嘴型严格跟配音文件走，人声就是配音原文件；每段最长 300 秒 | 41⚡（标准） | 真人照片要先在造物社确认肖像授权（HTTP 403 `likeness_consent_required`，不扣费） |
 
-默认在 `plan --model` 或 `backends.local.json` 的 `avatar.model` 改。可灵 4.0 失败时不自动换，报错里给出备选（`plan --model wan-3-0` 重新分段）。
+默认在 `plan --model` 或 `backends.local.json` 的 `avatar.model` 改。H3 失败时不自动换，报错里给出备选（`plan --model kling-v4` 重新分段）。分辨率默认 768p，要 2K 时 `generate --resolution 2k`。
 
 前两种是**模型自己说**：声音是模型照着参考音色说出来的，不是配音文件，所以：每段之间音色可能有差别、语速和配音不同；`finish` 用模型说的声音拼成片，再按文案重新对齐出逐字时间（`cue_chars.json`、`sections.json` 换成数字人实际说的版本），后面的字幕、`cue.py` 照常用。要求声音和配音文件完全一样时用 `kling-avatar`。
 
@@ -33,17 +34,17 @@
 
 ```text
 python <skill>/scripts/avatar_cloud.py check --image <照片>
-python <skill>/scripts/avatar_cloud.py plan --edit <edit> [--model kling-v4|wan-3-0|kling-avatar]
-python <skill>/scripts/avatar_cloud.py estimate --edit <edit> [--resolution 720p]         # 免费报价
+python <skill>/scripts/avatar_cloud.py plan --edit <edit> [--model minimax-h3|kling-v4|wan-3-0|kling-avatar]
+python <skill>/scripts/avatar_cloud.py estimate --edit <edit> [--resolution 768p]         # 免费报价
 python <skill>/scripts/avatar_cloud.py generate --edit <edit> --image <照片> --motion 中 --voice-ok "用户原话" --only <样段> --confirmed
 python <skill>/scripts/avatar_cloud.py generate --edit <edit> --image <照片> --motion 中 --confirmed [--max-cost N]   # 用户看过样段后全量
 python <skill>/scripts/avatar_cloud.py finish --edit <edit>
 ```
 
-- **分段**：可灵 4.0 / Wan 按文案段落分，超过 30 秒的段在句号处断开，每段请求的时长 = 这段配音长度 ×1.1 + 0.5 秒，取模型允许的最近一档（模型会自己控制语速，`finish` 裁掉说完后的静音）。kling-avatar 在配音的停顿中间切段，默认每段不超过 60 秒。
+- **分段**：H3、可灵 4.0、Wan 按文案段落分，H3 超过 13 秒、另两个超过 30 秒的段在句号处断开，每段请求的时长 = 这段配音长度 ×1.1 + 0.5 秒，取模型允许的最近一档（模型会自己控制语速，`finish` 裁掉说完后的静音）。kling-avatar 在配音的停顿中间切段，默认每段不超过 60 秒。
 - **配音确认写在命令里**：第一次 `generate` 必须带 `--voice-ok "用户的原话"`，记进 `avatar/voice_review.json`；配音改过就失效，要再请用户听。原话只能是用户真的说过的。
 - **先跑样段**：超过 3 段的项目，第一次只允许跑一段（`--only N`，挑一段有强调、有列举的），给用户看动作幅度和手势，用户说可以再全量；用户事先说过不用看样段时加 `--skip-sample`。
-- **提示词**只写台词、手、头、肩、身体和姿势（脚本按幅度生成，`--extra` 可补一句），**不写脸、嘴和表情**（写了容易整段嘴不动；用户要"更多表情"时这样解释），不写照片里没有的物品，镜头固定、背景和衣服不变，不加字幕和背景音乐（字幕由序幕统一做）。
+- **提示词**只写台词、手、头、肩、身体和姿势（脚本按幅度生成，H3 用官方的六段英文结构，台词保留中文，`--extra` 可补一句），**不写脸、嘴和表情**（写了容易整段嘴不动；用户要"更多表情"时这样解释），不写照片里没有的物品，镜头固定、背景和衣服不变，不加字幕和背景音乐（字幕由序幕统一做）。
 - **拼接与质检**：`finish` 按顺序拼起来，检查每段长度（模型自己说的还看语速和配音比）、画面卡住、有声音但嘴几乎不动（需要 OpenCV），出接缝图 `avatar/seams.jpg` 和总览图 `avatar/contact.jpg`，异常时间段写进 `avatar/anomalies.json`；模型自己说的再跑逐字对齐，疑点在 `avatar/voice/align_report.md`。
 
 ## 有问题先遮盖，再重跑

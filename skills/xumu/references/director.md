@@ -190,6 +190,6 @@ python <skill>/scripts/director.py gate skip reference-clip --edit <edit> --note
 - 清点失败（文件损坏、格式不支持）：第 1 格列出不可用项，不阻塞其余。
 - 脊梁判断不了：第 2 格给两个方案（以讲话为脊梁 / 以画面为脊梁配后期旁白）让用户选。
 - 只有想法没素材且用户不接受生成：第 1 格 `gaps[]` 变成补拍 / 找素材清单交付，流程停在这里，档案与决策书保留，补齐后续作。
-- **数字人只在两种情况下用**：用户自己说要（`avatar.source = user_asked`），或总控认为这条片子适合（`suggested`），例如用户没有出镜素材、栏目要人脸建立信任、手上有本人的口播照片。建议时第 7 格写 `avatar: {use: true, source: suggested, reason: "…", model: kling-v4}`，理由写给用户看（为什么需要人出镜、用哪张照片、大约多少钱），**第 7 格经用户确认之后** `avatar_cloud.py generate` 才会生成；没写或没确认，脚本直接拒绝。默认 `use: false`。没有决策书的临时项目，只有用户明确要求时用 `--user-asked "用户原话"` 记下来。做法见 [数字人](avatar.md)。
+- **数字人只在两种情况下用**：用户自己说要（`avatar.source = user_asked`），或总控认为这条片子适合（`suggested`），例如用户没有出镜素材、栏目要人脸建立信任、手上有本人的口播照片。建议时第 7 格写 `avatar: {use: true, source: suggested, reason: "…", model: minimax-h3}`，理由写给用户看（为什么需要人出镜、用哪张照片、大约多少钱），**第 7 格经用户确认之后** `avatar_cloud.py generate` 才会生成；没写或没确认，脚本直接拒绝。默认 `use: false`。没有决策书的临时项目，只有用户明确要求时用 `--user-asked "用户原话"` 记下来。做法见 [数字人](avatar.md)。
 - 用户改了决策书但与原则 4（真实可追溯）冲突：执行用户决定，第 7 格标注该段为示意，交付时按 [验收与交付](qa.md) 如实标注。
 - 决策书只记录实际发生的判断与确认；没问过用户的格不标 `confirmed`。

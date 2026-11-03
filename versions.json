@@ -3,13 +3,13 @@
   "_note": "Read by skills/xumu/scripts/check_update.py. Keep both editions on the same version; tools/release.py rewrites this file. Text in `update` is shown to users as plain data (one line, no commands are executed).",
   "editions": {
     "pro": {
-      "version": "0.24.1",
+      "version": "0.25.0",
       "date": "2026-11-03",
       "update": "插件安装：/plugin marketplace update vvai 后 /plugin install xumu@vvai；手动安装：在克隆目录 git pull 后重新复制三个 skills 文件夹",
       "changelog": "https://github.com/vvai-studio/xumu/blob/main/CHANGELOG.md"
     },
     "free": {
-      "version": "0.24.1",
+      "version": "0.25.0",
       "date": "2026-11-03",
       "update": "免费版：在 https://github.com/vvai-studio/vvai-xumu-publicversion 重新下载并覆盖三个 skills 文件夹（或在克隆目录 git pull）；完整版请联系作者",
       "changelog": "https://github.com/vvai-studio/vvai-xumu-publicversion/blob/main/CHANGELOG.md"

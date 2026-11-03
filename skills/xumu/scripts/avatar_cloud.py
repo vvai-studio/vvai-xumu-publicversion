@@ -3,7 +3,7 @@
 the user configured (造物社), behind audio_cloud's paid-call layer.
 
   python avatar_cloud.py check --image IMG [--out OUT.jpg]
-  python avatar_cloud.py plan --edit EDIT [--model kling-v4|wan-3-0|kling-avatar] [--audio WAV] [--max-seg S]
+  python avatar_cloud.py plan --edit EDIT [--model minimax-h3|kling-v4|wan-3-0|kling-avatar] [--audio WAV] [--max-seg S]
   python avatar_cloud.py estimate --edit EDIT [--quality std|pro] [--resolution 720p|1080p] [--only 1,3]
   python avatar_cloud.py generate --edit EDIT --image IMG [--motion 小|中|大] [--extra TEXT] [--resolution R]
                                   [--quality Q] [--only 1,3] [--voice-ok "用户的原话"] [--user-asked "用户的原话"]
@@ -12,8 +12,8 @@ the user configured (造物社), behind audio_cloud's paid-call layer.
   python avatar_cloud.py finish --edit EDIT [--no-align]
   python avatar_cloud.py lipsync --edit EDIT --video CLIP.mp4 --audio NEW.wav --name NAME --confirmed [--max-cost N]
 
-Two kinds of model, chosen at plan time (default kling-v4, backup wan-3-0; config avatar.model):
-  speak   kling-v4, wan-3-0. The model says the lines itself: each segment's script text goes into the prompt, and a
+Two kinds of model, chosen at plan time (default minimax-h3, backups kling-v4 and wan-3-0; config avatar.model):
+  speak   minimax-h3, kling-v4, wan-3-0. The model says the lines itself: each segment's script text goes into the prompt, and a
           short clip of the finished narration (the user's cloned voice, at most 15 s) is the voice reference. The
           voice is the model's rendering of that timbre, not the narration file. Segments follow the script sections
           from `audio_cloud.py voice speak` (tts/manifest.json), split at sentence ends to at most 30 s, and the
@@ -69,12 +69,42 @@ for _stream in (sys.stdout, sys.stderr):   # Windows pipes default to the ANSI c
 sys.path.insert(0, str(Path(__file__).resolve().parent))   # also under python -I
 import audio_cloud as ac  # noqa: E402
 
-DEFAULTS = {'model': 'kling-v4', 'quality': 'std', 'resolution': '720p', 'lipsync_model': 'kling-lip-sync', 'min_seg': 4}
+DEFAULTS = {'model': 'minimax-h3', 'quality': 'std', 'lipsync_model': 'kling-lip-sync', 'min_seg': 4}
+# H3 reads its official six-part reference format; a 15 s clip at most, and the request needs room for a slower read
+H3_PROMPT = '''subject_definitions:
+<Subject 1> is the person in <Picture 1>; their appearance, clothing, pose, framing, background and lighting follow <Picture 1> exactly.
+<Audio 1> is the voice-timbre reference for <Subject 1> (S1).
+
+summary:
+Full-reference task. A single fixed shot of <Subject 1> speaking Mandarin Chinese to the camera in the voice of <Audio 1>.
+
+retention_analysis:
+<Subject 1> (appears in [Shot 1]): fully_preserved - identity, clothing, room and lighting stay identical to <Picture 1>, and no object absent from <Picture 1> appears.
+<Audio 1>: reference - the speaker follows the voice timbre and calm delivery of <Audio 1> without copying the original signal.
+
+detailed_description:
+[Shot 1] Live-action, a fixed shot of <Subject 1> facing the camera, framed as in <Picture 1>; the camera stays locked with no push or pull. <Subject 1> (S1) looks into the lens and says in a natural conversational tone, <d>[Mandarin Chinese] {text}</d> {motion} {extra}The whole line is finished before the video ends. No captions.
+
+overall_soundscape:
+Quiet room tone only, with no other sound.
+
+non_diegetic_music:
+No background music.'''
+H3_MOTION = {
+    '小': 'The head nods lightly with the speech, the hands stay relaxed and rise only briefly, and the shoulders and body stay still.',
+    '中': 'The head nods and turns slightly with the speech; on key points one hand gestures in front of the chest, on lists the fingers count, '
+          'and the hands settle back between sentences.',
+    '大': 'Gestures are rich and wide: both hands open or press down for emphasis, the fingers count out lists, a palm opens toward the camera, '
+          'and the body leans with the tone; the hands return between sentences.',
+}
 # what each model takes; speak = says the prompt's lines in the reference voice, audio = lip-syncs the given audio
 MODELS = {
-    'kling-v4': {'kind': 'speak', 'max_seg': 30, 'durations': list(range(3, 31)), 'resolutions': ('720p', '1080p')},
+    'minimax-h3': {'kind': 'speak', 'max_seg': 13, 'durations': list(range(4, 16)), 'resolutions': ('768p', '2k'),
+                   'resolution': '768p', 'prompt': H3_PROMPT, 'motion': H3_MOTION},
+    'kling-v4': {'kind': 'speak', 'max_seg': 30, 'durations': list(range(3, 31)), 'resolutions': ('720p', '1080p'),
+                 'resolution': '720p'},
     'wan-3-0': {'kind': 'speak', 'max_seg': 30, 'durations': list(range(5, 16)) + [20, 25, 30],
-                'resolutions': ('480p', '720p', '1080p')},
+                'resolutions': ('480p', '720p', '1080p'), 'resolution': '720p'},
     'kling-avatar': {'kind': 'audio', 'max_seg': 60, 'limit': 300},
 }
 REF_MAX = 15.0   # voice reference length the speak models accept
@@ -102,6 +132,7 @@ def settings(cfg, model=None):
     if a['model'] not in MODELS:
         raise ac.Refused(f'数字人模型只能是 {"、".join(MODELS)}')
     a['spec'] = MODELS[a['model']]
+    a.setdefault('resolution', a['spec'].get('resolution'))
     if not a.get('provider'):
         gw = [n for n, p in (cfg.get('providers') or {}).items() if p.get('type') == 'gateway-media']
         if not gw:
@@ -316,6 +347,11 @@ def seg_params(a, plan, s, prompt, image_url='https://example.com/avatar.jpg', a
 
 
 def prompt_of(plan, s, motion, extra):
+    spec = MODELS[plan['model']]
+    if spec.get('prompt'):
+        if motion not in MOTION:
+            raise ac.Refused(f'动作幅度只能是 {"、".join(MOTION)}')
+        return spec['prompt'].format(text=s['text'], motion=spec['motion'][motion], extra=extra.strip() + ' ' if extra else '')
     return build_prompt(motion, extra, s['text'] if plan['kind'] == 'speak' else None)
 
 
@@ -478,7 +514,7 @@ def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, 
         lines += ['失败的任务不扣费。没有自动换渠道；可选：'] + \
                  [f'  {c.get("vendor")}（lane {c.get("lane")}）{c.get("price")} {prov.currency}' for c in alts] + \
                  ([] if alts else ['  稍后再试；同一段连续两次失败时，换一张图或改动作描述']) + \
-                 (['  或换备选模型：plan --model wan-3-0 重新分段'] if a['model'] == 'kling-v4' else [])
+                 (['  或换备选模型：plan --model kling-v4 重新分段'] if a['model'] == 'minimax-h3' else [])
         raise ac.Refused('\n'.join(lines))
     missing = [s['n'] for s in plan['segments'] if not (d / f'seg_{s["n"]:02d}.mp4').exists()]
     spent = round(sum(e.get('cost') or 0 for e in ac.read_log(edit, LOG) if e.get('state') == 'success'), 4)
