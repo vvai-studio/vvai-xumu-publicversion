@@ -44,7 +44,7 @@ Lemo-Opuscar 的完整风格规则（STYLE.md）、案例说明与 demo 源码�
 | [Kianzzz/xilo-opus-video](https://github.com/Kianzzz/xilo-opus-video) | MIT | 代码类型分工、风格到技术组合的思路、弹簧手感分档 |
 | [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15) | MIT（素材为 CC0 / 公有领域，字形轮廓为 OFL） | 15 种风格的参考成片、提示词与源码（`mg15:` 编号）；风格目录中 6 个新条目与标志特征的整理 |
 | [lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) | MIT（成片与静帧为 CC BY 4.0） | 59 种风格的完整规则、案例说明与确定性源码（`opus:` 编号，固定版本 `413a6bd`）；随包部分见上一节 |
-| [XiaoyeCodes/code-animation-prompts](https://github.com/XiaoyeCodes/code-animation-prompts)（`69ccbea`），原始素材整理者：哔哩哔哩 [俯仰观照](https://space.bilibili.com/3690990015613855/) | 免费分享约定，不得包装成收费内容出售；其中第三方部分保留原许可 | 风格选题的灵感来源：171 种风格的方向参考了这份合集，序幕的文字参考、色板和示意图都是重新创作，不含它的提示词原文、代码和静帧；对应编号记在各 `style.json` 的 `inspired_by` |
+
 
 `skills/xumu/assets/templates/whiteboard-world/` 为 VV 原创模板，随本仓库以 MIT 分发；它在运行时依赖使用者自行安装的 HyperFrames 与 GSAP。
 

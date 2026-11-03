@@ -81,13 +81,17 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(iso['spec']['palette'], ['#112233'])
         self.assertIn('isometric', run('list', '--root', str(self.out)))
 
-    def test_real_catalog_has_298_entries(self):
+    def test_real_catalog_entries(self):
         rows = style_tools.parse_catalog(style_tools.CATALOG.read_text(encoding='utf-8'))
-        self.assertEqual(len(rows), 298)
-        self.assertEqual(len({r['key'] for r in rows}), 298)
+        full = any(s.get('inspired_by') for s in style_tools.all_specs().values())   # 免费版不带这 171 种
+        expected = 298 if full else 127
+        self.assertEqual(len(rows), expected)
+        self.assertEqual(len({r['key'] for r in rows}), expected)
 
     def test_styles_with_brief_are_complete(self):
         specs = [s for s in style_tools.all_specs().values() if s.get('spec', {}).get('brief')]
+        if not specs:
+            self.skipTest('这批风格只在完整版')
         self.assertEqual(len(specs), 171)
         for s in specs:
             self.assertEqual(set(s['spec']['brief']), {'scene', 'material', 'type', 'motion', 'camera', 'narration'}, s['key'])
