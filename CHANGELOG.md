@@ -6,6 +6,29 @@
 
 ---
 
+## v0.28.0 — 2026-11-04 · 画面档位与合成前置检查，动态镜头必须写作用、检索、候选和短测
+
+PR [#40](https://github.com/vvai-studio/xumu/pull/40)
+
+起因是一次口播成片的复盘：任务从"先剪口播"一步步升级到"按样片铺全片"，中间没出决策书、没做画面方案；分镜写在自己的脚本里直接驱动 Remotion，序幕的计划检查一次都没运行，结果是很多卡只把字幕里的词做成标签冒出来，又给每张卡加了快推回落，返工三轮。
+
+**新增**
+- 画面档位：决策书第 7 格新增 `visual_tier`，开工时问一句"只剪出来，还是要做画面包装？"：`plain` 素剪 / `light` 轻包装 / `full` 精做。档位管做多少画面，托管模式管停下来问几次，两者分开定；全托 + 素剪就是"简单剪出来"，全托 + 精做时检查照做，只是不停下来等确认。`director.py propose --tier` 可直接写入，决策书顶部显示当前档位，`check --ready` 和 `merge` 要求填好。
+- 合成前置检查 `plan_tools.py preflight <edit> --data <合成数据>`：用 Remotion、HyperFrames、HTML 渲染合成之前跑。要求决策书写明模式和档位（档位为素剪时不放行合成），`visual-plan.json` 存在且通过检查，合成数据文件里的 `source_plan_sha256` 等于当前计划的哈希。通过后写 `verify/preflight.json`。
+- `media_tools.py deliver-check --edit <edit>`：用合成引擎做的片子（edit 下有 `remotion/`、`hyperframes/` 或 `visual-plan.json`），交付前还要有与当前计划一致的 `preflight.json`；素剪的片子不受影响。
+
+**改进**
+- 动态镜头（Shotcraft 和定制 MG）从交给用户看（`awaiting_approval`）起，计划里必须有 `sentence_role`（句子作用）、`search`（检索命令与命中 ID，没命中写明）、`shotcraft`（首选、备选和理由，或写明为什么没有合适的卡）；进入「已渲染 / 已验收」前还要有 `short_test`（2–4 秒的动态短测视频）。Shotcraft 镜头的首选必须是实际用的卡。
+- 导演守则：画面方案拆成六步（句子作用 → 检索 → Shotcraft → 看样片 → 定路线 → 和字幕对照），有参考实现就复制 demo 再改；新增「反模式」：标签卡、全局小推回落、照卡片文字重写。
+- 流程细则新增「不可跳过的产物」表和「升级触发」：从剪口播升级到加画面时回第 0 步补齐。参考片要包含全片会用到的每种镜头类型，铺全片时出现新类型先做类型样片。
+- 解说语法、时间线字段、验收与交付、命令速查同步更新。
+
+**升级提醒**
+- 旧项目里还没渲染完的动态镜头，继续做时要补 `sentence_role`、`search`、`shotcraft` 和 `short_test`；旧决策书合并前要补第 7 格 `visual_tier`。
+- 项目自己写的合成数据生成脚本，要改成读 `visual-plan.json` 并把它的 SHA256 写进输出的 `source_plan_sha256`。
+
+---
+
 ## v0.27.0 — 2026-11-04 · 入围样片截帧必看，样片按需单条下载
 
 PR [#39](https://github.com/vvai-studio/xumu/pull/39)

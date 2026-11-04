@@ -56,6 +56,11 @@ v1 规则：整数 fps、整数帧、半开窗口 `[from, from+duration)`，背�
 - `audio_policy`：`silent` 或 `separate`。视觉文件自身的音轨一律不自动混入；`separate` 必须有对应的 SFX 条目。
 - `route=shotcraft` 时另需 `card` 与 `style_key`。计划工具只检查非空，名称真实性对照上游索引人工核对。
 - `route=shotcraft|mg` 的镜头进入 `rendered`/`verified` 前（以及 `--ready` 时）必须有 `refs_viewed`：`[{"id": "sc:<style-key>", "sheet": "verify/refs/refs_sheet_1.jpg"}, …]`，`sheet` 是 `motion_index.py frames` 截出的图，文件必须存在；shotcraft 镜头选中的 `sc:<style_key>` 必须在里面。确实没有样片可看时写 `{"none": "<原因>"}`。不进渲染指纹。
+- `route=shotcraft|mg` 的镜头从 `awaiting_approval` 起（以及 `rendered`/`verified`、`--ready` 时）必须有画面方案记录，均不进渲染指纹：
+  - `sentence_role`：句子作用，取 [解说语法](explainer-grammar.md#2-句子作用--画面语法) 第 2 节的名称。
+  - `search`：`[{"cmd": "motion_index.py search …", "hits": ["gn:…", "sc:…"]}]`，至少一条；没命中时 `hits: []` 并写 `note`。
+  - `shotcraft`：`{"primary": <卡名>, "alt": <卡名>, "reason": <理由>}`（`alt` 可省）；没有合适的卡写 `{"none": "<原因>"}`。`route=shotcraft` 时 `primary` 必须是 `card`、它的末段或 `style_key`，不能写 none。
+- `route=shotcraft|mg` 的镜头进入 `rendered`/`verified` 前（以及 `--ready` 时）必须有 `short_test`：`{"file": "shots/<id>/短测.mp4"}`，2–4 秒的动态短测视频，文件必须存在，扩展名是视频格式。
 - 镜头 `asset`：`file`、`timeline_revision`、布尔 `alpha`，可选 `render_key`（由 `plan_tools.py stamp` 写入，见 [改动影响与渲染缓存](#改动影响与渲染缓存)）。就绪时镜头为 verified、文件存在，资产绑定当前 revision，或 `render_key` 与当前渲染输入一致。background 不透明，透明内容放在 overlay；透明与否由媒体实际编码决定。
 - `sfx`：数组，每项含唯一 `id`、`shot_id`、当前 `timeline_revision`、非负 `offset_frames`、正 `duration_frames`、`gain`（有限值，0–4）、`file`。音效位于绑定镜头内部，该镜头 `audio_policy=separate`。全片音效分配到相应镜头窗口；主旁白不放进 sfx。
 
@@ -136,6 +141,8 @@ python <skill>/scripts/plan_tools.py export <edit>/visual-plan.json --out <edit>
 工具离线运行，不调用生成服务、不渲染媒体；除 `stamp --force` 外不修改输入计划。`check` 检查类型、时间范围、版本、画面覆盖、声音归属、engine 取值与 anchor 结构；`--ready` 额外要求锁定、verified 状态与本地文件存在。`export` 先执行 ready 检查，再输出绝对文件路径、秒数与输入计划的 SHA256；目标已存在时拒绝覆盖，改用带版本的文件名。
 
 `render-manifest.json` 保留帧时序、route、engine、style，增加 `start_seconds`、`duration_seconds`，SFX 另加全片 `from_frame`。项目级 Remotion/FFmpeg 实现从这里读取数值。
+
+`preflight <edit> [--data <合成数据>…]` 是合成渲染之前的门：要求 `director.json` 写明模式和画面档位（档位为 `plain` 时不放行合成），`visual-plan.json` 存在且 `check` 通过，每个 `--data` 文件（合成引擎读的 data.json、变量文件）是 JSON 对象且 `source_plan_sha256` 等于当前计划文件的 SHA256。通过后写 `verify/preflight.json`；`media_tools.py deliver-check --edit` 对用合成引擎做的片子（edit 下有 `remotion/`、`hyperframes/` 或 `visual-plan.json`）检查这份记录与当前计划一致。生成合成数据的脚本要读 `visual-plan.json`，并把它的哈希写进输出。
 
 ## 与原片时间的关系
 

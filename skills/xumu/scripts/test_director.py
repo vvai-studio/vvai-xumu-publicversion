@@ -90,11 +90,38 @@ class DirectorTests(unittest.TestCase):
                     {'id': 'S2', 'goal': '演示三步', 'source_refs': ['talk.mp4#0:20-2:00'], 'beat': '证据', 'est_duration': 100},
                 ]},
                 '5': {'must_keep': ['三步演示'], 'cut_candidates': ['开头寒暄'], 'opener': 'S1', 'target_duration': 150},
-                '7': {'visual_ratio': {'person': 0.3, 'real': 0.5, 'animation': 0.2}, 'evidence_segments': ['S2']},
+                '7': {'visual_tier': 'full', 'visual_ratio': {'person': 0.3, 'real': 0.5, 'animation': 0.2},
+                      'evidence_segments': ['S2']},
                 '9': {'freedom': 'L1'},
             },
             'reasons': ['栏目已定白板，沿用'],
         }
+
+    def test_visual_tier_required_before_merge(self):
+        run('propose', '--edit', str(self.edit), '--channel', str(self.channel), '--inputs', str(self.ws / 'talk.mp4'))
+        self.assertIn('还没定', (self.edit / '创作决策书.md').read_text(encoding='utf-8'))
+        draft = self.filled_draft()
+        draft['grids']['7']['visual_tier'] = ''
+        path = self.ws / 'draft.json'
+        path.write_text(json.dumps(draft, ensure_ascii=False), encoding='utf-8')
+        run('update', '--edit', str(self.edit), '--from', str(path))
+        run('confirm', '--edit', str(self.edit), '--all')
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out), self.assertRaises(SystemExit):
+            main(['check', '--edit', str(self.edit), '--ready'])
+        self.assertIn('visual_tier', out.getvalue())
+        doc = self.doc()
+        doc['grids']['7']['visual_tier'] = '精做'
+        (self.edit / 'director.json').write_text(json.dumps(doc, ensure_ascii=False), encoding='utf-8')
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out), self.assertRaises(SystemExit):
+            main(['check', '--edit', str(self.edit)])
+        self.assertIn('plain', out.getvalue())
+
+    def test_propose_tier_flag(self):
+        run('propose', '--edit', str(self.edit), '--channel', str(self.channel), '--tier', 'plain')
+        self.assertEqual(self.doc()['grids']['7']['visual_tier'], 'plain')
+        self.assertIn('素剪', (self.edit / '创作决策书.md').read_text(encoding='utf-8'))
 
     def test_update_check_confirm_merge(self):
         run('propose', '--edit', str(self.edit), '--channel', str(self.channel), '--inputs', str(self.ws / 'talk.mp4'))
@@ -122,6 +149,7 @@ class DirectorTests(unittest.TestCase):
         # 和栏目一样的值标为栏目继承，但带本片的确认状态；本片改过的才标本片
         self.assertIn('| 主风格 | whiteboard-world | 栏目 | 已确认 |', project)
         self.assertIn('| 画面比例 | person 0.3；real 0.5；animation 0.2；strong_motion opener | 本片 | 已确认 |', project)
+        self.assertIn('| 画面档位 | full | 本片 | 已确认 |', project)
         self.assertIn('| 旁白 | original | 品牌 | 已确认 |', project)
         self.assertIn('| 品牌色 | 待定 | 待定 |  |', project)
         self.assertIn('| 受众与目的 | 待定 | 待定 |  |', project)

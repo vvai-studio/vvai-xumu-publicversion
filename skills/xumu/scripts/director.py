@@ -28,6 +28,13 @@ MODE_TEXT = {
     'semi': '半托：两页都给你看，默认通过，你可以改任何一格；后面在剪辑策略、画面方案、参考片门三处确认。说"你看着办"切到全托，说"每步都问我"切到专业。',
     'pro': '专业：两页都要你逐格确认，后面的每个确认点都停。说"你看着办"切到全托。',
 }
+# 画面档位（第 7 格 visual_tier）：做多少画面。和托管模式（停下来问几次）是两回事，开工时问用户一句。
+VISUAL_TIERS = ('plain', 'light', 'full')
+TIER_TEXT = {
+    'plain': '素剪：去卡壳、变速、字幕，不加画面',
+    'light': '轻包装：标题、章节卡、现成模板与组件，不做定制动画',
+    'full': '精做：B-roll、定制 MG、Shotcraft 镜头；画面方案逐镜头写作用、检索与候选，动态镜头先短测',
+}
 
 # 决策书的格：编号 → (页, 标题, 必填字段, 可选字段)
 GRIDS = {
@@ -38,7 +45,7 @@ GRIDS = {
     '4': ('编剧页', '故事线', ('storyline',), ('recipe',)),
     '5': ('编剧页', '删留', ('target_duration',), ('must_keep', 'cut_candidates', 'opener', 'closer')),
     '6': ('导演页', '风格方向', ('style_choice',), ('style_options',)),
-    '7': ('导演页', '画面与节奏', ('visual_ratio',), ('strong_motion_slots', 'evidence_segments', 'rhythm', 'avatar')),
+    '7': ('导演页', '画面与节奏', ('visual_tier', 'visual_ratio'), ('strong_motion_slots', 'evidence_segments', 'rhythm', 'avatar')),
     '8': ('导演页', '声音', ('narration',), ('music_direction', 'sfx_level', 'live_sound')),
     '9': ('导演页', '预算与自由度', ('freedom', 'mode'), ('paid_items', 'render_estimate_min')),
 }
@@ -88,6 +95,7 @@ MERGE_ITEMS = (
     ('避开清单', 'series.style.avoid', None),
     ('剪辑尺度', 'series.edit_policy.cut', None),
     ('目标时长', 'series.duration', '5.target_duration'),
+    ('画面档位', None, '7.visual_tier'),
     ('画面比例', 'series.visual_ratio', '7.visual_ratio'),
     ('强动效位置', 'series.visual_ratio.strong_motion', '7.strong_motion_slots'),
     ('旁白', 'brand.voice.kind', '8.narration'),
@@ -763,7 +771,7 @@ def blank_grids(brand, series_item, mode):
                    'target_duration': dur.get('target_s')})
     style = (series_item or {}).get('style', {})
     g['6'].update({'style_options': [], 'style_choice': style.get('main', '')})
-    g['7'].update({'visual_ratio': (series_item or {}).get('visual_ratio'), 'strong_motion_slots': [],
+    g['7'].update({'visual_tier': '', 'visual_ratio': (series_item or {}).get('visual_ratio'), 'strong_motion_slots': [],
                    'evidence_segments': [], 'rhythm': '', 'avatar': dict(AVATAR_OFF)})
     voice = brand.get('voice', {})
     sound = (series_item or {}).get('sound', {})
@@ -817,6 +825,8 @@ def cmd_propose(args):
         'grids': blank_grids(brand, series_item, mode),
         'reasons': [],
     }
+    if args.tier:
+        doc['grids']['7']['visual_tier'] = args.tier
     if args.inputs:
         doc['grids']['1']['inputs'] = inventory(args.inputs)
         if not series_item:
@@ -893,6 +903,8 @@ def render(doc, brand=None, series_item=None):
     lines = [f'# {doc.get("name", "创作决策书")} v{doc.get("version", 1)}', '']
     mode = doc.get('mode', 'semi')
     lines.append(f'> **当前模式** {MODE_TEXT.get(mode, mode)}')
+    tier = (doc.get('grids', {}).get('7') or {}).get('visual_tier')
+    lines.append(f'> **画面档位** {TIER_TEXT.get(tier, "还没定：开工问一句“只剪出来，还是要做画面包装？”")}')
     if brand is not None:
         lines.append(f'> 频道：{brand.get("name") or "(未命名)"}' + (f' · 栏目：{series_item.get("title")}（{series_item.get("key")}）' if series_item else ' · 栏目：未归属'))
     lines.append(f'> 生成 {doc.get("created", "")}' + (f' · 确认 {doc["confirmed_at"]}' if doc.get('confirmed_at') else ' · 未确认'))
@@ -974,6 +986,9 @@ def validate(doc, ready=False):
         errors.append(f'第 9 格 freedom 必须是 {FREEDOM}')
     if g9.get('mode') != doc.get('mode'):
         errors.append('第 9 格 mode 与顶层 mode 不一致')
+    tier = (grids.get('7') or {}).get('visual_tier')
+    if filled(tier) and tier not in VISUAL_TIERS:
+        errors.append(f'第 7 格 visual_tier 必须是 {VISUAL_TIERS}（素剪 / 轻包装 / 精做）')
     av = (grids.get('7') or {}).get('avatar') or {}
     if av.get('use'):
         if av.get('source') not in AVATAR_SOURCES:
@@ -1157,6 +1172,7 @@ def main(argv=None):
     p.add_argument('--inputs', nargs='*', help='素材文件或目录')
     p.add_argument('--mode', choices=MODES)
     p.add_argument('--first-time', action='store_true', help='新手首次：默认全托')
+    p.add_argument('--tier', choices=VISUAL_TIERS, help='画面档位：plain 素剪 / light 轻包装 / full 精做')
     p.add_argument('--from', dest='from_json', help='总控写好的内容，按 grids 合并')
     p.add_argument('--force', action='store_true')
     p.set_defaults(func=cmd_propose)

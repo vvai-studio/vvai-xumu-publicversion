@@ -14,6 +14,10 @@ ENGINES = ('remotion', 'hyperframes', 'html', 'manim', 'ffmpeg', 'external')
 STATES = ('planned', 'awaiting_approval', 'waiting_external', 'rendered', 'verified')
 # Moving shots whose shortlisted samples must have been looked at (motion_index.py frames) before render.
 VIEWED_ROUTES = ('shotcraft', 'mg')
+# From these states on a moving shot must carry its picture-plan record (sentence role, search, Shotcraft
+# choice): the plan is being shown or the shot is already made. short_test is due once the shot is rendered.
+PLANNED_STATES = ('awaiting_approval', 'rendered', 'verified')
+VIDEO_EXT = ('.mp4', '.mov', '.webm', '.mkv', '.m4v', '.gif')
 # Shot fields that change the rendered picture. from_frame is left out on purpose: shots render
 # from local frame 0, so moving one only changes where the composite places it.
 RENDER_FIELDS = ('role', 'route', 'engine', 'style', 'screen_text', 'card', 'style_key',
@@ -129,6 +133,38 @@ def shot_state(plan, shot, root, exclude=frozenset()):
         return 'fresh', [], current
     parts = stamp.get('parts')
     return 'stale', (part_changes(parts, current) if isinstance(parts, dict) else []) or ['render inputs changed'], current
+
+
+def plan_record_check(shot, label, fail):
+    """The picture-plan record of one moving shot: what the sentence does, what was searched, which Shotcraft card."""
+    if not nonempty(shot.get('sentence_role')):
+        fail(f'{label}.sentence_role is required: what the sentence does (explainer-grammar §2: 定义、对比、步骤、介绍主体…)')
+    search = shot.get('search')
+    if not (isinstance(search, list) and search):
+        fail(f'{label}.search is required: [{{"cmd": "motion_index.py search …", "hits": [ids]}}]')
+    else:
+        for k, row in enumerate(search):
+            if not (isinstance(row, dict) and nonempty(row.get('cmd')) and isinstance(row.get('hits'), list)
+                    and all(nonempty(h) for h in row['hits'])):
+                fail(f'{label}.search[{k}] needs cmd and a hits list')
+            elif not row['hits'] and not nonempty(row.get('note')):
+                fail(f'{label}.search[{k}] found nothing: add a note saying so')
+    choice = shot.get('shotcraft')
+    if isinstance(choice, dict) and set(choice) == {'none'}:
+        if not nonempty(choice['none']):
+            fail(f'{label}.shotcraft.none needs the reason no Shotcraft card fits')
+        elif shot.get('route') == 'shotcraft':
+            fail(f'{label}: a shotcraft shot cannot record shotcraft.none')
+    elif isinstance(choice, dict) and nonempty(choice.get('primary')) and nonempty(choice.get('reason')):
+        if 'alt' in choice and not nonempty(choice['alt']):
+            fail(f'{label}.shotcraft.alt must be nonempty when present')
+        card = shot.get('card')
+        if shot.get('route') == 'shotcraft' and nonempty(card) and choice['primary'] not in (
+                card, card.split('/')[-1], shot.get('style_key')):
+            fail(f'{label}.shotcraft.primary ({choice["primary"]}) is not the card used ({card})')
+    else:
+        fail(f'{label}.shotcraft is required: {{"primary": card, "alt": card, "reason": why}} '
+             'or {"none": "<why no card fits>"}')
 
 
 def validate(plan, root, ready=False):
@@ -267,6 +303,17 @@ def validate(plan, root, ready=False):
             else:
                 fail(f'{label}.refs_viewed is required for a {shot.get("route")} shot before rendering: '
                      'motion_index.py frames <shortlist> --out verify/refs, then list {id, sheet}; or {"none": "<reason>"}')
+        if shot.get('route') in VIEWED_ROUTES and (ready or shot.get('status') in PLANNED_STATES):
+            plan_record_check(shot, label, fail)
+        if shot.get('route') in VIEWED_ROUTES and (ready or shot.get('status') in ('rendered', 'verified')):
+            test = shot.get('short_test')
+            if not (isinstance(test, dict) and nonempty(test.get('file'))):
+                fail(f'{label}.short_test is required before a {shot.get("route")} shot enters the film: '
+                     'render 2-4 s of the moving part, watch it, then record {"file": "shots/<id>/短测.mp4"}')
+            elif not test['file'].lower().endswith(VIDEO_EXT):
+                fail(f'{label}.short_test.file must be a video ({", ".join(VIDEO_EXT)}), not a still')
+            else:
+                file_check(test['file'], f'{label}.short_test.file')
         if 'props' in shot and not isinstance(shot['props'], dict):
             fail(f'{label}.props must be an object')
         inputs = shot.get('inputs', [])
@@ -487,6 +534,58 @@ def reject_constant(value):
     raise ValueError(f'non-finite JSON constant: {value}')
 
 
+def preflight(edit, data_files=()):
+    """Gate before rendering a composition (Remotion / HyperFrames / HTML): the decision record says how much
+    picture this film gets, visual-plan.json exists and checks, and every composition data file says which plan it
+    was generated from. A plain cut rendered with voice_edit / ffmpeg does not need this."""
+    edit = Path(edit).resolve()
+    errors, report = [], {'edit': str(edit)}
+    director_file = edit / 'director.json'
+    if not director_file.is_file():
+        errors.append('no director.json: run director.py propose (for an existing cut, fill grids 1, 2 and 5 from '
+                      'what was cut) and record mode and grid 7 visual_tier before rendering a composition')
+    else:
+        doc = json.loads(director_file.read_text(encoding='utf-8-sig'), parse_constant=reject_constant)
+        report['mode'] = doc.get('mode')
+        tier = ((doc.get('grids') or {}).get('7') or {}).get('visual_tier')
+        report['visual_tier'] = tier
+        if doc.get('mode') not in ('full-auto', 'semi', 'pro'):
+            errors.append('director.json mode must be full-auto, semi or pro')
+        if tier not in ('plain', 'light', 'full'):
+            errors.append('director.json grid 7 visual_tier must be plain, light or full: ask the user once '
+                          'whether to just cut the video or to add pictures')
+        elif tier == 'plain':
+            errors.append('visual_tier is plain (cut only) but a composition is being rendered: the task grew into '
+                          'adding pictures, so set grid 7 to light or full and write the picture plan first')
+    plan_file = edit / 'visual-plan.json'
+    if not plan_file.is_file():
+        errors.append('no visual-plan.json: the composition must be generated from the picture plan, '
+                      'not from a separate shot table')
+    else:
+        raw = plan_file.read_bytes()
+        plan = json.loads(raw.decode('utf-8-sig'), parse_constant=reject_constant)
+        report['plan_sha256'] = sha = hashlib.sha256(raw).hexdigest()
+        errors += [f'visual-plan.json: {e}' for e in validate(plan, plan_file.parent)]
+        report['data'] = []
+        for value in data_files:
+            path = Path(value).resolve()
+            try:
+                recorded = json.loads(path.read_text(encoding='utf-8-sig')).get('source_plan_sha256')
+            except (OSError, ValueError, AttributeError) as exc:
+                errors.append(f'{value}: cannot read as a JSON object ({exc})')
+                continue
+            report['data'].append({'file': str(path), 'source_plan_sha256': recorded})
+            if recorded != sha:
+                errors.append(f'{value}: source_plan_sha256 {"is missing" if recorded is None else "is stale"}; '
+                              'regenerate it from the current visual-plan.json and write the plan hash into it')
+    report.update(ok=not errors, errors=errors)
+    if not errors:
+        verify = edit / 'verify'
+        verify.mkdir(exist_ok=True)
+        (verify / 'preflight.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    return report
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
@@ -507,7 +606,18 @@ def main(argv=None):
     target = stamp.add_mutually_exclusive_group(required=True)
     target.add_argument('--out', type=Path)
     target.add_argument('--force', action='store_true', help='update the plan in place')
+    gate = sub.add_parser('preflight', help='before rendering a composition: decision record, plan, data provenance')
+    gate.add_argument('edit', type=Path)
+    gate.add_argument('--data', action='append', default=[], type=Path,
+                      help='composition data file generated from the plan; must carry source_plan_sha256')
     args = parser.parse_args(argv)
+    if args.command == 'preflight':
+        try:
+            report = preflight(args.edit, args.data)
+        except (OSError, ValueError, TypeError) as exc:
+            report = {'ok': False, 'errors': [str(exc)]}
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        return 0 if report['ok'] else 1
     try:
         plan_path = args.plan.resolve()
         raw = plan_path.read_bytes()

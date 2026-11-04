@@ -4,8 +4,8 @@
 
 ## 0. 用法
 
-1. 逐段标出句子作用（一段可以有多个），查第 2 节得到画面组织方式和候选实现。
-2. 用检索补充候选，用 `show` 读参数、使用场景和禁忌：
+1. 逐段标出句子作用（一段可以有多个），查第 2 节得到画面组织方式和候选实现；动态镜头的作用写进 `visual-plan.json` 的 `sentence_role`。
+2. 每个动态镜头都必须检索（命令和命中 ID 写进 `search`），用 `show` 读参数、使用场景和禁忌：
 
    ```text
    python <skill>/scripts/motion_index.py search 对比 --limit 10

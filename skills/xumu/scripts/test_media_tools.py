@@ -33,6 +33,29 @@ def fake_probe(table):
     return lambda path: table[Path(path).name]
 
 
+class CompositionGateTests(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory(prefix='xumu-gate-')
+        self.addCleanup(temp.cleanup)
+        self.edit = Path(temp.name)
+
+    def test_plain_cut_is_not_gated(self):
+        self.assertEqual(media_tools.composition_gate(self.edit), [])
+
+    def test_composition_needs_current_preflight(self):
+        (self.edit / 'remotion').mkdir()
+        self.assertTrue(any('preflight.json is missing' in e for e in media_tools.composition_gate(self.edit)))
+        plan = self.edit / 'visual-plan.json'
+        plan.write_text('{"shots": []}', encoding='utf-8')
+        (self.edit / 'verify').mkdir()
+        record = self.edit / 'verify' / 'preflight.json'
+        sha = media_tools.hashlib.sha256(plan.read_bytes()).hexdigest()
+        record.write_text(json.dumps({'ok': True, 'plan_sha256': sha}), encoding='utf-8')
+        self.assertEqual(media_tools.composition_gate(self.edit), [])
+        plan.write_text('{"shots": [1]}', encoding='utf-8')
+        self.assertTrue(any('changed after preflight' in e for e in media_tools.composition_gate(self.edit)))
+
+
 class DeliverCheckTests(unittest.TestCase):
     def test_full_size_deliverable_passes(self):
         report = deliver_check('final.mp4', 'source.mov', probe=fake_probe({'final.mp4': GOOD, 'source.mov': SOURCE}))

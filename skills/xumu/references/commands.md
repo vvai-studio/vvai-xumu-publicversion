@@ -14,7 +14,7 @@ python <skill>/scripts/first_run.py [--check] [--no-key] [--smoke]   # 第一次
 python <skill>/scripts/setup_env.py [--check]          # 每次进实际制作前：自检自装免费依赖（--check 只报告）
 python <skill>/scripts/director.py init --workspace <工作区> --name <频道名> --platform <平台>   # 建频道档案（品牌层）
 python <skill>/scripts/director.py series add --channel <工作区>/channel --key <栏目> --title <名> [--spine narration|storyline|script|music|order] [--style <风格key>] [--copy-from <栏目>]
-python <skill>/scripts/director.py propose --edit <edit> --channel <工作区>/channel [--series <栏目>] [--inputs <素材…>] [--first-time]   # 决策书草稿
+python <skill>/scripts/director.py propose --edit <edit> --channel <工作区>/channel [--series <栏目>] [--inputs <素材…>] [--first-time] [--tier plain|light|full]   # 决策书草稿；--tier 写入画面档位
 python <skill>/scripts/director.py inventory --edit <edit> --inputs <素材…> [--speech]   # 重新清点 + 脊梁建议
 python <skill>/scripts/director.py classify --edit <edit> [--describe "这期一句话"] [--apply]   # 栏目打分 → 第 0 格
 python <skill>/scripts/director.py reference --edit <edit> --ref <链接或文件> [--style-key <key>]   # "照着这个做"
@@ -40,6 +40,7 @@ python <skill>/scripts/plan_tools.py export <edit>/visual-plan.json --out <edit>
 python <skill>/scripts/plan_tools.py stamp <edit>/visual-plan.json --shot <id> --force   # 镜头渲染验收后记录指纹
 python <skill>/scripts/plan_tools.py diff <旧计划> <新计划>      # 修改影响：重渲 / 复用 / 只重新合成
 python <skill>/scripts/plan_tools.py stale <edit>/visual-plan.json   # 哪些镜头文件已过期
+python <skill>/scripts/plan_tools.py preflight <edit> --data <合成数据.json>   # 合成渲染前：决策书模式与档位、计划检查、数据来自当前计划 → verify/preflight.json
 ```
 
 剪辑与时间工具（用法见 [制作路线与合成](production.md#口播剪辑链)、[时间线契约](timeline.md#时间引用)）：

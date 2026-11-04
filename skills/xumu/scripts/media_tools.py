@@ -18,6 +18,7 @@ clips spec (JSON):
   segments: [source_start_s, output_seconds, speed]; speed > 1 plays faster, < 1 slower.
 """
 import argparse
+import hashlib
 from html.parser import HTMLParser
 import json
 from pathlib import Path
@@ -322,6 +323,25 @@ def parse_size(text):
     return int(match.group(1)), int(match.group(2))
 
 
+def composition_gate(edit):
+    """A film rendered from a composition (remotion/, hyperframes/ or a visual-plan.json in the edit folder) ships
+    only after plan_tools.py preflight passed on the current plan. A plain voice_edit / ffmpeg cut is not affected."""
+    edit = Path(edit)
+    plan = edit / 'visual-plan.json'
+    if not ((edit / 'remotion').is_dir() or (edit / 'hyperframes').is_dir() or plan.is_file()):
+        return []
+    record = edit / 'verify' / 'preflight.json'
+    if not record.is_file():
+        return ['this film is rendered from a composition but verify/preflight.json is missing: '
+                'run plan_tools.py preflight <edit> --data <composition data> before rendering']
+    report = json.loads(record.read_text(encoding='utf-8-sig'))
+    if not report.get('ok'):
+        return ['verify/preflight.json did not pass: fix the plan and run plan_tools.py preflight again']
+    if not plan.is_file() or hashlib.sha256(plan.read_bytes()).hexdigest() != report.get('plan_sha256'):
+        return ['visual-plan.json changed after preflight: run plan_tools.py preflight again and re-render']
+    return []
+
+
 def deliver_check(final, source=None, spec=None, probe=None):
     """Compare the deliverable with the source footage (the default spec) or an explicit WxH spec."""
     probe = probe or probe_media
@@ -404,6 +424,8 @@ def main(argv=None):
     p.add_argument('--source', type=Path, help='original footage; its size is the default delivery spec')
     p.add_argument('--spec', help='delivery size WxH, e.g. 1080x1920 (overrides the source size)')
     p.add_argument('--report', type=Path, help='also write the JSON report here, e.g. verify/deliver_check.json')
+    p.add_argument('--edit', type=Path, help='edit folder: a composition-rendered film also needs a current '
+                                             'verify/preflight.json (plan_tools.py preflight)')
     args = parser.parse_args(argv)
     try:
         if args.command == 'clips':
@@ -429,6 +451,10 @@ def main(argv=None):
             if args.report:
                 guard(args.report, args.force)
             report = deliver_check(args.deliverable, args.source, args.spec)
+            if args.edit:
+                gate = composition_gate(args.edit)
+                report['errors'] += gate
+                report['ok'] = report['ok'] and not gate
             text = json.dumps(report, ensure_ascii=False, indent=2)
             if args.report:
                 args.report.parent.mkdir(parents=True, exist_ok=True)

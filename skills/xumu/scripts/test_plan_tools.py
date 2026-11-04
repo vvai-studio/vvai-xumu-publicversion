@@ -1,6 +1,7 @@
 """Behavioral tests of the timeline contract; synthetic files are not media QA."""
 import contextlib
 import copy
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -21,6 +22,10 @@ def example():
                    'route': 'mg', 'from_frame': 0, 'duration_frames': 90,
                    'purpose': 'Explain source aggregation', 'audio_policy': 'silent',
                    'status': 'verified', 'refs_viewed': [{'id': 'gn:piece-assembly', 'sheet': '参考.jpg'}],
+                   'sentence_role': '因果、机制',
+                   'search': [{'cmd': 'motion_index.py search 汇聚 流程', 'hits': ['gn:piece-assembly']}],
+                   'shotcraft': {'none': '没有讲多来源汇聚的卡'},
+                   'short_test': {'file': '短测.mp4'},
                    'asset': {'file': '画面.bin', 'timeline_revision': 'v1', 'alpha': False}}],
         'sfx': [],
     }
@@ -35,6 +40,7 @@ class PlanTests(unittest.TestCase):
         (self.root / '画面.bin').write_bytes(b'synthetic fixture')
         (self.root / '声音.bin').write_bytes(b'synthetic fixture')
         (self.root / '参考.jpg').write_bytes(b'synthetic fixture')
+        (self.root / '短测.mp4').write_bytes(b'synthetic fixture')
         self.plan = example()
 
     def errors(self, ready=False):
@@ -68,10 +74,99 @@ class PlanTests(unittest.TestCase):
 
     def test_shotcraft_choice_must_be_viewed(self):
         shot = self.plan['shots'][0]
-        shot.update(route='shotcraft', card='effects/piece-pop', style_key='piece-pop')
+        shot.update(route='shotcraft', card='effects/piece-pop', style_key='piece-pop',
+                    shotcraft={'primary': 'piece-pop', 'reason': '零件逐个弹出'})
         self.assertTrue(any('sc:piece-pop is not in refs_viewed' in e for e in self.errors()))
         shot['refs_viewed'].append({'id': 'sc:piece-pop', 'sheet': '参考.jpg'})
         self.assertEqual(self.errors(True), [])
+
+    def test_moving_shot_needs_plan_record_when_shown(self):
+        shot = self.plan['shots'][0]
+        for field in ('sentence_role', 'search', 'shotcraft'):
+            del shot[field]
+        shot['status'] = 'planned'
+        self.assertEqual(self.errors(), [])
+        shot['status'] = 'awaiting_approval'
+        errors = self.errors()
+        for field in ('sentence_role', 'search', 'shotcraft'):
+            self.assertTrue(any(f'.{field} is required' in e for e in errors), field)
+
+    def test_search_without_hits_needs_note(self):
+        self.plan['shots'][0]['search'] = [{'cmd': 'motion_index.py search 汇聚', 'hits': []}]
+        self.assertTrue(any('found nothing' in e for e in self.errors()))
+        self.plan['shots'][0]['search'][0]['note'] = '检索过，无合适'
+        self.assertEqual(self.errors(True), [])
+
+    def test_shotcraft_choice_must_match_card(self):
+        shot = self.plan['shots'][0]
+        shot.update(route='shotcraft', card='effects/piece-pop', style_key='piece-pop')
+        shot['refs_viewed'].append({'id': 'sc:piece-pop', 'sheet': '参考.jpg'})
+        self.assertTrue(any('cannot record shotcraft.none' in e for e in self.errors()))
+        shot['shotcraft'] = {'primary': 'glass-pill-dictation-typing', 'reason': '输入一句话'}
+        self.assertTrue(any('is not the card used' in e for e in self.errors()))
+        shot['shotcraft'] = {'primary': 'piece-pop', 'alt': 'slam-entrance-moves', 'reason': '零件逐个弹出'}
+        self.assertEqual(self.errors(True), [])
+
+    def test_short_test_due_once_rendered(self):
+        shot = self.plan['shots'][0]
+        del shot['short_test']
+        shot['status'] = 'awaiting_approval'
+        self.assertEqual(self.errors(), [])
+        shot['status'] = 'rendered'
+        self.assertTrue(any('short_test is required' in e for e in self.errors()))
+        shot['short_test'] = {'file': '参考.jpg'}
+        self.assertTrue(any('must be a video' in e for e in self.errors()))
+        shot['short_test'] = {'file': '没有.mp4'}
+        self.assertTrue(any('short_test.file: file does not exist' in e for e in self.errors()))
+
+    def preflight_run(self, *extra):
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = main(['preflight', str(self.root), *extra])
+        return code, json.loads(out.getvalue())
+
+    def write_director(self, tier='full', mode='semi'):
+        doc = {'mode': mode, 'grids': {'7': {'visual_tier': tier}}}
+        (self.root / 'director.json').write_text(json.dumps(doc, ensure_ascii=False), encoding='utf-8')
+
+    def test_preflight_blocks_a_composition_without_plan(self):
+        # The 2026-11-04 case: a Remotion data file written from a private shot table, no decision record, no plan.
+        (self.root / 'data.json').write_text('{"shots": []}', encoding='utf-8')
+        code, report = self.preflight_run('--data', str(self.root / 'data.json'))
+        self.assertEqual(code, 1)
+        self.assertTrue(any('no director.json' in e for e in report['errors']))
+        self.assertTrue(any('no visual-plan.json' in e for e in report['errors']))
+        self.assertFalse((self.root / 'verify' / 'preflight.json').exists())
+
+    def test_preflight_plain_tier_cannot_render_composition(self):
+        self.write_director('plain')
+        (self.root / 'visual-plan.json').write_text(json.dumps(self.plan, ensure_ascii=False), encoding='utf-8')
+        code, report = self.preflight_run()
+        self.assertEqual(code, 1)
+        self.assertTrue(any('visual_tier is plain' in e for e in report['errors']))
+
+    def test_preflight_data_must_name_current_plan(self):
+        self.write_director('full')
+        plan_file = self.root / 'visual-plan.json'
+        plan_file.write_text(json.dumps(self.plan, ensure_ascii=False), encoding='utf-8')
+        data = self.root / 'data.json'
+        data.write_text('{"source_plan_sha256": "old"}', encoding='utf-8')
+        code, report = self.preflight_run('--data', str(data))
+        self.assertEqual(code, 1)
+        self.assertTrue(any('is stale' in e for e in report['errors']))
+        sha = hashlib.sha256(plan_file.read_bytes()).hexdigest()
+        data.write_text(json.dumps({'source_plan_sha256': sha}), encoding='utf-8')
+        code, report = self.preflight_run('--data', str(data))
+        self.assertEqual(code, 0, report['errors'])
+        self.assertTrue((self.root / 'verify' / 'preflight.json').exists())
+
+    def test_preflight_reports_plan_errors(self):
+        self.write_director('full')
+        del self.plan['shots'][0]['sentence_role']
+        (self.root / 'visual-plan.json').write_text(json.dumps(self.plan, ensure_ascii=False), encoding='utf-8')
+        code, report = self.preflight_run()
+        self.assertEqual(code, 1)
+        self.assertTrue(any('sentence_role is required' in e for e in report['errors']))
 
     def test_real_footage_needs_no_samples(self):
         shot = self.plan['shots'][0]
@@ -274,6 +369,7 @@ class RenderCacheTests(unittest.TestCase):
         # The rendered file sits inside the input folder on purpose: it must not count as input.
         (source / 'render.mp4').write_bytes(b'synthetic render')
         (self.root / '参考.jpg').write_bytes(b'synthetic fixture')
+        (self.root / '短测.mp4').write_bytes(b'synthetic fixture')
         self.plan = example()
         shot = self.plan['shots'][0]
         shot.update(inputs=['shots/s1'], props={'title': '收集 → 分类'})

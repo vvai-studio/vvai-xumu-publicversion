@@ -2,9 +2,25 @@
 
 序幕六步的完整做法。SKILL.md 只留骨架，进入某一步时读本文件对应一节；身份约束见 `agents/` 下的身份文件，原则编号见 [总控身份](../agents/system.md#六条原则)。
 
+## 不可跳过的产物
+
+按决策书第 7 格的画面档位（见 [总控身份](../agents/system.md#画面档位)）：`full` 精做五样都要，`light` 轻包装要第 1、2、5 样，`plain` 素剪都不需要。缺一样就不把样片或成片交给用户。
+
+| # | 产物 | 怎么来 | 证明什么 |
+|---|---|---|---|
+| 1 | `director.json`，写明托管模式与画面档位 | `director.py propose [--tier …]` | 第 0 步做了 |
+| 2 | `visual-plan.json` + `shot-selection.md`，每个动态镜头有 `sentence_role`、`search`、`shotcraft` | 第 3 步 | 每镜有作用、有检索、有首选和备选 |
+| 3 | `verify/refs/*.jpg`，记进 `refs_viewed` | `motion_index.py frames` | 入围样片看过 |
+| 4 | 每个动态镜头 2–4 秒短测视频，记进 `short_test` | 第 4 步 | 动态看过，不只看静帧 |
+| 5 | `verify/preflight.json` 与 `verify/review_log.md` | `plan_tools.py preflight`；[自检打分](qa.md#自检打分) | 合成来自当前计划；交出去前自己挑过错 |
+
+合成用的数据（Remotion 的 data.json、HyperFrames 的变量）只能从 `visual-plan.json` 生成，并在文件里写 `source_plan_sha256`。另写一张镜头表直接驱动合成，所有计划检查都不会运行；`preflight` 和 `deliver-check --edit` 会拦下这种情况。
+
+**升级触发**：任务从"剪口播 / 转录 / 局部修改"变成"加画面、出样片、做包装"时（用户说"在这版基础上做个样片"也算），就进入了新阶段：先补第 0 步（已有粗剪就用已做的剪辑填第 1、2、5 格），把第 7 格档位改成 `light` 或 `full`，再走第 3 步。档位还是 `plain` 时，`preflight` 不放行任何合成渲染。
+
 ## 0 创作板块
 
-读 [创作板块](director.md)。可以顺手起 [本地看板](board.md)（`board.py serve`，Claude 桌面版用内置浏览器打开，其他客户端打印地址）：决策书、频道档案、素材墙、风格画廊、镜头与确认点一页看完，用户在上面点风格、确认格、过确认点，改文字仍在对话框说。`director.py propose` 从频道档案继承默认值并清点素材，得到创作决策书草稿；总控以编剧身份填归属、有什么、脊梁、一句话、故事线、删留（故事线可先用 `craft.py suggest --edit <edit>` 对一下 18 类 [组合配方](craft.md)，合适就 `craft.py apply` 起草），再以导演身份填风格方向、画面与节奏、声音、预算与自由度（判断依据见 [制作定位](production-profile.md)、[内容到画面](directing.md)、[风格目录](style-catalog.md)），`update --from` 合进去。决策书顶部必须写明当前托管模式（全托 / 半托 / 专业）与会在哪几处停下来问；开工第一句再复述一次。用户确认后 `merge` 把三层合并写进 `project.md` 的"制作定位"，后续各步读这张表。只问会改变结果的事：新类型、脊梁或栏目把握不大、缺素材、付费、超时渲染。已确认的项目沿用，只补本次变化；局部修改和单纯转录跳过此步。
+读 [创作板块](director.md)。可以顺手起 [本地看板](board.md)（`board.py serve`，Claude 桌面版用内置浏览器打开，其他客户端打印地址）：决策书、频道档案、素材墙、风格画廊、镜头与确认点一页看完，用户在上面点风格、确认格、过确认点，改文字仍在对话框说。`director.py propose` 从频道档案继承默认值并清点素材，得到创作决策书草稿；总控以编剧身份填归属、有什么、脊梁、一句话、故事线、删留（故事线可先用 `craft.py suggest --edit <edit>` 对一下 18 类 [组合配方](craft.md)，合适就 `craft.py apply` 起草），再以导演身份填风格方向、画面与节奏、声音、预算与自由度（判断依据见 [制作定位](production-profile.md)、[内容到画面](directing.md)、[风格目录](style-catalog.md)），`update --from` 合进去。决策书顶部必须写明当前托管模式（全托 / 半托 / 专业）与会在哪几处停下来问；开工第一句再复述一次。第 7 格的画面档位 `visual_tier`（素剪 / 轻包装 / 精做）开工时问用户一次，`propose --tier` 可直接写入；档位决定第 3、4 步做到多细，模式决定停几次，见 [总控身份](../agents/system.md#画面档位)。素剪的片子第 3 步只排字幕，不做画面方案。用户确认后 `merge` 把三层合并写进 `project.md` 的"制作定位"，后续各步读这张表。只问会改变结果的事：新类型、脊梁或栏目把握不大、缺素材、付费、超时渲染。已确认的项目沿用，只补本次变化；局部修改和单纯转录跳过此步。跳过之后任务升级到加画面时（出样片、做包装），回到本步补齐（SKILL.md 的升级触发）。
 
 ## 1 剪辑与旁白策略
 
@@ -19,9 +35,9 @@
 ## 3 画面方案
 
 1. **内容 → 路线**：读 [内容到画面](directing.md)，逐段判断保留人物、真实素材、Shotcraft 镜头、定制 MG、插画、外部生成或 3D。
-   需要动态呈现的段落，按 [解说语法](explainer-grammar.md) 标出句子作用（定义、对比、步骤、数据……），得到画面组织方式和现成组件候选（`motion_index.py search`）。
+   需要动态呈现的段落，按 [解说语法](explainer-grammar.md) 标出句子作用（定义、对比、步骤、数据……），得到画面组织方式和现成组件候选（`motion_index.py search`）。每个动态镜头的作用、检索记录和 Shotcraft 首选/备选按 [导演身份](../agents/director.md#判断顺序) 第 5 步的六步写进 `sentence_role` / `search` / `shotcraft`，画面方案交给用户看之前就要齐。
 2. **风格 → 技术**：读 [风格与技术栈](style-stack.md)，风格目录（127 种画面风格，其中 15 种附 mg15 参考成片、59 种是带完整规则与样片的开源风格包 `opuscar-`，口播本身的呈现另有一类）先用 `style_tools.py recommend` 缩小范围，只查用得上的大类，不必通读 [全表](style-catalog.md)；每种在 `library/styles/<key>/style.json` 有规范，`style_tools.py show` 查色板、字体、动作档位上限、标志动作和文字参考，决策书第 9 格的自由度决定能用哪些，见 [风格规范](style-spec.md)，把定位里的风格落成全片主风格、本片避开清单，以及每个动态段落的绘制技术与渲染引擎。插画、图标、字体、图片按 [素材来源](asset-sources.md) 选用并记录许可。有模板的风格（如 [白板一镜到底](whiteboard-world.md)）直接从 `assets/templates/` 起步。用户没指定风格时，用 `style_tools.py recommend --edit <edit> --apply` 从不同大类给 3 个方向，各配画廊里的代表帧（真帧 / 生图示意 / 参考片，见 [风格参考片库](style-library.md)），没有图的现场渲染效果草稿；用户发来参考片时 `style_tools.py learn` 进库后直接照它做。决策分工：画面风格由用户确认；绘制技术与渲染引擎由总控决定，在方案里写一句理由即可，用户点名时按用户的来（细则见 style-stack 第 3 节）。
-3. **手法卡与表达检索**：局部手法（转场、文字、声音、知识表达等）可查 64 项 [表达指导](craft.md#表达导演页与镜头-brief)（`craft.py search`），把参数、禁区和检查问题写进镜头 brief；按段落内容特征和主风格检索已入库的手法卡（见 [学习模式](learning.md#制作时调用)），合适的写进选择表。
+3. **手法卡与表达检索**：动态镜头用到局部手法（转场、文字、声音、知识表达等）时必查 64 项 [表达指导](craft.md#表达导演页与镜头-brief)（`craft.py search`），把参数、禁区和检查问题写进镜头 brief；按段落内容特征和主风格检索已入库的手法卡（见 [学习模式](learning.md#制作时调用)），合适的写进选择表。
 4. **镜头比较**：动态段落按 [Shotcraft 选镜头](shotcraft-direction.md) 比较首选与备选，再决定配方适配、配方加定制图解或纯定制 MG。定制缺口成立后读 [定制 MG 灵感与需求写法](mg-prompt-patterns.md)，从精选灵感索引按用途入围、看样片，再写本镜 brief；灵感库在比较 Shotcraft 之后才查。
 5. **整片节奏**：排出信息递进、动作强弱、人物回归与阅读停留，写成完整分镜。用代表帧确认风格，用短测确认动作。
 
@@ -29,9 +45,9 @@
 
 ## 4 分镜头制作
 
-读 [制作路线与合成](production.md)。较长的片子、或主风格第一次在本项目里用时，先过 [参考片门](qa.md#参考片门)：用完整风格做前 60–90 秒给用户确认，再铺全片。全托模式下这是决策书之后唯一一次整片确认，不能省；通过后 `director.py gate pass reference-clip`，沿用已确认风格的续作可以 `gate skip reference-clip --note` 说明理由。每个镜头独立编号、独立目录，按"静帧 → 短测 → 正式渲染 → 验收"推进，通过后用 `plan_tools.py stamp` 记录渲染指纹再进主片。所有定制 MG 遵守 [确定性渲染契约](mg-prompt-patterns.md#6-确定性渲染契约硬性)：画面只由帧号决定，并通过重复帧与乱序帧一致性检查。用到 Remotion、HyperFrames、图像或视频生成时，加载当前会话实际可用的对应 Skill 或工具并先读其规则。多个独立镜头可以并行制作，主时间线只由总控修改。
+读 [制作路线与合成](production.md)。较长的片子、或主风格第一次在本项目里用时，先过 [参考片门](qa.md#参考片门)：用完整风格做前 60–90 秒给用户确认，再铺全片。全托模式下这是决策书之后唯一一次整片确认，不能省；通过后 `director.py gate pass reference-clip`，沿用已确认风格的续作可以 `gate skip reference-clip --note` 说明理由。每个镜头独立编号、独立目录，按"静帧 → 短测 → 正式渲染 → 验收"推进，通过后用 `plan_tools.py stamp` 记录渲染指纹再进主片。动态镜头的短测是 2–4 秒视频，看过动态再进主片，文件记进 `short_test`；静帧看不出快推回落、抖动和节奏，所以不能用静帧代替。参考片门要包含全片会用到的每种镜头类型（包括重复使用的卡片外壳），铺全片时出现参考片里没有的类型，先单独做一个类型样片给用户看。用合成引擎（Remotion、HyperFrames、HTML）渲染之前跑 `plan_tools.py preflight <edit> --data <合成数据>`：合成数据必须由 `visual-plan.json` 生成并写入 `source_plan_sha256`，通过后写 `verify/preflight.json`。所有定制 MG 遵守 [确定性渲染契约](mg-prompt-patterns.md#6-确定性渲染契约硬性)：画面只由帧号决定，并通过重复帧与乱序帧一致性检查。用到 Remotion、HyperFrames、图像或视频生成时，加载当前会话实际可用的对应 Skill 或工具并先读其规则。多个独立镜头可以并行制作，主时间线只由总控修改。
 
 ## 5 合成与交付
 
-读 [时间线契约](timeline.md) 与 [验收与交付](qa.md)。先跑 [风格合规检查](style-spec.md)（`style_tools.py check --edit <edit> --frames <静帧目录>`：自由度、风格一致、禁用项不通过就不合成；可读性、动作档位、色板偏差逐条看过），再运行计划检查，再对实际渲染做逐镜头与整片验收（含风格一致性和手机尺寸可读性），通过后交付成片和可继续修改的工程。正式交付前必须跑 `media_tools.py deliver-check`（成片对照原素材或交付规格，报告写进 `verify/`），不通过不交付；草稿、预览渲染的文件名带"草稿/预览"字样，不得当成片交付（见 [交付规格门禁](qa.md#交付规格门禁硬性)）。
+读 [时间线契约](timeline.md) 与 [验收与交付](qa.md)。先跑 [风格合规检查](style-spec.md)（`style_tools.py check --edit <edit> --frames <静帧目录>`：自由度、风格一致、禁用项不通过就不合成；可读性、动作档位、色板偏差逐条看过），再运行计划检查，再对实际渲染做逐镜头与整片验收（含风格一致性和手机尺寸可读性），通过后交付成片和可继续修改的工程。正式交付前必须跑 `media_tools.py deliver-check --edit <edit>`（成片对照原素材或交付规格；用合成引擎做的片子还要有与当前计划一致的 `verify/preflight.json`；报告写进 `verify/`），不通过不交付；草稿、预览渲染的文件名带"草稿/预览"字样，不得当成片交付（见 [交付规格门禁](qa.md#交付规格门禁硬性)）。
 
