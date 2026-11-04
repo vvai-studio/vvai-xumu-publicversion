@@ -1,10 +1,15 @@
 """Behavioral tests of motion_index: mg-styles-15 prompt parsing, index build and Chinese search."""
 import json
 from pathlib import Path
+import shutil
+import subprocess
 import tempfile
 import unittest
+from unittest import mock
+import zipfile
 
-from motion_index import build, search, split_title
+import motion_index
+from motion_index import build, frames, search, split_title
 
 PROMPT = '''# 测试贴纸风 2.5D Test Sticker / 2.5D
 
@@ -133,6 +138,60 @@ class OpusIndexTests(unittest.TestCase):
     def test_search_by_style_key_and_chinese_name(self):
         self.assertEqual(search(self.index, ['水墨'])[0]['id'], 'opus:test-ink')
         self.assertEqual(search(self.index, ['opuscar-test-ink'])[0]['id'], 'opus:test-ink')
+
+
+class SampleFetchTests(unittest.TestCase):
+    """A shortlisted Shotcraft preview comes out of the bulk zip alone; a name the zip lacks uses its single upload."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix='xumu-samples-test-')
+        self.root = Path(self.temp.name)
+        self.addCleanup(self.temp.cleanup)
+        self.zip = self.root / 'gallery-media.zip'
+        with zipfile.ZipFile(self.zip, 'w') as z:
+            z.writestr('media/a.mp4', b'zipped a')
+            z.writestr('media/b.mp4', b'zipped b')
+        (self.root / 'c-single.mp4').write_bytes(b'single c')
+
+    def test_members_and_fallback(self):
+        rows = [{'source': 'shotcraft', 'name': n, 'url': 'zip', 'member': n, 'bytes': 1, 'dest': str(self.root / 'out' / n),
+                 'single': (self.root / 'c-single.mp4').as_uri() if n == 'c.mp4' else None}
+                for n in ('a.mp4', 'c.mp4', 'd.mp4')]
+        with mock.patch.object(motion_index, 'remote_zip', lambda url: zipfile.ZipFile(self.zip)):
+            done, failed = motion_index.fetch_samples(rows)
+        self.assertEqual(done, ['a.mp4', 'c.mp4'])
+        self.assertTrue(failed[0].startswith('d.mp4: not in'))
+        self.assertEqual((self.root / 'out' / 'a.mp4').read_bytes(), b'zipped a')
+        self.assertEqual((self.root / 'out' / 'c.mp4').read_bytes(), b'single c')
+        self.assertFalse((self.root / 'out' / 'b.mp4').exists())
+
+
+@unittest.skipUnless(shutil.which('ffmpeg') and shutil.which('ffprobe'), 'needs ffmpeg')
+class FramesTests(unittest.TestCase):
+    """Contact sheets: one row of evenly spaced frames per sample, missing samples say how to get them."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix='xumu-frames-test-')
+        self.root = Path(self.temp.name)
+        self.addCleanup(self.temp.cleanup)
+        self.clip = self.root / 'clip.mp4'
+        subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-f', 'lavfi', '-i', 'testsrc=size=320x180:rate=30',
+                        '-t', '3', '-pix_fmt', 'yuv420p', str(self.clip)], check=True)
+        self.index = {'entries': [{'id': 'gn:test', 'clip': str(self.clip)}, {'id': 'gn:noclip', 'clip': None}]}
+
+    def width(self, path):
+        out = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height',
+                              '-of', 'csv=p=0', str(path)], capture_output=True, text=True, check=True).stdout
+        return [int(v) for v in out.strip().split(',')]
+
+    def test_sheet_has_all_frames_and_missing_ids_are_reported(self):
+        result = frames(self.index, ['gn:test', str(self.clip), 'gn:noclip', 'gn:unknown'], self.root / 'refs', n=6, height=90)
+        self.assertEqual([s['id'] for s in result['sheets']], ['gn:test', str(self.clip)])
+        self.assertEqual(self.width(result['sheets'][0]['sheet']), [160 * 6, 90])
+        self.assertEqual(len(result['sheets'][0]['times_s']), 6)
+        self.assertEqual(result['combined'][0]['rows'], ['gn:test', str(self.clip)])
+        self.assertEqual(self.width(result['combined'][0]['file']), [960, 2 * 98])
+        self.assertEqual({m['id'] for m in result['missing']}, {'gn:noclip', 'gn:unknown'})
 
 
 if __name__ == '__main__':

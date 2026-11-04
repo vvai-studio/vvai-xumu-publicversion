@@ -55,6 +55,7 @@ v1 规则：整数 fps、整数帧、半开窗口 `[from, from+duration)`，背�
   - `inner_cues` / `inner_frames`：镜头内部跟字的时刻（某个词出现时弹出、敲击）。`inner_cues` 写 `{"名称": <引用>}`，`cue.py sync` 换算成 `inner_frames`（相对镜头起点的帧），镜头代码从 `inner_frames` 读取。
 - `audio_policy`：`silent` 或 `separate`。视觉文件自身的音轨一律不自动混入；`separate` 必须有对应的 SFX 条目。
 - `route=shotcraft` 时另需 `card` 与 `style_key`。计划工具只检查非空，名称真实性对照上游索引人工核对。
+- `route=shotcraft|mg` 的镜头进入 `rendered`/`verified` 前（以及 `--ready` 时）必须有 `refs_viewed`：`[{"id": "sc:<style-key>", "sheet": "verify/refs/refs_sheet_1.jpg"}, …]`，`sheet` 是 `motion_index.py frames` 截出的图，文件必须存在；shotcraft 镜头选中的 `sc:<style_key>` 必须在里面。确实没有样片可看时写 `{"none": "<原因>"}`。不进渲染指纹。
 - 镜头 `asset`：`file`、`timeline_revision`、布尔 `alpha`，可选 `render_key`（由 `plan_tools.py stamp` 写入，见 [改动影响与渲染缓存](#改动影响与渲染缓存)）。就绪时镜头为 verified、文件存在，资产绑定当前 revision，或 `render_key` 与当前渲染输入一致。background 不透明，透明内容放在 overlay；透明与否由媒体实际编码决定。
 - `sfx`：数组，每项含唯一 `id`、`shot_id`、当前 `timeline_revision`、非负 `offset_frames`、正 `duration_frames`、`gain`（有限值，0–4）、`file`。音效位于绑定镜头内部，该镜头 `audio_policy=separate`。全片音效分配到相应镜头窗口；主旁白不放进 sfx。
 

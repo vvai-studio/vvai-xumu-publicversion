@@ -6,7 +6,7 @@
 </p>
 
 ![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.26.0-orange?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.27.0-orange?style=flat-square)
 ![Skill](https://img.shields.io/badge/Skill-Agent-111111?style=flat-square)
 ![Remotion](https://img.shields.io/badge/Remotion-MG-0B84F3?style=flat-square)
 ![Claude](https://img.shields.io/badge/Claude-Supported-D97757?style=flat-square)

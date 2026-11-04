@@ -23,9 +23,10 @@
 - 核对索引 `cards[].name`、`styles[].key`、`source`、`styles[].media.url`；索引与配方冲突时记录下来并核对源码。
 - 按卡片"参考实现"定位 TSX，完整读取选中代码与必要组件。保留关键时值比例、缓动、遮罩时机、路径与已知坑；适配素材、中文、品牌、坐标与构图。
 - demo 里的品牌是 video-shotcraft 自己的：`demos/_fixtures/Brand.tsx` 的 `ShotcraftMark` / `ShotcraftWordmark`（logo）和 `BRAND` / `PITCH`（品牌名与文案）一律换成本片的标志与文案；本片没有标志时去掉或换中性占位，不保留 Shotcraft 品牌入片。复制后搜一遍 `Shotcraft` 确认无残留。
-- 动态 MP4 可能不随 Git 下载：先查所选样式的在线 Gallery 地址；需要本地参考时，先读 `gallery/fetch-media.sh` 再决定回收方式，只取本次入围的公开样片。
-- 以正常速度观看入围动作，必要时抽入场、峰值、落定、退出帧，记录动作拆解。
-- 样片无法访问时标"未验证动态参考"，用准确 demo 做本地短测；用户要求忠实复现时说明差距。
+- **入围必看样片**：`motion_index.py frames sc:<style-key> gn:<slug> mg15:<id> opus:<slug> … --out <edit>/verify/refs` 把每条样片截成一行 6 帧（均匀取，跳过黑场首帧），全片入围的拼成一张（每张最多 6 行），一次看完；看完把 `{id, sheet}` 写进该镜头的 `refs_viewed`（见 [时间线契约](timeline.md#字段)），`plan_tools.py check` 在镜头进入渲染前查它。截帧每条不到 1 秒，时间花在看图上，所以**只看入围的**：每个动态段首选加至多 1 个备选，风格方向每个 1 条。
+- 样片不在本机时：`motion_index.py samples --ids sc:<style-key> mg15:<id> opus:<slug> …` 只报入围那几条的大小，用户同意后加 `--yes` 下到 `<refs>/samples/`（Shotcraft 每条约 1–3 MB，从上游样片包里单独取，不下整包；mg15 每条 4–38 MB；Opuscar 每条 8–13 MB）。不带 `--ids` 是全套（约 1.2 GB），只在用户要求时下。gn 动效片段随参考库自带。下载失败多是网络抖动，原命令重跑即可，已下好的不会重下。
+- 动作拆解看截帧里的入场、峰值、落定、退出；截帧看不出节奏时，用准确 demo 做本地短测。
+- 样片拿不到（下载失败、用户不同意下载）时 `refs_viewed` 记 `{"none": "未验证动态参考：<原因>"}`，用准确 demo 做本地短测；用户要求忠实复现时说明差距。不能冒称看过。
 - 标注"仅供参考、需自定义实现"的变体，用户点名时说明风险后使用。只把项目用到的实现复制进项目目录。
 
 ## 4. 组织整片

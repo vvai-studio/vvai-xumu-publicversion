@@ -20,7 +20,7 @@ def example():
         'shots': [{'id': 's1', 'timeline_revision': 'v1', 'role': 'background',
                    'route': 'mg', 'from_frame': 0, 'duration_frames': 90,
                    'purpose': 'Explain source aggregation', 'audio_policy': 'silent',
-                   'status': 'verified',
+                   'status': 'verified', 'refs_viewed': [{'id': 'gn:piece-assembly', 'sheet': '参考.jpg'}],
                    'asset': {'file': '画面.bin', 'timeline_revision': 'v1', 'alpha': False}}],
         'sfx': [],
     }
@@ -34,6 +34,7 @@ class PlanTests(unittest.TestCase):
         # These are existence fixtures, deliberately not decodable video/audio.
         (self.root / '画面.bin').write_bytes(b'synthetic fixture')
         (self.root / '声音.bin').write_bytes(b'synthetic fixture')
+        (self.root / '参考.jpg').write_bytes(b'synthetic fixture')
         self.plan = example()
 
     def errors(self, ready=False):
@@ -46,6 +47,36 @@ class PlanTests(unittest.TestCase):
         self.plan['input_mode'] = 'audio'
         self.plan['narration'] = {'kind': 'original', 'file': '声音.bin',
                                   'locked': True, 'timeline_revision': 'v1'}
+        self.assertEqual(self.errors(True), [])
+
+    def test_moving_shot_needs_viewed_samples_before_render(self):
+        del self.plan['shots'][0]['refs_viewed']
+        self.assertTrue(any('refs_viewed is required' in e for e in self.errors()))
+        self.plan['shots'][0]['status'] = 'planned'
+        self.assertEqual(self.errors(), [])
+        self.assertTrue(any('refs_viewed is required' in e for e in self.errors(True)))
+
+    def test_viewed_sheet_must_exist(self):
+        self.plan['shots'][0]['refs_viewed'] = [{'id': 'gn:piece-assembly', 'sheet': '没有.jpg'}]
+        self.assertTrue(any('refs_viewed[0].sheet' in e for e in self.errors()))
+
+    def test_none_needs_reason(self):
+        self.plan['shots'][0]['refs_viewed'] = {'none': '用户给的参考片已逐帧看过'}
+        self.assertEqual(self.errors(True), [])
+        self.plan['shots'][0]['refs_viewed'] = {'none': ''}
+        self.assertTrue(any('needs the reason' in e for e in self.errors()))
+
+    def test_shotcraft_choice_must_be_viewed(self):
+        shot = self.plan['shots'][0]
+        shot.update(route='shotcraft', card='effects/piece-pop', style_key='piece-pop')
+        self.assertTrue(any('sc:piece-pop is not in refs_viewed' in e for e in self.errors()))
+        shot['refs_viewed'].append({'id': 'sc:piece-pop', 'sheet': '参考.jpg'})
+        self.assertEqual(self.errors(True), [])
+
+    def test_real_footage_needs_no_samples(self):
+        shot = self.plan['shots'][0]
+        del shot['refs_viewed']
+        shot['route'] = 'real'
         self.assertEqual(self.errors(True), [])
 
     def test_no_background_audio(self):
@@ -242,6 +273,7 @@ class RenderCacheTests(unittest.TestCase):
         (source / 'node_modules' / 'dep.js').write_text('v1', encoding='utf-8')
         # The rendered file sits inside the input folder on purpose: it must not count as input.
         (source / 'render.mp4').write_bytes(b'synthetic render')
+        (self.root / '参考.jpg').write_bytes(b'synthetic fixture')
         self.plan = example()
         shot = self.plan['shots'][0]
         shot.update(inputs=['shots/s1'], props={'title': '收集 → 分类'})

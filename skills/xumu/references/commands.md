@@ -79,6 +79,8 @@ python <skill>/scripts/sfx_synth.py make pop --out pop.wav | track events.json -
 python <skill>/scripts/media_tools.py clips | cutpoint | level | measure | normalize | fontcheck ...
 python <skill>/scripts/hf_upgrade_check.py --work <空目录>     # 每月一次：HyperFrames 受控升级检查
 python <skill>/scripts/motion_index.py search 对比 | show gn:split-compare | show mg15:19-paperclip | show opus:caption-news | build --force
+python <skill>/scripts/motion_index.py frames sc:<style-key> gn:<slug> mg15:<id> opus:<slug> --out <edit>/verify/refs   # 入围样片截帧拼图，结果记进镜头 refs_viewed
+python <skill>/scripts/motion_index.py samples --ids sc:whip-pan mg15:09-bauhaus [--yes]   # 只下入围的样片：先报大小，--yes 下载到 <refs>/samples；不带 --ids 是全套约 1.2 GB
 ```
 
 手法库工具（用法见 [学习模式](learning.md)）：

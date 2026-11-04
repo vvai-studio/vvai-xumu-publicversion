@@ -6,6 +6,8 @@
           + mg-styles-15 style prompts + Lemo-Opuscar style rules                       ->  motion-index.json
   search  Chinese or English keywords -> ranked effects, recipes, blocks and components
   show    one entry with its parameters, usage notes and local/online paths
+  samples report the size of the motion samples not yet on this machine; --yes downloads them into <refs>/samples
+  frames  contact sheet per sample (evenly spaced frames in one row) so a shortlisted move can be looked at
 
 Refs dir: env XUMU_REFS, else backends.local.json "refs", else <skills dir>/_refs.
 Sources:
@@ -16,16 +18,25 @@ Sources:
                    10 s film, full prompt and deterministic source (renderAt(t))                       MIT
   opus:<slug>      lemomo-ai/lemo-opuscar style (pinned revision): full rules (STYLE.md), native moves,
                    demo notes and deterministic source (render(t)); sample film online                  MIT
+  sc:<style-key>   Video Shotcraft gallery preview (frames only; cards are read from the Shotcraft skill)
+Samples on disk: gn clips ship with the gongnyang checkout; Shotcraft previews, mg15 films and Opuscar films
+are downloaded by `samples` (sizes first, --yes to fetch).
 """
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+import io
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
+import time
+import urllib.error
 import urllib.request
+import zipfile
 
 for _stream in (sys.stdout, sys.stderr):   # Windows pipes default to the ANSI code page; the agent reads UTF-8
     if hasattr(_stream, 'reconfigure'):
@@ -372,6 +383,338 @@ def search(index, terms, source=None, kind=None, limit=15):
              'purposes': e.get('purposes'), 'summary': (e.get('summary') or '')[:160]} for s, e in rows[:limit]]
 
 
+SC_RELEASE = 'https://api.github.com/repos/Vincentwei1021/video-shotcraft/releases/tags/gallery-media'
+SC_ZIP = 'gallery-media.zip'
+MG15_VIDEOS = 'https://api.github.com/repos/Vincentwei1021/mg-styles-15/contents/videos'
+SAMPLE_SOURCES = ('shotcraft', 'mg15', 'opus')
+
+
+def samples_dir():
+    return Path(refs_config().get('samples') or refs_dir() / 'samples')
+
+
+def shotcraft_root():
+    try:
+        roots = json.loads((SKILL_ROOT / 'backends.local.json').read_text(encoding='utf-8')).get('shotcraft', {}).get('roots', [])
+    except (OSError, ValueError):
+        roots = []
+    for root in [*map(Path, roots), SKILL_ROOT.parent / 'video-shotcraft']:
+        if (root / 'gallery' / 'api' / 'library.json').is_file():
+            return root
+    return None
+
+
+def shotcraft_previews():
+    """Shotcraft style key -> preview file name, from the gallery index (cards[].styles[].media.url)."""
+    root = shotcraft_root()
+    if not root:
+        return {}
+    lib = json.loads((root / 'gallery' / 'api' / 'library.json').read_text(encoding='utf-8'))
+    out = {}
+    for card in lib['cards']:
+        for style in card['styles']:
+            media = style.get('media')
+            url = media.get('url') if isinstance(media, dict) else media
+            if url:
+                out[style['key']] = url.split('?')[0].rstrip('/').split('/')[-1]
+    return out
+
+
+def urlopen(url, headers=None, timeout=60, tries=3):
+    """urlopen with retries: GitHub's CDN now and then fails a TLS handshake or resets a connection."""
+    req = urllib.request.Request(url, headers={'User-Agent': 'xumu-motion-index', **(headers or {})})
+    for attempt in range(tries):
+        try:
+            return urllib.request.urlopen(req, timeout=timeout)
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 or attempt == tries - 1:
+                raise
+        except OSError:
+            if attempt == tries - 1:
+                raise
+        time.sleep(1 + 2 * attempt)
+
+
+def api_json(url):
+    with urlopen(url, {'Accept': 'application/vnd.github+json'}) as r:
+        return json.loads(r.read().decode('utf-8'))
+
+
+class RemoteFile(io.RawIOBase):
+    """Seekable read-only view of a remote file over HTTP Range requests, so zipfile can pull single members
+    out of a large archive without downloading the rest."""
+
+    def __init__(self, url):
+        with urlopen(url, {'Range': 'bytes=0-0'}) as r:
+            total = (r.headers.get('Content-Range') or '').rpartition('/')[2]
+            if r.status != 206 or not total.isdigit():
+                raise OSError('server does not support range requests')
+            self.url, self.size, self.pos = r.geturl(), int(total), 0   # the signed CDN URL after redirects
+
+    def readable(self):
+        return True
+
+    def seekable(self):
+        return True
+
+    def tell(self):
+        return self.pos
+
+    def seek(self, offset, whence=0):
+        self.pos = {0: 0, 1: self.pos, 2: self.size}[whence] + offset
+        return self.pos
+
+    def readinto(self, buf):
+        if self.pos >= self.size or not len(buf):
+            return 0
+        end = min(self.size, self.pos + len(buf)) - 1
+        with urlopen(self.url, {'Range': f'bytes={self.pos}-{end}'}, timeout=120) as r:
+            data = r.read()
+        buf[:len(data)] = data
+        self.pos += len(data)
+        return len(data)
+
+
+def remote_zip(url):
+    return zipfile.ZipFile(io.BufferedReader(RemoteFile(url), buffer_size=1 << 20))
+
+
+def opus_films():
+    """Opuscar slug -> (url, bytes, sha256) from the style specs, which pin the films' hashes."""
+    out = {}
+    for spec in sorted((SKILL_ROOT / 'library' / 'styles').glob('opuscar-*/style.json')):
+        g = json.loads(spec.read_text(encoding='utf-8')).get('gallery') or {}
+        if g.get('sample_url'):
+            out[spec.parent.name[len('opuscar-'):]] = (g['sample_url'], g.get('sample_bytes') or 0, g.get('sample_sha256'))
+    return out
+
+
+def sample_plan(sources, ids=None):
+    """What `samples --yes` would download: one row per file. Shotcraft's previews live in a bulk zip on its
+    gallery-media release; a few named previews are read out of it one by one, the whole set comes as the zip."""
+    rows, base = [], samples_dir()
+    if 'shotcraft' in sources:
+        previews = shotcraft_previews()
+        sc_ids = {i[3:] for i in ids or () if i.startswith('sc:')}
+        unknown = sc_ids - set(previews)
+        if unknown:
+            raise ValueError('unknown Shotcraft style keys: ' + ', '.join(sorted(unknown)))
+        wanted = {previews[k] for k in sc_ids} if sc_ids else set(previews.values())
+        dest = base / 'shotcraft'
+        todo = {n for n in wanted if not (dest / n).is_file()}
+        if todo:
+            assets = api_json(SC_RELEASE)['assets']
+            zipped = next((a for a in assets if a['name'] == SC_ZIP), None)
+            # a single file uploaded after the zip replaces the zipped copy; older singles are superseded
+            newer = {a['name']: a for a in assets if a['name'] in todo and (not zipped or a['updated_at'] > zipped['updated_at'])}
+            single = {a['name']: a for a in assets}
+            rest = todo - set(newer)
+            if zipped and len(rest) > 20:
+                rows.append({'source': 'shotcraft', 'name': SC_ZIP, 'url': zipped['browser_download_url'],
+                             'bytes': zipped['size'], 'dest': str(dest), 'zip': True})
+            elif zipped:   # a name the zip lacks falls back to its single upload
+                # sizes from the zip's own directory (a few small range reads): the zipped previews are newer
+                # and larger than the old single uploads
+                with remote_zip(zipped['browser_download_url']) as z:
+                    inside = {os.path.basename(i.filename): i.file_size for i in z.infolist()}
+                rows += [{'source': 'shotcraft', 'name': n, 'url': zipped['browser_download_url'], 'member': n,
+                          'single': single[n]['browser_download_url'] if n in single else None,
+                          'bytes': inside.get(n) or (single[n]['size'] if n in single else 0), 'dest': str(dest / n)}
+                         for n in sorted(rest)]
+            else:
+                newer.update({a['name']: a for a in assets if a['name'] in rest})
+            rows += [{'source': 'shotcraft', 'name': a['name'], 'url': a['browser_download_url'], 'bytes': a['size'],
+                      'dest': str(dest / a['name'])} for a in newer.values()]
+    if 'mg15' in sources:
+        dest = base / 'mg15'
+        for f in api_json(MG15_VIDEOS):
+            stem = f['name'][:-4]
+            if f['name'].endswith('.mp4') and not (dest / f['name']).is_file() and (not ids or f'mg15:{stem}' in ids):
+                rows.append({'source': 'mg15', 'name': f['name'], 'url': f['download_url'], 'bytes': f['size'],
+                             'dest': str(dest / f['name'])})
+    if 'opus' in sources:
+        dest = base / 'opus'
+        for slug, (url, size, sha) in opus_films().items():
+            if not opus_local(slug) and (not ids or f'opus:{slug}' in ids):
+                rows.append({'source': 'opus', 'name': f'{slug}.mp4', 'url': url, 'bytes': size, 'sha256': sha,
+                             'dest': str(dest / f'{slug}.mp4')})
+    return rows
+
+
+def download(url, dest):
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    part = dest.with_name(dest.name + '.part')
+    with urlopen(url, timeout=300) as r, part.open('wb') as f:
+        shutil.copyfileobj(r, f, 1 << 20)
+    return part
+
+
+def fetch_samples(rows):
+    import hashlib
+    done, failed, archives = [], [], {}
+    for row in rows:
+        print(f'{row["source"]}: {row["name"]} ({row["bytes"] / 2 ** 20:.1f} MB)', file=sys.stderr, flush=True)
+        try:
+            if row.get('member'):
+                if row['url'] not in archives:
+                    archives[row['url']] = remote_zip(row['url'])
+                z = archives[row['url']]
+                info = next((i for i in z.infolist() if os.path.basename(i.filename) == row['member']), None)
+                dest = Path(row['dest'])
+                if not info:
+                    if row.get('single'):
+                        download(row['single'], dest).replace(dest)
+                        done.append(row['name'])
+                    else:
+                        failed.append(f'{row["name"]}: not in {SC_ZIP}')
+                    continue
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                part = dest.with_name(dest.name + '.part')
+                with z.open(info) as src, part.open('wb') as out:
+                    shutil.copyfileobj(src, out, 1 << 20)
+                part.replace(dest)
+                done.append(row['name'])
+                continue
+            if row.get('zip'):
+                with tempfile.TemporaryDirectory() as tmp:
+                    part = download(row['url'], Path(tmp) / SC_ZIP)
+                    dest = Path(row['dest'])
+                    dest.mkdir(parents=True, exist_ok=True)
+                    with zipfile.ZipFile(part) as z:
+                        for info in z.infolist():
+                            name = os.path.basename(info.filename)
+                            if name.endswith('.mp4'):
+                                with z.open(info) as src, (dest / name).open('wb') as out:
+                                    shutil.copyfileobj(src, out, 1 << 20)
+                done.append(row['name'])
+                continue
+            dest = Path(row['dest'])
+            part = download(row['url'], dest)
+            if row.get('sha256') and hashlib.sha256(part.read_bytes()).hexdigest() != row['sha256']:
+                part.unlink()
+                failed.append(f'{row["name"]}: hash mismatch, discarded')
+                continue
+            part.replace(dest)
+            done.append(row['name'])
+        except (OSError, zipfile.BadZipFile) as exc:
+            failed.append(f'{row["name"]}: {exc} (network hiccups are common: run the same command again)')
+    for z in archives.values():
+        z.close()
+    return done, failed
+
+
+def opus_local(slug):
+    for p in (samples_dir() / 'opus' / f'{slug}.mp4', media_styles() / f'opuscar-{slug}' / 'sample.mp4' if media_styles() else None):
+        if p and p.is_file():
+            return p
+    return None
+
+
+def media_styles():
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import library_tools
+    root = library_tools.media_root()
+    return root / 'styles' if root else None
+
+
+def sample_file(sid, by_id):
+    """Local video for a sample id, or (None, why). A plain path to a video file is accepted too."""
+    source, _, key = sid.partition(':')
+    if source == 'gn':
+        e = by_id.get(sid)
+        if not e:
+            return None, 'unknown gn id'
+        return (Path(e['clip']), None) if e.get('clip') and Path(e['clip']).is_file() else (None, 'this effect has no clip')
+    if source == 'sc':
+        name = shotcraft_previews().get(key)
+        if not name:
+            return None, 'unknown Shotcraft style key (check gallery/api/library.json styles[].key)'
+        p = samples_dir() / 'shotcraft' / name
+        return (p, None) if p.is_file() else (None, f'not downloaded: motion_index.py samples --ids {sid} --yes')
+    if source == 'mg15':
+        if sid not in by_id:
+            return None, 'unknown mg15 id'
+        p = samples_dir() / 'mg15' / f'{key}.mp4'
+        return (p, None) if p.is_file() else (None, f'not downloaded: motion_index.py samples --ids {sid} --yes')
+    if source == 'opus':
+        if sid not in by_id:
+            return None, 'unknown opus id'
+        p = opus_local(key)
+        return (p, None) if p else (None, f'not downloaded: motion_index.py samples --ids {sid} --yes')
+    p = Path(sid)
+    return (p, None) if p.is_file() else (None, 'unknown id or missing file')
+
+
+def probe_duration(path):
+    res = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', str(path)],
+                         capture_output=True, text=True, timeout=60)
+    try:
+        return float(res.stdout.strip())
+    except ValueError:
+        return None
+
+
+def contact_sheet(video, out, n=6, height=240):
+    """n frames at the middle of n equal slices (skips the black first frame), tiled in one row."""
+    dur = probe_duration(video)
+    if not dur:
+        raise ValueError(f'cannot read duration: {video}')
+    step = dur / n
+    # first frame at or after step/2, then each frame at least one step after the last picked one
+    pick = f"if(isnan(prev_selected_t),gte(t,{step / 2:.3f}),gte(t-prev_selected_t,{step * 0.98:.3f}))"
+    vf = f"select='{pick}',scale=-2:{height},tile={n}x1"
+    res = subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(video), '-vf', vf,
+                          '-frames:v', '1', '-q:v', '3', str(out)], capture_output=True, text=True, timeout=120)
+    if res.returncode or not out.is_file():
+        raise ValueError(f'ffmpeg failed on {video}: {res.stderr.strip()[-200:]}')
+    return [round(step / 2 + k * step, 2) for k in range(n)], round(dur, 2)
+
+
+def stack_sheets(sheets, out):
+    """Several one-row sheets stacked into one image (padded to the widest), so one look covers a shortlist."""
+    widths = []
+    for s in sheets:
+        res = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width',
+                              '-of', 'csv=p=0', str(s)], capture_output=True, text=True, timeout=60)
+        widths.append(int(res.stdout.strip()))
+    w = max(widths) + max(widths) % 2
+    args = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y']
+    for s in sheets:
+        args += ['-i', str(s)]
+    chain = ''.join(f'[{i}:v]pad={w}:ih:0:0:color=0x202020,pad=iw:ih+8:0:0:color=0x202020[r{i}];' for i in range(len(sheets)))
+    chain += ''.join(f'[r{i}]' for i in range(len(sheets))) + f'vstack=inputs={len(sheets)}'
+    if len(sheets) == 1:
+        chain = f'[0:v]pad={w}:ih:0:0:color=0x202020'
+    subprocess.run([*args, '-filter_complex', chain, '-frames:v', '1', '-q:v', '3', str(out)], check=True,
+                   capture_output=True, timeout=120)
+
+
+def frames(index, ids, out_dir, n=6, height=240, per_image=6):
+    started = time.monotonic()
+    by_id = {e['id']: e for e in index['entries']}
+    out_dir.mkdir(parents=True, exist_ok=True)
+    sheets, missing = [], []
+    for sid in ids:
+        video, why = sample_file(sid, by_id)
+        if not video:
+            missing.append({'id': sid, 'reason': why})
+            continue
+        sheet = out_dir / (re.sub(r'[^\w.-]+', '_', sid) + '.jpg')
+        try:
+            times, dur = contact_sheet(video, sheet, n, height)
+        except (ValueError, OSError, subprocess.SubprocessError) as exc:
+            missing.append({'id': sid, 'reason': str(exc)})
+            continue
+        sheets.append({'id': sid, 'video': str(video), 'duration_s': dur, 'times_s': times, 'sheet': str(sheet)})
+    combined = []
+    for k in range(0, len(sheets), per_image):
+        group = sheets[k:k + per_image]
+        target = out_dir / f'refs_sheet_{k // per_image + 1}.jpg'
+        stack_sheets([Path(s['sheet']) for s in group], target)
+        combined.append({'file': str(target), 'rows': [s['id'] for s in group]})
+    return {'sheets': sheets, 'combined': combined, 'missing': missing, 'seconds': round(time.monotonic() - started, 1)}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--index', type=Path, help='default: <refs dir>/motion-index.json')
@@ -392,6 +735,16 @@ def main(argv=None):
     p.add_argument('--limit', type=int, default=15)
     p = sub.add_parser('show')
     p.add_argument('ids', nargs='+')
+    p = sub.add_parser('samples')
+    p.add_argument('--source', nargs='+', choices=SAMPLE_SOURCES, help='default: all three')
+    p.add_argument('--ids', nargs='+', help='only these sc:/mg15:/opus: samples (a shortlist; Shotcraft previews are '
+                                            'read one by one out of its bulk zip)')
+    p.add_argument('--yes', action='store_true', help='download; without it only report sizes')
+    p = sub.add_parser('frames')
+    p.add_argument('ids', nargs='+', help='gn:/sc:/mg15:/opus: ids or a path to a video')
+    p.add_argument('--out', type=Path, required=True, help='folder for the sheets, e.g. <edit>/verify/refs')
+    p.add_argument('--n', type=int, default=6, help='frames per sample (default 6)')
+    p.add_argument('--height', type=int, default=240)
     args = parser.parse_args(argv)
     index_path = args.index or default_index_path()
     try:
@@ -409,12 +762,32 @@ def main(argv=None):
             with index_path.open('w' if args.force else 'x', encoding='utf-8') as stream:
                 json.dump(index, stream, ensure_ascii=False)
             result = {'index': str(index_path), 'counts': index['counts'], 'entries': len(index['entries'])}
+        elif args.command == 'samples':
+            prefix = {'sc': 'shotcraft', 'mg15': 'mg15', 'opus': 'opus'}
+            if args.ids and any(i.split(':')[0] not in prefix for i in args.ids):
+                raise ValueError('--ids takes sc:, mg15: or opus: ids (gn clips are already local)')
+            sources = args.source or ({prefix[i.split(':')[0]] for i in args.ids} if args.ids else SAMPLE_SOURCES)
+            rows = sample_plan(set(sources), set(args.ids or []))
+            result = {'dir': str(samples_dir()), 'files': len(rows), 'mb': round(sum(r['bytes'] for r in rows) / 2 ** 20),
+                      'by_source': {s: round(sum(r['bytes'] for r in rows if r['source'] == s) / 2 ** 20)
+                                    for s in SAMPLE_SOURCES if any(r['source'] == s for r in rows)}}
+            if args.yes:
+                done, failed = fetch_samples(rows)
+                if any(r.get('zip') for r in rows):      # names the bulk zip did not carry
+                    rest = sample_plan({'shotcraft'})
+                    more, fail2 = fetch_samples(rest)
+                    done, failed = done + more, failed + fail2
+                result.update(downloaded=len(done), failed=failed)
+            else:
+                result['next'] = 'add --yes to download'
         else:
             index = json.loads(index_path.read_text(encoding='utf-8'))
             if args.command == 'search':
                 source = {'gn': 'gn:', 'gn-recipe': 'gn-recipe:', 'hf': 'hf:', 'mg15': 'mg15:', 'opus': 'opus:'}.get(args.source,
                                                                                                          args.source)
                 result = {'results': search(index, args.terms, source, args.kind, args.limit)}
+            elif args.command == 'frames':
+                result = frames(index, args.ids, args.out, args.n, args.height)
             else:
                 by_id = {e['id']: e for e in index['entries']}
                 missing = [i for i in args.ids if i not in by_id]

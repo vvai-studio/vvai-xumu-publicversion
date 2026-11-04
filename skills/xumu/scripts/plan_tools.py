@@ -12,6 +12,8 @@ import sys
 ROUTES = ('real', 'shotcraft', 'mg', 'illustration', 'external', 'three')
 ENGINES = ('remotion', 'hyperframes', 'html', 'manim', 'ffmpeg', 'external')
 STATES = ('planned', 'awaiting_approval', 'waiting_external', 'rendered', 'verified')
+# Moving shots whose shortlisted samples must have been looked at (motion_index.py frames) before render.
+VIEWED_ROUTES = ('shotcraft', 'mg')
 # Shot fields that change the rendered picture. from_frame is left out on purpose: shots render
 # from local frame 0, so moving one only changes where the composite places it.
 RENDER_FIELDS = ('role', 'route', 'engine', 'style', 'screen_text', 'card', 'style_key',
@@ -247,6 +249,24 @@ def validate(plan, root, ready=False):
             for field in ('card', 'style_key'):
                 if not nonempty(shot.get(field)):
                     fail(f'{label}.{field} is required for Shotcraft')
+        if shot.get('route') in VIEWED_ROUTES and (ready or shot.get('status') in ('rendered', 'verified')):
+            viewed = shot.get('refs_viewed')
+            if isinstance(viewed, dict) and set(viewed) == {'none'}:
+                if not nonempty(viewed['none']):
+                    fail(f'{label}.refs_viewed.none needs the reason no sample was looked at')
+            elif isinstance(viewed, list) and viewed:
+                seen = set()
+                for k, ref in enumerate(viewed):
+                    if not (isinstance(ref, dict) and nonempty(ref.get('id')) and nonempty(ref.get('sheet'))):
+                        fail(f'{label}.refs_viewed[{k}] needs id and sheet')
+                        continue
+                    seen.add(ref['id'])
+                    file_check(ref['sheet'], f'{label}.refs_viewed[{k}].sheet')
+                if shot.get('route') == 'shotcraft' and nonempty(shot.get('style_key')) and f'sc:{shot["style_key"]}' not in seen:
+                    fail(f'{label}: the chosen Shotcraft style sc:{shot["style_key"]} is not in refs_viewed')
+            else:
+                fail(f'{label}.refs_viewed is required for a {shot.get("route")} shot before rendering: '
+                     'motion_index.py frames <shortlist> --out verify/refs, then list {id, sheet}; or {"none": "<reason>"}')
         if 'props' in shot and not isinstance(shot['props'], dict):
             fail(f'{label}.props must be an object')
         inputs = shot.get('inputs', [])
