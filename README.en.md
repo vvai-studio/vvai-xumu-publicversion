@@ -6,7 +6,7 @@
 </p>
 
 ![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
-![Version](https://img.shields.io/badge/version-0.25.0-orange?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.26.0-orange?style=flat-square)
 ![Skill](https://img.shields.io/badge/Skill-Agent-111111?style=flat-square)
 ![Remotion](https://img.shields.io/badge/Remotion-MG-0B84F3?style=flat-square)
 ![Claude](https://img.shields.io/badge/Claude-Supported-D97757?style=flat-square)
@@ -24,7 +24,7 @@ It is not a one-click black box but a creative workflow with confirmation points
 - **Not everything becomes a card** — keeping the speaker on screen or adding no animation are valid choices; only segments that need motion get shots.
 - **Shots with provenance** — compare first choices and alternatives from 124 cinematic shot-recipe cards; write custom MG only when there is a real expressive gap.
 - **Style and explanation with method** — a 127-style catalog (59 open-source style packs with full rules, native moves and sample films; 15 with mg-styles-15 reference films), an explainer grammar, 18 composition recipes and 64 expression guides cover everything from film structure and what a sentence does (define, compare, steps, data…) down to local techniques, each with concrete visuals and checks.
-- **What it learns, it reuses** — editing videos and tutorials you send become technique cards and style specs that ship with the pack (38 cards and 127 styles so far, including the talking-head presentation family) and are matched to your content automatically.
+- **What it learns, it reuses** — editing videos and tutorials you send become technique cards and style specs that ship with the pack (45 cards and 127 styles so far, including the talking-head presentation family) and are matched to your content automatically.
 - **The presenter can be a digital human** — one photo plus the script, MiniMax H3 by default (about 6⚡ a minute, Kling 4.0 and Wan 3.0 as backups); made only when you ask, or when the brief suggests it with a reason and you confirm.
 - **Verifiable at every step** — one master timeline, per-shot test renders, a plan checker, and review of real renders.
 

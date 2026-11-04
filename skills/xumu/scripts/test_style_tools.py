@@ -84,7 +84,7 @@ class CatalogTests(unittest.TestCase):
     def test_real_catalog_entries(self):
         rows = style_tools.parse_catalog(style_tools.CATALOG.read_text(encoding='utf-8'))
         full = any(s.get('inspired_by') for s in style_tools.all_specs().values())   # 免费版不带这 171 种
-        expected = 298 if full else 127
+        expected = 299 if full else 127
         self.assertEqual(len(rows), expected)
         self.assertEqual(len({r['key'] for r in rows}), expected)
 
@@ -92,13 +92,15 @@ class CatalogTests(unittest.TestCase):
         specs = [s for s in style_tools.all_specs().values() if s.get('spec', {}).get('brief')]
         if not specs:
             self.skipTest('这批风格只在完整版')
-        self.assertEqual(len(specs), 171)
+        self.assertEqual(len([s for s in specs if s.get('inspired_by')]), 171)
         for s in specs:
             self.assertEqual(set(s['spec']['brief']), {'scene', 'material', 'type', 'motion', 'camera', 'narration'}, s['key'])
             self.assertTrue(s['spec']['concept_prompt'], s['key'])
             self.assertTrue(s['spec']['palette'], s['key'])
             self.assertGreaterEqual(len(s['spec']['signature_moves']), 3, s['key'])
-            self.assertEqual(s['gallery']['frame_kind'], 'concept', s['key'])
+            # 那 171 种是生图示意；用户新增的风格用成片真帧或参考片帧
+            kinds = {'concept'} if s.get('inspired_by') else {'concept', 'render', 'reference'}
+            self.assertIn(s['gallery']['frame_kind'], kinds, s['key'])
             self.assertTrue((style_tools.SKILL / s['gallery']['frame']).is_file(), s['key'])
 
     def test_opuscar_styles_have_reference_source_and_packed_frame(self):
