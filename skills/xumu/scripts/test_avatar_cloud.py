@@ -118,21 +118,34 @@ class FlowTests(unittest.TestCase):
             self.assertTrue((self.edit / 'avatar' / s['audio']).exists())
             self.assertLessEqual(s['seconds'], 30.01)
 
-    def test_generate_needs_voice_approval_and_a_sample_first(self):
+    def test_first_run_makes_one_test_take_without_asking(self):
         self.cfg['avatar']['max_seg'] = 10   # four segments
         plan = self.plan()
         self.assertEqual(len(plan['segments']), 4)
-        with quiet(), self.assertRaisesRegex(ac.Refused, '--voice-ok'):
-            av.generate(self.cfg, self.edit, self.image, confirmed=True, http=self.http())
-        with quiet(), self.assertRaisesRegex(ac.Refused, '样段'):
-            av.generate(self.cfg, self.edit, self.image, voice_ok='配音可以', confirmed=True, http=self.http())
+        want = av.test_segment(plan['segments'])['n']
+        http = self.http()
+        with quiet():   # no --voice-ok, no sample refusal: one test take only
+            res = av.generate(self.cfg, self.edit, self.image, confirmed=True, http=http, sleep=lambda s: None)
+        self.assertEqual(res['test'], want)
+        self.assertEqual(len([c for c in http.calls if c[1].endswith('/api/v1/model-runtime/invoke')]), 1)
+        self.assertTrue((self.edit / 'avatar' / f'seg_{want:02d}.mp4').exists())
+        self.assertEqual(len(res['missing']), 3)
+        again = FakeHttp([])   # a second run without --all stays on the test take: reused, nothing submitted
+        with quiet():
+            res2 = av.generate(self.cfg, self.edit, self.image, confirmed=True, http=again)
+        self.assertEqual(res2['test'], want)
+        self.assertEqual([c for c in again.calls if 'invoke' in c[1]], [])
+
+    def test_test_segment_is_closest_to_ten_seconds(self):
+        segs = [{'n': 1, 'seconds': 3.0}, {'n': 2, 'seconds': 12.5}, {'n': 3, 'seconds': 9.0}, {'n': 4, 'seconds': 11.0}]
+        self.assertEqual(av.test_segment(segs)['n'], 3)
 
     def test_sample_segment_runs_with_pinned_lane_and_is_reused(self):
         self.cfg['avatar']['max_seg'] = 10
         self.plan()
         http = self.http()
         with quiet():
-            res = av.generate(self.cfg, self.edit, self.image, voice_ok='配音可以', only='2', confirmed=True,
+            res = av.generate(self.cfg, self.edit, self.image, only='2', confirmed=True,
                               http=http, sleep=lambda s: None)
         sub = [c[2]['json'] for c in http.calls if c[1].endswith('/api/v1/model-runtime/invoke')]
         self.assertEqual(len(sub), 1)
@@ -147,6 +160,52 @@ class FlowTests(unittest.TestCase):
             av.generate(self.cfg, self.edit, self.image, only='2', confirmed=True, http=again)
         self.assertEqual([c for c in again.calls if 'invoke' in c[1]], [])
 
+    def test_frame_keeps_the_photo_pixels_over_the_scene(self):
+        scene = self.tmp / 'scene.png'
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=blue:s=1080x1920', '-frames:v', '1',
+                        str(scene)], check=True)
+
+        def cutter(src, dst):   # stand-in for the matting model: keep the left half of the photo, clear the rest
+            subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-vf',
+                            "format=rgba,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='if(lt(X,W/2),255,0)'", str(dst)], check=True)
+
+        rep = av.make_frame(self.edit, self.image, scene, cutter=cutter)
+        self.assertEqual(rep['size'], '720x1280')   # the photo's own frame
+        def pixel(x, y):
+            return subprocess.run(['ffmpeg', '-v', 'error', '-i', rep['frame'], '-vf', f'crop=1:1:{x}:{y}', '-f', 'rawvideo',
+                                   '-pix_fmt', 'rgb24', '-'], capture_output=True).stdout
+        left, right = pixel(180, 640), pixel(540, 640)
+        self.assertTrue(abs(left[0] - left[2]) < 20)   # grey photo pixels kept
+        self.assertGreater(right[2], right[0] + 100)   # blue scene shows where the person is not
+        self.assertFalse((self.edit / 'avatar' / 'frame_photo.png').exists())
+        with self.assertRaises(ac.Refused):
+            av.make_frame(self.edit, self.tmp / 'missing.jpg', scene, cutter=cutter)
+
+    def test_blend_frame_sends_photo_then_scene_and_builds_the_compare_sheet(self):
+        scene = self.tmp / 'scene.png'
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=blue:s=1080x1920', '-frames:v', '1',
+                        str(scene)], check=True)
+        calls = []
+
+        def gen(**k):   # stand-in for image_cloud.generate: two takes in <edit>/images
+            calls.append(k)
+            (self.edit / 'images').mkdir(exist_ok=True)
+            for t in 'AB':
+                subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=red:s=720x1280', '-frames:v', '1',
+                                str(self.edit / 'images' / f'avatar_frame_{t}.png')], check=True)
+            return {'files': ['avatar_frame_A.png', 'avatar_frame_B.png']}
+
+        with quiet():
+            rep = av.blend_frame(self.cfg, self.edit, self.image, scene, light='窗外夕阳从后方打来', gen=gen, confirmed=True)
+        k = calls[0]
+        self.assertEqual(k['refs'], [str(self.image), str(scene)])   # the real photo first, then the scene
+        self.assertEqual((k['aspect'], k['count'], k['name']), ('9:16', 2, 'avatar_frame'))
+        self.assertIn('窗外夕阳从后方打来', k['prompt'])
+        self.assertIn('同一张脸', k['prompt'])
+        self.assertEqual(len(rep['takes']), 2)
+        self.assertEqual(av.probe(rep['compare'])['height'], 960)   # photo | take A | take B
+        self.assertGreater(av.probe(rep['compare'])['width'], 3 * 500)
+
     def test_changed_narration_invalidates_plan(self):
         self.plan()
         with open(self.edit / 'tts' / 'narration.wav', 'ab') as f:
@@ -158,8 +217,7 @@ class FlowTests(unittest.TestCase):
         self.plan()
         http = self.http()
         with quiet(), self.assertRaisesRegex(ac.Refused, '超过上限'):
-            av.generate(self.cfg, self.edit, self.image, voice_ok='好', skip_sample=True, confirmed=True,
-                        max_cost=1, http=http)
+            av.generate(self.cfg, self.edit, self.image, all_segments=True, confirmed=True, max_cost=1, http=http)
         self.assertFalse([c for c in http.calls if '/v1/files' in c[1]])
 
     def test_finish_joins_and_keeps_the_original_voice(self):

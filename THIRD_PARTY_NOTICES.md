@@ -17,6 +17,7 @@
 |---|---|---|---|
 | `skills/xumu/assets/gallery/opuscar-*.jpg`（59 张） | [lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) 的风格代表帧（版本 `413a6bd`），作者 LemoLab | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | 缩为 640 宽 JPEG；每张在对应 `style.json` 的 `gallery.credit` 署名 |
 | `skills/xumu/library/styles/opuscar-*/style.json`、风格目录中 `opuscar-` 开头的 59 行 | 同上（风格规则与原生动作）；中文名、分类与原生动作索引来自 [mileson/chaojifeng-video-design](https://github.com/mileson/chaojifeng-video-design)（`a7c84de`） | MIT，Copyright (c) 2026 LemoLab；MIT，Copyright (c) 2026 Chaojifeng | 观感、标志动作、适合内容为序幕按上游规则改写的中文摘要；色板为从代表帧取的草稿色 |
+| `skills/xumu/references/character-asset/`（`guide.md`、`master-template.md`，仅完整版） | 本人收集的 Claude/Codex skill `character-asset-prompt-builder`（三栏人物资产图提示词），原作者未注明 | 未注明许可；来源确认前只随私有完整版分发，免费版不收录 | `guide.md` 开头加了序幕用法说明，模板链接改为同目录；其余原样 |
 | `skills/xumu/library/craft/recipes.json`（18 类组合配方）、`expressions.json`（64 项表达指导） | [mileson/chaojifeng-video-design](https://github.com/mileson/chaojifeng-video-design) 的 `catalog/recipes.json` 与 `catalog/expressions.json`（`a7c84de`） | MIT，Copyright (c) 2026 Chaojifeng | 精简字段、去掉每条重复的通用免责句、原库自有风格映射到序幕相近风格；各条原始来源链接保留在 `sources` |
 
 Lemo-Opuscar 的完整风格规则（STYLE.md）、案例说明与 demo 源码不随本仓库分发，由 `motion_index.py fetch` 按固定版本下载到本机（`opus:` 编号），不含视频、音频、图片与字体。59 条样片只记 Release 链接与哈希，`style_tools.py gallery sample` 按需下载；其中 game-show、paper-lantern、news-package 三条上游原片的声音另有限制，只看画面。超级峰原创的音乐视觉作品（含有版权的歌曲）与配乐库未纳入。

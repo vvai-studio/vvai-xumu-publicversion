@@ -2,7 +2,7 @@
 """Image backend: stills for B-roll and MG through the provider the user configured, behind audio_cloud's paid-call layer.
 
   python image_cloud.py estimate --prompt TEXT [--aspect 16:9] [--count N] [--ref IMG ...] [--transparent]
-  python image_cloud.py generate --edit EDIT --name NAME --prompt TEXT [--aspect 16:9] [--count N] [--ref IMG ...]
+  python image_cloud.py generate --edit EDIT --name NAME --prompt TEXT|--prompt-file FILE [--aspect 16:9] [--count N] [--ref IMG ...]
                                  [--transparent] [--model M] [--resolution R] [--quality Q] --confirmed [--max-cost N]
 
 Defaults: gt-image-2.5-flare at 4K and quality high for every image; another model or setting only when the user asks
@@ -174,7 +174,9 @@ def main(argv=None, cfg=None, icfg=None, http=None):
     sub = ap.add_subparsers(dest='cmd', required=True)
     for nm in ('estimate', 'generate'):
         p = sub.add_parser(nm)
-        p.add_argument('--prompt', required=True); p.add_argument('--aspect', default='16:9')
+        g = p.add_mutually_exclusive_group(required=True)
+        g.add_argument('--prompt'); g.add_argument('--prompt-file', help='UTF-8 text file with the prompt (long prompts)')
+        p.add_argument('--aspect', default='16:9')
         p.add_argument('--count', type=int, default=1); p.add_argument('--ref', action='append', default=[])
         p.add_argument('--transparent', action='store_true'); p.add_argument('--model')
         p.add_argument('--resolution'); p.add_argument('--quality')
@@ -182,6 +184,8 @@ def main(argv=None, cfg=None, icfg=None, http=None):
             p.add_argument('--edit', required=True); p.add_argument('--name', required=True)
             p.add_argument('--confirmed', action='store_true'); p.add_argument('--max-cost', type=float)
     a = ap.parse_args(argv)
+    if a.prompt_file:
+        a.prompt = Path(a.prompt_file).read_text(encoding='utf-8-sig').strip()
     cfg = ac.load_config() if cfg is None else cfg
     icfg = dict(ac.load_config(section='image') if icfg is None else icfg)
     if a.model:

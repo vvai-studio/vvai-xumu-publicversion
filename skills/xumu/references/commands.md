@@ -69,7 +69,8 @@ python <skill>/scripts/audio_cloud.py voice estimate <文案.md> [--voice <名�
 python <skill>/scripts/audio_cloud.py voice speak <文案.md> --edit <edit> [--section S1] --confirmed [--max-cost N]
 python <skill>/scripts/audio_cloud.py voice align --edit <edit>   # 逐字时间套回原文 → cue_chars.json、sections.json
 python <skill>/scripts/avatar_cloud.py check --image <照片> | plan --edit <edit> [--model minimax-h3|kling-v4|wan-3-0|kling-avatar] | estimate --edit <edit>   # 数字人：查图、分段、报价
-python <skill>/scripts/avatar_cloud.py generate --edit <edit> --image <照片> --motion 中 --voice-ok "用户原话" [--only N] --confirmed   # 先样段再全量
+python <skill>/scripts/avatar_cloud.py frame --edit <edit> --photo <真照片> --scene <场景图> [--light …] --confirmed   # 数字人开场画面：真照片合成进场景，出 2 张和对比图（--mode paste 改抠像贴图）
+python <skill>/scripts/avatar_cloud.py generate --edit <edit> --image <开场画面> --motion 中 --confirmed   # 先出约 10 秒测试视频；用户说可以后加 --all
 python <skill>/scripts/avatar_cloud.py finish --edit <edit>   # 拼接、质检、逐字对齐 → avatar/final_avatar.mp4 + anomalies.json
 python <skill>/scripts/audio_cloud.py music generate --edit <edit> --prompt … [--style …] --confirmed   # 配乐，一次两首
 python <skill>/scripts/audio_cloud.py music fit <曲> --len <秒> --out <wav> | music mix --music <wav> --video <片> --out <片>

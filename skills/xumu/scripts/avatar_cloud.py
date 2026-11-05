@@ -5,9 +5,10 @@ the user configured (造物社), behind audio_cloud's paid-call layer.
   python avatar_cloud.py check --image IMG [--out OUT.jpg]
   python avatar_cloud.py plan --edit EDIT [--model minimax-h3|kling-v4|wan-3-0|kling-avatar] [--audio WAV] [--max-seg S]
   python avatar_cloud.py estimate --edit EDIT [--quality std|pro] [--resolution 720p|1080p] [--only 1,3]
-  python avatar_cloud.py generate --edit EDIT --image IMG [--motion 小|中|大] [--extra TEXT] [--resolution R]
-                                  [--quality Q] [--only 1,3] [--voice-ok "用户的原话"] [--user-asked "用户的原话"]
-                                  [--skip-sample]
+  python avatar_cloud.py frame --edit EDIT --photo IMG --scene IMG [--mode blend|paste] [--light TEXT] [--count 2]
+                               [--blur 6] [--confirmed] [--max-cost N]
+  python avatar_cloud.py generate --edit EDIT --image IMG [--motion 小|中|大] [--extra TEXT]
+                                  [--resolution R] [--quality Q] [--only 1,3 | --all] [--user-asked "用户的原话"]
                                   --confirmed [--max-cost N]
   python avatar_cloud.py finish --edit EDIT [--no-align]
   python avatar_cloud.py lipsync --edit EDIT --video CLIP.mp4 --audio NEW.wav --name NAME --confirmed [--max-cost N]
@@ -27,10 +28,15 @@ A digital human is used only when the user asked for one, or the decision doc (d
 use, source user_asked|suggested, reason) suggested it with a reason and the user confirmed grid 7; generate checks
 this first. A project without a decision doc needs --user-asked "the user's own words".
 
-The narration must be final first: generate asks for the user's own words approving this version (--voice-ok),
-stores them with the narration's hash in avatar/voice_review.json, and refuses when it has changed since. The first
-run on a project with more than three segments sends one sample segment only (--only N), so the user can judge
-gestures before paying for the rest (--skip-sample when they already have). Same paid-call rules as audio_cloud:
+--image is the opening frame: the user's own photo, or one made by `frame` from that photo and a scene image. The
+default (--mode blend) is one multi-reference generation that puts the person into the scene and relights them,
+two takes plus a photo-vs-takes sheet for the face check; --mode paste cuts the real person out (HyperFrames
+remove-background, local) onto the scene, so the face cannot drift but the light does not match. Never build the
+frame from a generated person (a character sheet): tested 2026-11-06, each extra generation narrowed the face and
+H3 kept the change. No step waits for the user: the
+first run on a project sends one test segment only (the one closest to 10 s) for the user to watch; after their
+feedback, --all sends the rest (--only N picks segments). A plan made from a changed narration is refused, since the
+segments would no longer match it. Same paid-call rules as audio_cloud:
 quote every segment, pin the balanced channel, run only under the no-confirm limit or --max-cost, log every task
 before polling (an interrupted run resumes), reuse an identical earlier request, never switch channel after a failure.
 
@@ -90,6 +96,7 @@ Quiet room tone only, with no other sound.
 
 non_diegetic_music:
 No background music.'''
+TEST_SECONDS = 10.0   # the first run makes one test segment of about this length
 H3_MOTION = {
     '小': 'The head nods lightly with the speech, the hands stay relaxed and rise only briefly, and the shoulders and body stay still.',
     '中': 'The head nods and turns slightly with the speech; on key points one hand gestures in front of the chest, on lists the fingers count, '
@@ -204,6 +211,83 @@ def check_image(image, out=None):
     return {'ok': ok, 'image': str(dst), 'size': f'{w}x{h}', 'orientation': orient, 'risks': risks,
             'aspect': '9:16' if h > w else '16:9' if w > h else '1:1',
             'note': f'成片画幅跟图片一致（{orient}）；嘴闭着、表情平静、双手在身前的图接缝最干净'}
+
+
+# ------------------------------------------------------------------ opening frame: the real photo cut out over a scene
+def hf_cutout(src, dst):
+    """Background removal with HyperFrames' local model (free, ~0.5 s per image on CPU); writes an RGBA PNG."""
+    from hf_upgrade_check import DEFAULT_OLD, tool
+    r = subprocess.run([tool('npx'), '--yes', f'hyperframes@{DEFAULT_OLD}', 'remove-background', str(src), '-o', str(dst),
+                        '--json'], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=900)
+    if r.returncode or not Path(dst).exists():
+        raise ac.Refused('抠像失败（HyperFrames remove-background）：' + (r.stdout + r.stderr).strip()[-400:])
+
+
+# one generation from the real photo + the scene, relit to match (tested 2026-11-05: the person sits in the room with
+# the scene's rim light; a generated character sheet in between narrowed the face, so the photo goes in directly)
+BLEND_PROMPT = ('真实摄影，{orient} {aspect}。把第一张图里的这个人原样放进第二张图的场景里：同一张脸、同样的五官比例和脸型、'
+                '同样的发型、同一身衣服，姿势、双手的位置和人物在画面里的构图都和第一张图一致，正对镜头。场景、陈设和窗外的景色照第二张图，'
+                '人物在场景里该在的位置（坐在桌后、站在房间中间等），桌面或家具在人物身前时照常出现。光线统一成场景的光：{light}；'
+                '人物边缘有和场景一致的轮廓光，脸部是柔和的补光，肤色自然，人物和身边的家具有真实的接触阴影。背景轻微虚化，人物清晰。'
+                '只有这一个人。不改脸型、不美颜、不改年龄，不要原背景或绿幕残留，不要任何文字、字幕或水印。')
+BLEND_LIGHT = '主光的方向和色温跟第二张图一致'
+
+
+def blend_frame(cfg, edit, photo, scene, light='', count=2, confirmed=False, max_cost=None, http=None, gen=None,
+                out=print):
+    """做法一: the image model puts the person from the real photo into the scene and relights them (count takes, so
+    one can be picked). Writes images/avatar_frame_*.png and avatar/frame_compare.jpg (photo | takes) for the face
+    check."""
+    import image_cloud
+    src, bg = Path(photo), Path(scene)
+    for f in (src, bg):
+        if not f.is_file():
+            raise ac.Refused(f'图片不存在：{f}')
+    w, h = (probe(src)[k] or 0 for k in ('width', 'height'))
+    if not w or not h:
+        raise ac.Refused(f'读不出图片尺寸：{src}')
+    aspect, orient = ('9:16', '竖版') if h >= w else ('16:9', '横版')
+    prompt = BLEND_PROMPT.format(orient=orient, aspect=aspect, light=(light or BLEND_LIGHT).strip().rstrip('。；;'))
+    if gen is None:
+        icfg = ac.load_config(section='image')
+        gen = lambda **k: image_cloud.generate(cfg, icfg, http=http, out=out, **k)
+    entry = gen(edit=edit, name='avatar_frame', prompt=prompt, aspect=aspect, count=count, refs=[str(src), str(bg)],
+                confirmed=confirmed, max_cost=max_cost)
+    takes = [Path(edit) / 'images' / f for f in entry.get('files', [])]
+    sheet = adir(edit) / 'frame_compare.jpg'
+    tiles = [src, *takes]
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', *sum((['-i', str(t)] for t in tiles), []), '-filter_complex',
+                    ''.join(f'[{i}]scale=-2:960,setsar=1[t{i}];' for i in range(len(tiles))) +
+                    ''.join(f'[t{i}]' for i in range(len(tiles))) + f'hstack={len(tiles)}', '-q:v', '3', str(sheet)],
+                   check=True)
+    return {'takes': [str(t) for t in takes], 'compare': str(sheet), 'prompt': prompt,
+            'note': '对比图最左是原照片：挑脸最像的一张当 --image；都不像就改用 --mode paste（抠像，脸不变但光线贴不上）'}
+
+
+def make_frame(edit, photo, scene, blur=6.0, cutter=hf_cutout):
+    """--mode paste: the person from the user's own photo, pixel for pixel, over the scene image. The scene is scaled
+    to cover the photo's frame and softly blurred (a phone photo's depth); the person keeps the photo's framing, so a
+    close selfie gives a head-and-shoulders frame. The face can't drift, but the light does not match the scene."""
+    src, bg = Path(photo), Path(scene)
+    for f in (src, bg):
+        if not f.is_file():
+            raise ac.Refused(f'图片不存在：{f}')
+    w, h = (probe(src)[k] or 0 for k in ('width', 'height'))
+    if not w or not h:
+        raise ac.Refused(f'读不出图片尺寸：{src}')
+    k = min(1.0, IMAGE_RULES['max_long'] / max(w, h))
+    w, h = int(w * k) // 2 * 2, int(h * k) // 2 * 2
+    d = adir(edit)
+    work, cut, dst = d / 'frame_photo.png', d / 'frame_cutout.png', d / 'frame.jpg'
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-vf', f'scale={w}:{h}', str(work)], check=True)
+    cutter(work, cut)
+    soft = f',gblur=sigma={blur}' if blur else ''
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(bg), '-i', str(cut), '-filter_complex',
+                    f'[0]scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}{soft}[b];'
+                    f'[1]scale={w}:{h}[p];[b][p]overlay=0:0:format=auto', '-q:v', '2', str(dst)], check=True)
+    work.unlink(missing_ok=True)
+    return {'frame': str(dst), 'cutout': str(cut), 'size': f'{w}x{h}',
+            'note': '人物是原照片的像素，没有重新生成；构图跟原照片一致。看不到手的近景，动作幅度用"小"'}
 
 
 # ------------------------------------------------------------------ plan
@@ -419,14 +503,19 @@ def avatar_decision(edit, user_asked=None):
 
 
 # ------------------------------------------------------------------ generate
-def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, voice_ok=None, skip_sample=False,
+def test_segment(segs):
+    """The test take: the segment closest to TEST_SECONDS, the earliest on a tie."""
+    return min(segs, key=lambda s: (abs(s['seconds'] - TEST_SECONDS), s['n']))
+
+
+def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, voice_ok=None, all_segments=False,
              confirmed=False, max_cost=None, http=None, sleep=time.sleep, poll_every=10.0, timeout=3600, out=print,
              resolution=None, user_asked=None):
     why = avatar_decision(edit, user_asked)
     plan = load_plan(edit)
     a = settings(cfg, plan['model'])
     prov = provider(cfg, a, http)
-    review = voice_review(edit, plan, voice_ok)
+    review = voice_review(edit, plan, voice_ok) if voice_ok else {}   # optional record, no longer a gate
     b = ac.budget(cfg)
     limit = b['confirm_over'] if max_cost is None else float(max_cost)
     d = adir(edit)
@@ -436,6 +525,13 @@ def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, 
     img_hash = ac.file_hash(d / 'image.jpg')
     log = ac.read_log(edit, LOG)
     opts = {'quality': quality or a['quality']} if plan['kind'] == 'audio' else {'resolution': resolution or a['resolution']}
+    test = None
+    if not only and not all_segments and len(plan['segments']) > 1:
+        # until the user has OK'd a test take, every run makes the test segment only (same inputs reuse it, unpaid)
+        test = test_segment(plan['segments'])
+        only = str(test['n'])
+        out(f'测试：只做第 {test["n"]} 段（约 {test["seconds"]:.1f} 秒）给用户看；'
+            '用户看过、按意见调好之后，加 --all 生成全部段')
     todo, waiting = [], []
     for s in pick(plan['segments'], only):
         prompt = prompt_of(plan, s, motion, extra)
@@ -450,11 +546,6 @@ def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, 
             waiting.append((s, prev))
         else:
             todo.append(s)
-    ever = any(e.get('state') == 'success' and e.get('kind') == 'avatar' for e in log)
-    if todo and not ever and not only and not skip_sample and len(plan['segments']) > 3:
-        pick_n = max(plan['segments'], key=lambda s: s['seconds'])['n']
-        raise ac.Refused(f'共 {len(plan["segments"])} 段，还没有跑过样段：先只跑一段看动作幅度和手势，'
-                         f'例如 --only {pick_n}；用户看过、说可以再全量（或用户已经说过不用看样段时加 --skip-sample）')
     if todo:
         q = quote(prov, a, plan, todo, motion, extra, b, limit, opts.get('quality'), opts.get('resolution'), img['aspect'])
         out(ac.quote_text(q) + f'{a["model"]}：{len(todo)} 段，合计请求 {q.get("seconds")} 秒；'
@@ -475,6 +566,7 @@ def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, 
             entry = {'key': s['key'], 'kind': 'avatar', 'segment': s['n'], 'provider': prov.name, 'model': a['model'],
                      'lane': q['chosen'].get('lane'), 'task_id': task, 'state': 'submitted', 'seconds': s['seconds'],
                      'duration': s['duration'], **opts, 'motion': motion, 'prompt': params['prompt'],
+                     'test': test is not None,
                      'voice_ok': review.get('words'), 'why': why, 'alternatives': [c for c in q['channels'] if c is not q['chosen']][:3],
                      'at': time.strftime('%Y-%m-%d %H:%M:%S')}
             log.append(entry)
@@ -518,9 +610,13 @@ def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, 
         raise ac.Refused('\n'.join(lines))
     missing = [s['n'] for s in plan['segments'] if not (d / f'seg_{s["n"]:02d}.mp4').exists()]
     spent = round(sum(e.get('cost') or 0 for e in ac.read_log(edit, LOG) if e.get('state') == 'success'), 4)
-    out(('还没生成的段：' + '、'.join(map(str, missing))) if missing else '全部段已生成：运行 finish 拼接与质检')
+    if test is not None and missing:
+        out(f'测试视频：{d / f"seg_{test["n"]:02d}.mp4"}。交给用户看；按意见改好再出一版测试，用户说可以后加 --all 生成其余 '
+            f'{len(missing)} 段')
+    else:
+        out(('还没生成的段：' + '、'.join(map(str, missing))) if missing else '全部段已生成：运行 finish 拼接与质检')
     out(f'本项目数字人累计花费 {spent}')
-    return {'missing': missing, 'spent': spent}
+    return {'missing': missing, 'spent': spent, 'test': test['n'] if test else None}
 
 
 # ------------------------------------------------------------------ finish + QC
@@ -790,6 +886,11 @@ def main(argv=None, cfg=None, http=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     sub = ap.add_subparsers(dest='cmd', required=True)
     p = sub.add_parser('check'); p.add_argument('--image', required=True); p.add_argument('--out')
+    p = sub.add_parser('frame'); p.add_argument('--edit', required=True); p.add_argument('--photo', required=True)
+    p.add_argument('--scene', required=True); p.add_argument('--mode', choices=('blend', 'paste'), default='blend')
+    p.add_argument('--light', default='', help='blend: the scene light in words, e.g. 窗外夕阳从人物后方打来')
+    p.add_argument('--count', type=int, default=2); p.add_argument('--blur', type=float, default=6.0)
+    p.add_argument('--confirmed', action='store_true'); p.add_argument('--max-cost', type=float)
     p = sub.add_parser('plan'); p.add_argument('--edit', required=True); p.add_argument('--audio')
     p.add_argument('--model', choices=list(MODELS)); p.add_argument('--max-seg', type=float); p.add_argument('--min-seg', type=float)
     p = sub.add_parser('estimate'); p.add_argument('--edit', required=True); p.add_argument('--quality')
@@ -797,8 +898,10 @@ def main(argv=None, cfg=None, http=None):
     p.add_argument('--only'); p.add_argument('--aspect', default='9:16')
     p = sub.add_parser('generate'); p.add_argument('--edit', required=True); p.add_argument('--image', required=True)
     p.add_argument('--quality'); p.add_argument('--resolution'); p.add_argument('--motion', default='中')
-    p.add_argument('--extra', default=''); p.add_argument('--only'); p.add_argument('--voice-ok')
-    p.add_argument('--user-asked'); p.add_argument('--skip-sample', action='store_true')
+    p.add_argument('--extra', default=''); g = p.add_mutually_exclusive_group()
+    g.add_argument('--only'); g.add_argument('--all', action='store_true', dest='all_segments')
+    p.add_argument('--voice-ok', help=argparse.SUPPRESS); p.add_argument('--user-asked')
+    p.add_argument('--skip-sample', action='store_true', help=argparse.SUPPRESS)   # old flag: same as --all
     p.add_argument('--confirmed', action='store_true'); p.add_argument('--max-cost', type=float)
     p = sub.add_parser('finish'); p.add_argument('--edit', required=True); p.add_argument('--no-align', action='store_true')
     p = sub.add_parser('lipsync'); p.add_argument('--edit', required=True); p.add_argument('--video', required=True)
@@ -809,6 +912,10 @@ def main(argv=None, cfg=None, http=None):
     try:
         if a.cmd == 'check':
             print(json.dumps(check_image(a.image, a.out), ensure_ascii=False, indent=1))
+        elif a.cmd == 'frame':
+            rep = blend_frame(cfg, a.edit, a.photo, a.scene, a.light, a.count, a.confirmed, a.max_cost, http) \
+                if a.mode == 'blend' else make_frame(a.edit, a.photo, a.scene, a.blur)
+            print(json.dumps(rep, ensure_ascii=False, indent=1))
         elif a.cmd == 'plan':
             plan = make_plan(a.edit, a.audio, a.max_seg, a.min_seg, cfg, a.model)
             print(f'{plan["model"]}：{len(plan["segments"])} 段，配音共 {plan["duration"]:.1f} 秒：' +
@@ -824,8 +931,9 @@ def main(argv=None, cfg=None, http=None):
             print(ac.quote_text(quote(prov, s, plan, segs, a.motion, a.extra, b, b['confirm_over'], a.quality,
                                       a.resolution, a.aspect)), end='')
         elif a.cmd == 'generate':
-            generate(cfg, a.edit, a.image, a.quality, a.motion, a.extra, a.only, a.voice_ok, a.skip_sample,
-                     a.confirmed, a.max_cost, http, resolution=a.resolution, user_asked=a.user_asked)
+            generate(cfg, a.edit, a.image, a.quality, a.motion, a.extra, a.only, a.voice_ok,
+                     a.all_segments or a.skip_sample, a.confirmed, a.max_cost, http, resolution=a.resolution,
+                     user_asked=a.user_asked)
         elif a.cmd == 'finish':
             finish(a.edit, align=not a.no_align)
         else:
