@@ -325,16 +325,40 @@ def cached_whisper_model() -> str | None:
     return None
 
 
+# Runs in a child process: load the model AND transcribe three seconds of synthetic audio (a tone, then silence).
+# Loading alone passed on machines where the first real transcription then crashed (ctranslate2 4.7/4.8) or failed
+# on an audio-library version mismatch; only a transcription proves the runtime works.
+WHISPER_SMOKE = '''
+import math, struct, tempfile, wave, os
+from faster_whisper import WhisperModel
+path = os.path.join(tempfile.gettempdir(), 'xumu_whisper_smoke.wav')
+with wave.open(path, 'wb') as w:
+    w.setnchannels(1); w.setsampwidth(2); w.setframerate(16000)
+    frames = b''.join(struct.pack('<h', int(8000 * math.sin(2 * math.pi * 220 * n / 16000)) if n < 16000 else 0)
+                      for n in range(48000))
+    w.writeframes(frames)
+model = WhisperModel({model!r}, device='cpu', compute_type='int8', local_files_only={offline})
+segments, info = model.transcribe(path, beam_size=1, word_timestamps=True)
+list(segments)
+print('SMOKE_OK')
+'''
+
+
+def whisper_model_cached(size: str) -> bool:
+    hub = Path(os.environ.get("HF_HOME", Path.home() / ".cache" / "huggingface")) / "hub"
+    if os.environ.get("HF_HUB_CACHE"):
+        hub = Path(os.environ["HF_HUB_CACHE"])
+    return (hub / f"models--Systran--faster-whisper-{size}").is_dir()
+
+
 def whisper_probe(model: str, offline: bool) -> tuple[str, str]:
-    """Load the model in a child process: a native crash kills the child, not this script."""
-    code = ("from faster_whisper import WhisperModel; "
-            f"WhisperModel({model!r}, device='cpu', compute_type='int8', local_files_only={offline}); "
-            "print('LOAD_OK')")
+    """Load the model and transcribe a 3 s clip in a child process: a native crash kills the child, not this script."""
+    code = WHISPER_SMOKE.format(model=model, offline=offline)
     try:
         r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=1800)
     except subprocess.TimeoutExpired:
         return "error", "timed out (model download?)"
-    if "LOAD_OK" in r.stdout:
+    if "SMOKE_OK" in r.stdout:
         return "ok", ""
     if "Traceback" in r.stderr:
         return "error", r.stderr.strip().splitlines()[-1][:160]
@@ -346,13 +370,14 @@ def check_whisper_runtime(model_arg: str | None, check: bool) -> None:
         return
     name = "Local transcription runtime"
     cached = cached_whisper_model()
-    model = model_arg or cached
+    wanted = os.environ.get("VV_WHISPER_MODEL")   # the model transcribe_cloud.py run --engine local will use
+    model = model_arg or (wanted if wanted and (whisper_model_cached(wanted) or not check) else None) or cached
     if not model:
         if check:
             results.append((name, True, "not tested: no model cached (run without --check to test with 'tiny')"))
             return
         model = "tiny"
-    offline = check or (model == cached and not model_arg)
+    offline = check or (whisper_model_cached(model) and not model_arg)
     status, detail = whisper_probe(model, offline)
     if status == "crash" and not check:
         pinned = pip_install(CT2_PIN)   # judge by the re-probe: installers can report errors after installing
@@ -363,7 +388,7 @@ def check_whisper_runtime(model_arg: str | None, check: bool) -> None:
             results.append((name, True, f"model '{model}' loads after pinning ctranslate2 4.6.0"))
             return
     if status == "ok":
-        results.append((name, True, f"model '{model}' loads"))
+        results.append((name, True, f"model '{model}' loads and transcribes a 3 s clip"))
     elif status == "crash":
         results.append((name, False, f"crashes on model load ({detail}); known ctranslate2 4.7/4.8 issue on some "
                                      f"Windows PCs - run without --check to pin ctranslate2 4.6.0, or use a cloud engine"))

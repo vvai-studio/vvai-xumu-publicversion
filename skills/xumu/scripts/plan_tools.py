@@ -24,6 +24,10 @@ RENDER_FIELDS = ('role', 'route', 'engine', 'style', 'screen_text', 'card', 'sty
                  'props', 'inner_frames', 'duration_frames')
 # Tool and output folders skipped when an input is a directory.
 SKIP_DIRS = {'node_modules', '__pycache__', 'dist', 'build', 'out'}
+# Stills looked at before a composition render: the record preflight reads, and how far either side of a join.
+SNAPSHOT_RECORD = Path('verify') / 'snapshot_times.json'
+IMAGE_EXT = ('.png', '.jpg', '.jpeg', '.webp')
+EDGE_PAD_S = 0.1
 
 
 def integer(value, minimum=0):
@@ -39,6 +43,27 @@ def local_path(root, value):
         raise ValueError('expected a local file path, not a URL or empty value')
     path = Path(value)
     return (path if path.is_absolute() else root / path).resolve()
+
+
+def rect(value):
+    """{x, y, w, h} as fractions of the canvas, or None when the shape is wrong."""
+    if not isinstance(value, dict):
+        return None
+    try:
+        x, y, w, h = (float(value[k]) for k in ('x', 'y', 'w', 'h'))
+    except (KeyError, TypeError, ValueError):
+        return None
+    if not all(math.isfinite(v) for v in (x, y, w, h)):
+        return None
+    if not (0 <= x <= 1 and 0 <= y <= 1 and 0 < w <= 1 and 0 < h <= 1 and x + w <= 1 + 1e-9 and y + h <= 1 + 1e-9):
+        return None
+    return x, y, w, h
+
+
+def rects_overlap(a, b):
+    ax, ay, aw, ah = a
+    bx, by, bw, bh = b
+    return min(ax + aw, bx + bw) - max(ax, bx) > 1e-9 and min(ay + ah, by + bh) - max(ay, by) > 1e-9
 
 
 # ---------------------------------------------------------------- render cache keys
@@ -207,6 +232,18 @@ def validate(plan, root, ready=False):
         fail('timeline.locked must be boolean')
     elif ready and not timeline['locked']:
         fail('timeline is not locked')
+    # Optional layout limits, checked on the plan so a caption that cannot fit or covers a reserved element is
+    # caught before anything is rendered (the 2026-11-07 case: a 3-minute reference clip rendered twice).
+    limits = timeline.get('text_limits')
+    if limits is not None and not (isinstance(limits, dict) and integer(limits.get('max_chars_per_line'), 1)
+                                   and (limits.get('max_lines') is None or integer(limits['max_lines'], 1))):
+        fail('timeline.text_limits needs a positive integer max_chars_per_line (max_lines optional)')
+        limits = None
+    caption_area = None
+    if timeline.get('caption_area') is not None:
+        caption_area = rect(timeline['caption_area'])
+        if caption_area is None:
+            fail('timeline.caption_area must be {x, y, w, h} as fractions of the canvas (0..1)')
 
     narration = plan.get('narration')
     if not isinstance(narration, dict):
@@ -314,6 +351,23 @@ def validate(plan, root, ready=False):
                 fail(f'{label}.short_test.file must be a video ({", ".join(VIDEO_EXT)}), not a still')
             else:
                 file_check(test['file'], f'{label}.short_test.file')
+        text = shot.get('screen_text')
+        if limits and isinstance(text, str) and text.strip():
+            lines = text.replace('\r', '').split('\n')
+            if limits.get('max_lines') and len(lines) > limits['max_lines']:
+                fail(f'{label}.screen_text has {len(lines)} lines, over text_limits.max_lines {limits["max_lines"]}')
+            for line in lines:
+                if len(line) > limits['max_chars_per_line']:
+                    fail(f'{label}.screen_text line "{line}" is {len(line)} chars, over text_limits.max_chars_per_line '
+                         f'{limits["max_chars_per_line"]}: break or shorten it in the plan, not in the render')
+        reserved = shot.get('reserved', [])
+        if not isinstance(reserved, list) or any(rect(r) is None for r in reserved):
+            fail(f'{label}.reserved must be an array of {{x, y, w, h}} canvas fractions (name optional)')
+        elif caption_area:
+            for r in reserved:
+                if rects_overlap(rect(r), caption_area):
+                    fail(f'{label}.reserved "{r.get("name", "?")}" overlaps timeline.caption_area: move the captions '
+                         'or the element before rendering')
         if 'props' in shot and not isinstance(shot['props'], dict):
             fail(f'{label}.props must be an object')
         inputs = shot.get('inputs', [])
@@ -534,6 +588,91 @@ def reject_constant(value):
     raise ValueError(f'non-finite JSON constant: {value}')
 
 
+# ---------------------------------------------------------------- stills before a composition render
+
+def snapshot_times(plan, until=None):
+    """Where to take stills before rendering a composition: first and last frame, every shot's start and end with
+    0.1 s either side of each join, each shot's middle and each inner cue. Built from the plan so that no join is
+    left to memory; `until` (seconds) limits the list to a preview's length."""
+    timeline = plan.get('timeline') or {}
+    fps, total = timeline.get('fps'), timeline.get('total_frames')
+    if not integer(fps, 1) or not integer(total, 1):
+        raise ValueError('timeline.fps and timeline.total_frames are required for snapshot times')
+    limit = total if until is None else max(1, min(total, int(math.ceil(until * fps))))
+    pad = max(1, round(EDGE_PAD_S * fps))
+    reasons = {}
+
+    def mark(frame, reason, low=0):
+        if low <= frame < limit:
+            reasons.setdefault(frame, []).append(reason)
+
+    mark(0, 'first frame')
+    mark(limit - 1, 'last frame')
+    for shot in plan.get('shots', []):
+        if not isinstance(shot, dict):
+            continue
+        sid, start, duration = shot.get('id'), shot.get('from_frame'), shot.get('duration_frames')
+        if not integer(start) or not integer(duration, 1):
+            continue
+        end = start + duration
+        mark(start, f'{sid} start')
+        mark(start - pad, f'{sid} start -{EDGE_PAD_S}s')
+        mark(start + pad, f'{sid} start +{EDGE_PAD_S}s', start)
+        mark(end - 1, f'{sid} end', start)
+        mark(end - 1 - pad, f'{sid} end -{EDGE_PAD_S}s', start)
+        mark(start + duration // 2, f'{sid} middle', start)
+        inner = shot.get('inner_frames') or {}
+        if isinstance(inner, dict):
+            for name, local in inner.items():
+                if integer(local):
+                    mark(start + local, f'{sid} {name}', start)
+    return [{'frame': f, 't': round(f / fps, 3), 'why': reasons[f]} for f in sorted(reasons)]
+
+
+def snapshot_record(plan_path, raw, plan, frames_dir=None, until=None):
+    """The record preflight reads: the times, the plan they came from and, with frames_dir, whether that folder
+    holds at least as many stills taken after the plan was last changed."""
+    plan_path = Path(plan_path).resolve()
+    times = snapshot_times(plan, until)
+    record = {'plan_sha256': hashlib.sha256(raw).hexdigest(), 'fps': plan['timeline']['fps'], 'until': until,
+              'count': len(times), 'at': ','.join(str(t['t']) for t in times), 'times': times,
+              'covered': False, 'frames_dir': None, 'images': 0, 'stale_images': 0}
+    if frames_dir is not None:
+        folder = Path(frames_dir)
+        folder = (folder if folder.is_absolute() else plan_path.parent / folder).resolve()
+        plan_mtime = plan_path.stat().st_mtime
+        fresh = stale = 0
+        if folder.is_dir():
+            for item in folder.rglob('*'):
+                if item.is_file() and item.suffix.lower() in IMAGE_EXT:
+                    if item.stat().st_mtime >= plan_mtime:
+                        fresh += 1
+                    else:
+                        stale += 1
+        record.update(frames_dir=str(folder), images=fresh, stale_images=stale, covered=fresh >= len(times))
+    return record
+
+
+def snapshot_problem(edit, plan_sha):
+    """Why the stills record does not clear the current plan, or None."""
+    record_file = Path(edit) / SNAPSHOT_RECORD
+    how = ('run plan_tools.py snapshots <edit>/visual-plan.json, take a still at every listed time '
+           '(hyperframes snapshot --at <record.at>, or your engine\'s still render) into verify/snapshots, look at '
+           'them, then plan_tools.py snapshots <plan> --frames-dir verify/snapshots')
+    if not record_file.is_file():
+        return f'{SNAPSHOT_RECORD.as_posix()} missing: joins and ends must be looked at as stills before a render; {how}'
+    try:
+        record = json.loads(record_file.read_text(encoding='utf-8-sig'))
+    except (OSError, ValueError):
+        return f'{SNAPSHOT_RECORD.as_posix()} is unreadable; {how}'
+    if record.get('plan_sha256') != plan_sha:
+        return f'{SNAPSHOT_RECORD.as_posix()} belongs to an older plan: retake the stills, then {how}'
+    if not record.get('covered'):
+        return (f'{SNAPSHOT_RECORD.as_posix()}: {record.get("images", 0)} stills newer than the plan cover '
+                f'{record.get("count", "?")} times; {how}')
+    return None
+
+
 def preflight(edit, data_files=()):
     """Gate before rendering a composition (Remotion / HyperFrames / HTML): the decision record says how much
     picture this film gets, visual-plan.json exists and checks, and every composition data file says which plan it
@@ -566,6 +705,14 @@ def preflight(edit, data_files=()):
         plan = json.loads(raw.decode('utf-8-sig'), parse_constant=reject_constant)
         report['plan_sha256'] = sha = hashlib.sha256(raw).hexdigest()
         errors += [f'visual-plan.json: {e}' for e in validate(plan, plan_file.parent)]
+        if plan.get('shots'):
+            problem = snapshot_problem(edit, sha)
+            if problem:
+                errors.append(problem)
+            else:
+                record = json.loads((edit / SNAPSHOT_RECORD).read_text(encoding='utf-8-sig'))
+                report['snapshots'] = {'count': record.get('count'), 'images': record.get('images'),
+                                       'until': record.get('until'), 'frames_dir': record.get('frames_dir')}
         report['data'] = []
         for value in data_files:
             path = Path(value).resolve()
@@ -610,7 +757,32 @@ def main(argv=None):
     gate.add_argument('edit', type=Path)
     gate.add_argument('--data', action='append', default=[], type=Path,
                       help='composition data file generated from the plan; must carry source_plan_sha256')
+    snaps = sub.add_parser('snapshots', help='still times to look at before a composition render (every join, '
+                                             'end and middle); with --frames-dir, record that the stills exist')
+    snaps.add_argument('plan', type=Path)
+    snaps.add_argument('--until', type=float, help='seconds: only the times inside a preview of this length')
+    snaps.add_argument('--frames-dir', type=Path, help='folder holding the stills taken at those times')
+    snaps.add_argument('--out', type=Path, help=f'record file (default <plan dir>/{SNAPSHOT_RECORD.as_posix()})')
     args = parser.parse_args(argv)
+    if args.command == 'snapshots':
+        try:
+            plan_path = args.plan.resolve()
+            raw = plan_path.read_bytes()
+            plan = json.loads(raw.decode('utf-8-sig'), parse_constant=reject_constant)
+            record = snapshot_record(plan_path, raw, plan, args.frames_dir, args.until)
+            out = args.out or plan_path.parent / SNAPSHOT_RECORD
+            out.parent.mkdir(parents=True, exist_ok=True)
+            # A derived record: rewritten each run so preflight always sees the latest plan hash.
+            out.write_text(json.dumps(record, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+            ok = record['covered'] or args.frames_dir is None
+            summary = {k: record[k] for k in ('count', 'at', 'covered', 'images', 'stale_images', 'frames_dir', 'until')}
+            print(json.dumps({'ok': ok, 'record': str(out), **summary,
+                              'times': [f'{t["t"]} {"; ".join(t["why"])}' for t in record['times']]},
+                             ensure_ascii=False, indent=2))
+            return 0 if ok else 1
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            print(json.dumps({'ok': False, 'errors': [str(exc)]}, ensure_ascii=False))
+            return 1
     if args.command == 'preflight':
         try:
             report = preflight(args.edit, args.data)

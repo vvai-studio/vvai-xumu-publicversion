@@ -8,7 +8,7 @@
 - 字体文件放进项目；每次改文案后运行 `media_tools.py fontcheck --font <字体> <页面/文案文件>`，有缺字（常见 → ✓ ≈ ≤ 等符号）就改用内联 SVG 或换说法；需要 woff2 子集时加 `--subset`。
 - 输出到 `edit/animations/<shot-id>/` 或 `edit/assets/`，依赖装在项目内。外部组件与素材记录来源与许可，商用按各资产的许可处理。
 - 全片共用一份只读设计规范：色板、字体文件、字号层级、弹簧档位、避开清单。每个镜头从它取值。
-- 渲染遵守 [确定性渲染](style-stack.md#3-渲染引擎)。每个镜头按"静帧 → 短测 → 正式渲染 → 验收"推进，通过后进主片。
+- 渲染遵守 [确定性渲染](style-stack.md#3-渲染引擎)。每个镜头按"静帧 → 短测 → 正式渲染 → 验收"推进，通过后进主片。短测与类型样片不逐个起渲染：合成一条时间线一次渲染再切开（见下方 HyperFrames 的"样片合渲"）。
 - 镜头的源文件、共享设计规范与素材写进该镜头的 `inputs`，可调值放 `props`，跟字的内部时刻放 `inner_cues`；正式渲染验收后运行 `plan_tools.py stamp`，之后的修改才能判断哪些镜头可以复用。
 
 ## 口播剪辑链
@@ -18,8 +18,8 @@ Video Use 负责转录；剪辑点、拼接与时间表由 `voice_edit.py` 完�
 1. **保留表 `keeps.json`**：按段落写"从哪句到哪句"，`[开始锚点, 结束锚点, 强制开始秒?, 强制结束秒?]`。锚点是转录原文的片段，同一来源按阅读顺序查找，重复的话也能对上。要删掉一条保留项**中间**的有声片段（失败起头、拖长的字尾、词中停顿）时，改写成 `{"from": 开始锚点, "to": 结束锚点, "drop": [[源秒, 源秒], ...]}`，边缘自动对到最近的低音量处。
 2. **生成 EDL**：`voice_edit.py edl keeps.json --out edl_voice.json --report 剪后口播_核对.txt`。默认前留白 0.06 秒、后留白 0.10 秒；超过 0.75 秒的停顿压到 0.45 秒。停顿按**实际音量**找：转录常把停顿算进字的时长，只看字间空隙会漏掉。剪点移到真实静音处，开头只修第一个音节之前的部分。每段长度对齐到整帧。
 3. **核对**：读 `剪后口播_核对.txt` 的三部分（见下方"卡壳诊断"）：保留原文、停顿表、其他疑点。按语义判断后改 `keeps.json`，回到第 2 步。
-4. **拼接**：`voice_edit.py render edl_voice.json --out build/voice_cut.mp4`。每段按精确帧数和采样数截取、加 30ms 淡入淡出，再用 concat **滤镜**一次编码。concat demuxer 按时间戳拼接，会累计漂移（实测 2.4 秒），不用于这一步。
-5. **试听**：`voice_edit.py listen edl_voice.json --video build/voice_cut.mp4 --out-dir verify/listen [--at 0:52,0:55]` 截出每个删减剪点和疑点前后各 2 秒，生成 `试听合集.mp4` 与 `试听清单.md`。自己能听就逐段听；不能实际听审时，把合集交给用户确认（见 [验收与交付](qa.md#声音证据)）。声音确认后再做依赖它的字幕与画面。
+4. **拼接**：核对阶段只出声音：`voice_edit.py render edl_voice.json --out build/voice_cut.wav --audio-only`，同一条采样精确的时间线，几秒钟出来。剪辑定下后才 `render … --out build/voice_cut.mp4` 导一次画面。每段按精确帧数和采样数截取、加 30ms 淡入淡出，再用 concat **滤镜**一次编码。concat demuxer 按时间戳拼接，会累计漂移（实测 2.4 秒），不用于这一步。不要每改一版就导一份完整 1080p：一版约 1 分钟、250 MB，实测一轮剪辑攒了 5 版。
+5. **试听**：`voice_edit.py listen edl_voice.json --video build/voice_cut.wav --out-dir verify/listen [--at 0:52,0:55]` 截出每个删减剪点和疑点前后各 2 秒，生成 `试听合集.m4a`（给 mp4 时是 `.mp4`）与 `试听清单.md`。自己能听就逐段听；不能实际听审时，把合集交给用户确认（见 [验收与交付](qa.md#声音证据)）。自己听不了又想先自查，加 `--check`：只转录这些窗口（每个几秒）并与保留表里应有的字比对，写出 `剪点核对.md`，标出缺字、多字的窗口；**不要把整段剪后口播重新转录来核对**（整段一遍 1.5～2 分钟，三版就是 6 分钟；窗口核对几十秒）。核对只证明文字，听感仍要试听或交用户。声音确认后再做依赖它的字幕与画面。
 6. **时间表**：`voice_edit.py cues edl_voice.json --transcripts transcripts --out-dir <edit>` 生成 `cue_chars.json`、`sections.json`，之后的画面时间都用 [时间引用](timeline.md#时间引用)。
 
 修改剪辑时只改 `keeps.json`，按 2 → 6 重跑，再 `cue.py sync --revision <新版本>`，用 `plan_tools.py diff` 列出要重渲的镜头，其余复用（见 [改动影响与渲染缓存](timeline.md#改动影响与渲染缓存)）。
@@ -114,11 +114,13 @@ Video Use 负责转录；剪辑点、拼接与时间表由 `voice_edit.py` 完�
 **工作流**
 - 用项目脚本（Python 等）生成合成工程（`index.html` + 素材），镜头计划写在生成脚本里，时间全部通过 `from cue import Timing` 解析（`sys.path` 加入 `<skill>/scripts`）。
 - 项目 `package.json` 锁定版本（见上方"版本与升级"）。插件自带的 `plugin-cli.mjs` 位于已加载 hyperframes Skill 的 `scripts/` 下，提供 `check`、`snapshot`、`render`；该目录随会话变化，按当次加载路径调用。
-- 每次修改：`check` 结构检查 → `snapshot --at <时刻列表>` 截关键时间点 → 确认后再整片 `render`。整片渲染耗时约等于片长（7.6 分钟片约 7 分钟），长片渲染前告知用户。
+- 工程从骨架起步：`compose_scaffold.py hyperframes --edit <edit>` 按 `visual-plan.json` 生成 `index.html`（每镜一个计时片段，时间来自计划，已渲好的镜头直接挂 `<video>`）、每个待做镜头的子合成 `compositions/shot-<id>.html`（动画写在里面的 `#shot-<id>-inner` 容器上，`FILL:` 注释标出要填的位置）、`assets/`（素材硬链接进工程，`check` 不接受工程外路径）、带 `source_plan_sha256` 的 `data.json` 和锁定 0.8.230 的 `package.json`。生成即可 `check` 通过，只填镜头内容，不从零写生成脚本。参考片用 `--preview-end <秒>`（或环境变量 `PREVIEW_END`）在生成时截短，分辨率不变，输出名带"预览"。
+- 每次修改：`check` 结构检查 → `plan_tools.py snapshots <plan>` 列出截帧时刻（每镜起止、衔接前后 0.1 秒、中点、内部节拍，从计划生成，不手选） → `snapshot --at <记录里的 at>`（写在工程的 `.hyperframes/artifacts/snapshots/<本次>/`），逐张看过 → `plan_tools.py snapshots <plan> --frames-dir <那个目录>` 记录 → `preflight` → 整片 `render`。截帧没覆盖全部时刻时 preflight 不放行：一次参考片因字幕盖住作品墙起点渲了两遍，就是漏截了那个时刻。整片渲染耗时约等于片长（7.6 分钟片约 7 分钟），开工前按片长估一句告诉用户。
+- **样片合渲**：每次 `render` 起浏览器约 1 分钟固定开销。短测、类型样片不分次渲：把要看的几段排进一条时间线（或 `PREVIEW_END` 配合起点偏移），一次渲染后用 ffmpeg `-ss/-t` 切成各段。实测四段共 24 秒的样片分四次渲花 3 分半，合渲不到 1 分半。
 - 合成画布（根元素的 `data-width` / `data-height`）默认等于交付尺寸，即原素材尺寸，竖屏口播为 1080×1920、横屏为 1920×1080；不得为了提速调小画布，也不要在渲染参数里降分辨率，否则成片会被整体降成 720p 之类的低清版本。生成脚本把画布尺寸写成一个常量，与 `visual-plan.json` 的 `width`/`height` 一致。
 - 没有"只渲染一段"的参数：出参考片时，让生成脚本把总时长截短（如环境变量 `PREVIEW_END`），分辨率保持不变；截短的参考片文件名带"预览"字样。
 - 整片 `render` 后先跑 `media_tools.py deliver-check`（见 [交付规格门禁](qa.md#交付规格门禁硬性)），再做整片验收。
-- 截图时刻至少覆盖：每个世界/场景的切换点、每次衔接前后 0.1 秒、每次人像放大、每段动画的中点。
+- 截图时刻由 `plan_tools.py snapshots` 从计划生成；人像放大、世界切换这类计划里没有的时刻写进镜头的 `inner_cues`，就会进时刻表。字幕区与镜头保留区的冲突在计划里写 `timeline.caption_area` 与镜头 `reserved`，`plan_tools.py check` 静态拦下，不等渲完才发现。
 
 **坑**
 - 每个视频元素必须有 `id`，否则渲染卡住。

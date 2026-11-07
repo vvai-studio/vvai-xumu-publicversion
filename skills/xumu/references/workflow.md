@@ -43,9 +43,11 @@
 
 用户确认整片画面方案后，技术细节自主推进（`gate pass visual-plan`）。叙事含义、主风格、指定镜头或费用范围要变时再确认。全托模式下画面方案不单独确认：按决策书第 6、7 格和记录的理由直接做，整片只在参考片门停一次。用户授权自主决策时，用记录理由代替逐段确认。
 
+**等确认时不空转**：方案交出去等用户点头的时候，先做与决定无关的准备：提取高清课件与素材、截画廊代表帧、`compose_scaffold.py` 生成工程骨架、字体缺字检查、下载入围样片。方案改了这些也不浪费。风格确认用画廊里已有的代表帧（`style_tools.py show`），没有才渲一张；不为确认风格反复改代表帧。
+
 ## 4 分镜头制作
 
-读 [制作路线与合成](production.md)。较长的片子、或主风格第一次在本项目里用时，先过 [参考片门](qa.md#参考片门)：用完整风格做前 60–90 秒给用户确认，再铺全片。全托模式下这是决策书之后唯一一次整片确认，不能省；通过后 `director.py gate pass reference-clip`，沿用已确认风格的续作可以 `gate skip reference-clip --note` 说明理由。每个镜头独立编号、独立目录，按"静帧 → 短测 → 正式渲染 → 验收"推进，通过后用 `plan_tools.py stamp` 记录渲染指纹再进主片。动态镜头的短测是 2–4 秒视频，看过动态再进主片，文件记进 `short_test`；静帧看不出快推回落、抖动和节奏，所以不能用静帧代替。参考片门要包含全片会用到的每种镜头类型（包括重复使用的卡片外壳），铺全片时出现参考片里没有的类型，先单独做一个类型样片给用户看。用合成引擎（Remotion、HyperFrames、HTML）渲染之前跑 `plan_tools.py preflight <edit> --data <合成数据>`：合成数据必须由 `visual-plan.json` 生成并写入 `source_plan_sha256`，通过后写 `verify/preflight.json`。所有定制 MG 遵守 [确定性渲染契约](mg-prompt-patterns.md#6-确定性渲染契约硬性)：画面只由帧号决定，并通过重复帧与乱序帧一致性检查。用到 Remotion、HyperFrames、图像或视频生成时，加载当前会话实际可用的对应 Skill 或工具并先读其规则。多个独立镜头可以并行制作，主时间线只由总控修改。
+读 [制作路线与合成](production.md)。较长的片子、或主风格第一次在本项目里用时，先过 [参考片门](qa.md#参考片门)：用完整风格做前 60–90 秒给用户确认，再铺全片。全托模式下这是决策书之后唯一一次整片确认，不能省；通过后 `director.py gate pass reference-clip`，沿用已确认风格的续作可以 `gate skip reference-clip --note` 说明理由。每个镜头独立编号、独立目录，按"静帧 → 短测 → 正式渲染 → 验收"推进，通过后用 `plan_tools.py stamp` 记录渲染指纹再进主片。动态镜头的短测是 2–4 秒视频，看过动态再进主片，文件记进 `short_test`；静帧看不出快推回落、抖动和节奏，所以不能用静帧代替。参考片门要包含全片会用到的每种镜头类型（包括重复使用的卡片外壳），铺全片时出现参考片里没有的类型，先单独做一个类型样片给用户看。合成工程从 `compose_scaffold.py hyperframes --edit <edit>` 生成的骨架起步，只填镜头内容。用合成引擎（Remotion、HyperFrames、HTML）渲染之前：先 `plan_tools.py snapshots` 列出截帧时刻（每镜起止、衔接前后 0.1 秒、中点），逐张看过并用 `--frames-dir` 记录，再跑 `plan_tools.py preflight <edit> --data <合成数据>`：合成数据必须由 `visual-plan.json` 生成并写入 `source_plan_sha256`，截帧没覆盖全部时刻也不放行，通过后写 `verify/preflight.json`。短测与类型样片合成一次渲染再切开（见 [HyperFrames](production.md#hyperframes)）。所有定制 MG 遵守 [确定性渲染契约](mg-prompt-patterns.md#6-确定性渲染契约硬性)：画面只由帧号决定，并通过重复帧与乱序帧一致性检查。用到 Remotion、HyperFrames、图像或视频生成时，加载当前会话实际可用的对应 Skill 或工具并先读其规则。多个独立镜头可以并行制作，主时间线只由总控修改。
 
 ## 5 合成与交付
 

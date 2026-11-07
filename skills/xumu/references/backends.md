@@ -42,7 +42,7 @@
 
   | 引擎 | 怎么跑 | 特点 |
   |---|---|---|
-  | 本地 faster-whisper | Video Use `transcribe.py`（没有 ElevenLabs 密钥时） | 免费、不上传；单说话人；`VV_WHISPER_MODEL=medium` 或 `large-v3` 中文更准。先用 `setup_env.py --check` 做冒烟测试 |
+  | 本地 faster-whisper | `transcribe_cloud.py run --engine local <素材> --edit <edit>`（不上传、不用 `--confirmed`；`setup_env.py` 已用真实转录冒烟过） | 免费；单说话人；模型 `VV_WHISPER_MODEL`，默认 `small`（CPU 约音频长度的 0.3 倍），`medium` / `large-v3` 中文更准但约 0.8 / 1.6 倍；estimate 报预计分钟数 |
   | ElevenLabs Scribe | Video Use `transcribe.py`（有 `ELEVENLABS_API_KEY` 时自动使用） | 说话人区分、音频事件 |
   | Azure 快速转录 | `transcribe_cloud.py run --engine azure` | 同步返回、直接上传本地文件；`AZURE_SPEECH_KEY` 加 `AZURE_SPEECH_ENDPOINT` 或 `AZURE_SPEECH_REGION` |
   | 阿里云 Fun-ASR（国际版） | `transcribe_cloud.py run --engine funasr` | 中文便宜；`DASHSCOPE_API_KEY`，接口只收网址：用 `--audio-url`，或尝试官方临时存储（文档写明只在北京区可用） |

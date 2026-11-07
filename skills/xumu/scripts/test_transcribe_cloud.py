@@ -3,8 +3,11 @@ import argparse
 import importlib.util
 import json
 from pathlib import Path
+import shutil
+import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
 import transcribe_cloud as tc
 
@@ -190,6 +193,62 @@ class EstimateTests(unittest.TestCase):
             self.assertEqual(tc.run(a, http=object()), 0)   # cached: no estimate, no upload
             self.assertEqual(out.read_text(encoding='ascii'), '{}')
 
+
+class FakeSeg:
+    def __init__(self, text, end, words):
+        self.text, self.end = text, end
+        self.words = [type('W', (), {'word': w, 'start': s, 'end': e, 'probability': 0.9})() for w, s, e in words]
+
+
+class FakeWhisper:
+    """The faster-whisper shape: transcribe() -> (segments, info)."""
+    calls = []
+
+    def __init__(self, model):
+        self.model = model
+
+    def transcribe(self, path, **kw):
+        FakeWhisper.calls.append((path, kw))
+        segs = [FakeSeg('今天讲剪辑。', 1.5, [(' 今天', 0.3, 0.7), ('讲', 0.7, 0.9), ('剪辑。', 0.9, 1.5)]),
+                FakeSeg('先看口播。', 3.6, [('先看', 2.6, 3.0), ('口播。', 3.0, 3.6)])]
+        return iter(segs), type('I', (), {'language': 'zh'})()
+
+
+class LocalEngineTests(unittest.TestCase):
+    def test_local_payload_has_scribe_shape_and_uploads_nothing(self):
+        FakeWhisper.calls.clear()
+        payload = tc.call_local('x.wav', None, 'small', loader=FakeWhisper, out=lambda *a, **k: None)
+        self.assertEqual(payload['engine'], 'faster-whisper:small')
+        self.assertEqual(payload['language_code'], 'zh')
+        self.assertEqual(payload['text'], '今天讲剪辑。先看口播。')
+        words = [w for w in payload['words'] if w['type'] == 'word']
+        self.assertEqual([w['text'] for w in words], ['今天', '讲', '剪辑。', '先看', '口播。'])
+        self.assertEqual(words[0]['start'], 0.3)
+        self.assertTrue(FakeWhisper.calls[0][1]['word_timestamps'])
+
+    def test_estimate_lists_local_with_a_time_estimate(self):
+        est = tc.estimate(600, environ={'VV_WHISPER_MODEL': 'medium'}, scribe_env_file=False)
+        row = next(r for r in est['rows'] if r['engine'] == 'local')
+        self.assertEqual(row['model'], 'medium')
+        self.assertEqual(row['minutes'], 8.0)
+        self.assertEqual(row['usd'], 0)
+        self.assertIn('预计约 8.0 分钟', tc.estimate_text(est))
+
+    @unittest.skipUnless(shutil.which('ffmpeg') and shutil.which('ffprobe'), 'ffmpeg not on PATH')
+    def test_run_local_writes_a_transcript_without_confirmation(self):
+        with tempfile.TemporaryDirectory() as d:
+            media = Path(d) / 'talk.wav'
+            subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=4',
+                            '-ac', '1', '-ar', '16000', str(media)], check=True)
+            args = argparse.Namespace(media=str(media), edit=d, engine='local', confirmed=False, language=None,
+                                      speakers=None, audio_url=None, model='fun-asr', whisper_model='small',
+                                      loader=FakeWhisper, force=False)
+            with mock.patch.object(tc, 'local_available', lambda: True):
+                self.assertEqual(tc.run(args), 0)
+            out = Path(d) / 'transcripts' / 'talk.json'
+            payload = json.loads(out.read_text(encoding='ascii'))
+            self.assertEqual(payload['engine'], 'faster-whisper:small')
+            self.assertEqual(payload['duration'], 4.0)
 
 if __name__ == '__main__':
     unittest.main()

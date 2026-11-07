@@ -102,5 +102,28 @@ class PathTests(unittest.TestCase):
         self.assertIn("PATH", note)
 
 
+class WhisperSmokeTests(unittest.TestCase):
+    def test_probe_transcribes_not_just_loads(self):
+        self.assertIn("model.transcribe(", se.WHISPER_SMOKE)
+        self.assertIn("SMOKE_OK", se.WHISPER_SMOKE)
+        done = types.SimpleNamespace(stdout="SMOKE_OK\n", stderr="", returncode=0)
+        with mock.patch.object(se.subprocess, "run", lambda *a, **k: done):
+            self.assertEqual(se.whisper_probe("small", True), ("ok", ""))
+        crashed = types.SimpleNamespace(stdout="", stderr="", returncode=-1073741819)
+        with mock.patch.object(se.subprocess, "run", lambda *a, **k: crashed):
+            self.assertEqual(se.whisper_probe("small", True)[0], "crash")
+
+    def test_check_uses_the_model_the_local_engine_will_use(self):
+        probed = []
+        with mock.patch.object(se.importlib.util, "find_spec", lambda n: object()), \
+                mock.patch.object(se, "cached_whisper_model", lambda: "base"), \
+                mock.patch.object(se, "whisper_model_cached", lambda s: s in ("base", "medium")), \
+                mock.patch.object(se, "whisper_probe", lambda m, offline: probed.append((m, offline)) or ("ok", "")), \
+                mock.patch.dict(se.os.environ, {"VV_WHISPER_MODEL": "medium"}):
+            del se.results[:]
+            se.check_whisper_runtime(None, check=True)
+        self.assertEqual(probed, [("medium", True)])
+        self.assertIn("transcribes a 3 s clip", se.results[-1][2])
+
 if __name__ == "__main__":
     unittest.main()

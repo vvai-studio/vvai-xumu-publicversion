@@ -2,9 +2,13 @@
 """Talking-head voice editing: anchor keeps -> word-boundary EDL -> frame-exact cut -> per-character cue map.
 
   edl     keeps.json + transcripts/<source>.json  ->  edl_voice.json (+ readable check text with suspected stumbles)
-  render  edl_voice.json                          ->  one frame-exact A/V file (concat *filter*, single encode)
+  render  edl_voice.json                          ->  one frame-exact A/V file (concat *filter*, single encode);
+                                                      --audio-only writes the same cut as a WAV in seconds, for the
+                                                      checking rounds (export the picture once the cut is agreed)
   cues    edl_voice.json + transcripts            ->  cue_chars.json + sections.json (cut-timeline seconds)
-  listen  edl_voice.json + rendered cut           ->  short context clips around edits and suspects, one compilation
+  listen  edl_voice.json + rendered cut (or WAV)  ->  short context clips around edits and suspects, one compilation;
+                                                      --check also transcribes just those windows and compares them
+                                                      with the kept text (never re-transcribe the whole cut)
 
 Transcripts use the ElevenLabs Scribe layout that Video Use writes: {"words": [{"text", "start", "end", "type"}]}.
 
@@ -24,12 +28,15 @@ The edl report lists suspected stumbles (repeated starts, long syllables, filler
 did not transcribe). They are listening targets, not verdicts.
 """
 import argparse
+import difflib
 from itertools import groupby
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 
 for _stream in (sys.stdout, sys.stderr):   # Windows pipes default to the ANSI code page; the agent reads UTF-8
     if hasattr(_stream, 'reconfigure'):
@@ -432,8 +439,10 @@ def suspects_text(suspects):
     return '\n'.join(lines)
 
 
-def render(edl, out, work, fps=30, size=None, crf_seg=14, crf_out=18):
-    """Extract each segment with exactly N frames and N*(48000/fps) samples, then join with the concat filter."""
+def render(edl, out, work, fps=30, size=None, crf_seg=14, crf_out=18, audio_only=False):
+    """Extract each segment with exactly N frames and N*(48000/fps) samples, then join with the concat filter.
+    audio_only keeps the same sample-exact timeline but writes a WAV: no picture decode, no x264, seconds instead
+    of a minute per round, so the checking rounds (listen, --check) never need a full 1080p export."""
     if SR_OUT % fps:
         raise ValueError(f'fps {fps} does not divide {SR_OUT}; choose 24/25/30/48/50/60')
     spf = SR_OUT // fps
@@ -443,33 +452,48 @@ def render(edl, out, work, fps=30, size=None, crf_seg=14, crf_out=18):
     for n, seg in enumerate(edl['segments']):
         count = frames_of(seg, fps)
         dur = count / fps
-        part = work / f'seg_{n:03d}_{seg["source"]}_{seg["start"]:.4f}_{count}.mkv'
+        stem = f'seg_{n:03d}_{seg["source"]}_{seg["start"]:.4f}_{count}'
+        part = work / (f'{stem}.wav' if audio_only else f'{stem}.mkv')
         files.append(part)
         counts.append(count)
         if part.exists():
             continue
+        af = (f'aresample={SR_OUT},apad,atrim=end_sample={count * spf},'
+              f'afade=t=in:st=0:d=0.03,afade=t=out:st={dur - 0.03:.4f}:d=0.03')
+        if audio_only:
+            subprocess.run([ffmpeg(), '-loglevel', 'error', '-y', '-ss', f'{seg["start"]:.4f}',
+                            '-i', edl['sources'][seg['source']], '-vn', '-t', f'{dur + 0.5:.4f}', '-af', af,
+                            '-c:a', 'pcm_s16le', '-ar', str(SR_OUT), '-ac', '2', str(part)], check=True)
+            continue
         subprocess.run([ffmpeg(), '-loglevel', 'error', '-y', '-ss', f'{seg["start"]:.4f}',
                         '-i', edl['sources'][seg['source']], '-frames:v', str(count),
-                        '-vf', f'fps={fps}{scale},setsar=1,format=yuv420p',
-                        '-af', f'aresample={SR_OUT},apad,atrim=end_sample={count * spf},'
-                               f'afade=t=in:st=0:d=0.03,afade=t=out:st={dur - 0.03:.4f}:d=0.03',
+                        '-vf', f'fps={fps}{scale},setsar=1,format=yuv420p', '-af', af,
                         '-c:v', 'libx264', '-crf', str(crf_seg), '-preset', 'veryfast',
                         '-c:a', 'pcm_s16le', '-ar', str(SR_OUT), '-ac', '2', str(part)], check=True)
-    graph = ';'.join(f'[{i}:v]trim=end_frame={c},setpts=PTS-STARTPTS[v{i}];'
-                     f'[{i}:a]asetpts=PTS-STARTPTS,apad,atrim=end_sample={c * spf},asetpts=PTS-STARTPTS[a{i}]'
-                     for i, c in enumerate(counts))
-    graph += ';' + ''.join(f'[v{i}][a{i}]' for i in range(len(files))) + f'concat=n={len(files)}:v=1:a=1[v][a]'
-    graph_file = work / 'concat_graph.txt'
+    audio_chain = ';'.join(f'[{i}:a]asetpts=PTS-STARTPTS,apad,atrim=end_sample={c * spf},asetpts=PTS-STARTPTS[a{i}]'
+                           for i, c in enumerate(counts))
+    if audio_only:
+        graph = audio_chain + ';' + ''.join(f'[a{i}]' for i in range(len(files))) + f'concat=n={len(files)}:v=0:a=1[a]'
+    else:
+        graph = ';'.join(f'[{i}:v]trim=end_frame={c},setpts=PTS-STARTPTS[v{i}]' for i, c in enumerate(counts))
+        graph += ';' + audio_chain
+        graph += ';' + ''.join(f'[v{i}][a{i}]' for i in range(len(files))) + f'concat=n={len(files)}:v=1:a=1[v][a]'
+    graph_file = work / ('concat_graph_audio.txt' if audio_only else 'concat_graph.txt')
     graph_file.write_text(graph, encoding='utf-8')
     cmd = [ffmpeg(), '-loglevel', 'error', '-y']
     for part in files:
         cmd += ['-i', str(part)]
     # ffmpeg 9 removed -filter_complex_script; '-/filter_complex <file>' reads the graph from a file.
-    cmd += ['-/filter_complex', str(graph_file), '-map', '[v]', '-map', '[a]',
-            '-c:v', 'libx264', '-crf', str(crf_out), '-preset', 'fast', '-pix_fmt', 'yuv420p', '-r', str(fps),
-            '-c:a', 'aac', '-b:a', '192k', '-ar', str(SR_OUT), '-ac', '2', '-movflags', '+faststart', str(out)]
+    cmd += ['-/filter_complex', str(graph_file)]
+    if audio_only:
+        cmd += ['-map', '[a]', '-c:a', 'pcm_s16le', '-ar', str(SR_OUT), '-ac', '2', str(out)]
+    else:
+        cmd += ['-map', '[v]', '-map', '[a]',
+                '-c:v', 'libx264', '-crf', str(crf_out), '-preset', 'fast', '-pix_fmt', 'yuv420p', '-r', str(fps),
+                '-c:a', 'aac', '-b:a', '192k', '-ar', str(SR_OUT), '-ac', '2', '-movflags', '+faststart', str(out)]
     subprocess.run(cmd, check=True)
-    return {'frames': sum(counts), 'seconds': round(sum(counts) / fps, 3), 'segments': len(files)}
+    return {'frames': sum(counts), 'seconds': round(sum(counts) / fps, 3), 'segments': len(files),
+            'audio_only': audio_only}
 
 
 def build_cues(edl, transcripts):
@@ -504,6 +528,11 @@ def parse_clock(value):
 
 
 LISTEN_KINDS = ('repeat', 'long', 'filler', 'noise')
+AUDIO_EXT = ('.wav', '.flac', '.mp3', '.m4a', '.aac', '.ogg', '.opus')
+
+
+def is_audio_only(path):
+    return str(path).lower().endswith(AUDIO_EXT)
 
 
 def listen_windows(edl, pad=2.0, all_cuts=False, at=(), kinds=LISTEN_KINDS):
@@ -551,18 +580,21 @@ def cut_to_source(edl, t0, t1, offsets):
 
 
 def render_listen(edl, video, windows, out_dir, with_source=False, gap=0.6):
-    """One small clip per window (black/silent tail as separator), a compilation, and a checklist."""
+    """One small clip per window (black/silent tail as separator), a compilation, and a checklist. An audio-only
+    cut (render --audio-only) gives audio-only clips and an .m4a compilation."""
     out_dir.mkdir(parents=True, exist_ok=True)
-    clips, lines, cursor = [], ['# 试听清单', '', f'合集：试听合集.mp4（每段后有 {gap}s 黑场）', '',
+    audio = is_audio_only(video)
+    ext = 'm4a' if audio else 'mp4'
+    clips, lines, cursor = [], ['# 试听清单', '', f'合集：试听合集.{ext}（每段后有 {gap}s {"静音" if audio else "黑场"}）', '',
                                 '| # | 合集内 | 剪后时间 | 听什么 | 原素材 |', '|---|---|---|---|---|'], 0.0
     vf = f'scale=540:-2,fps=30,format=yuv420p,tpad=stop_mode=add:stop_duration={gap}:color=black'
     for n, w in enumerate(windows, start=1):
         dur = w['end'] - w['start']
-        clip = out_dir / f'{n:02d}_{clock(w["start"]).replace(":", "m")}s.mp4'
+        clip = out_dir / f'{n:02d}_{clock(w["start"]).replace(":", "m")}s.{ext}'
+        picture = ['-vn'] if audio else ['-vf', vf, '-c:v', 'libx264', '-crf', '28', '-preset', 'veryfast']
         subprocess.run([ffmpeg(), '-loglevel', 'error', '-y', '-ss', f'{w["start"]:.3f}', '-i', str(video),
-                        '-t', f'{dur:.3f}', '-vf', vf, '-af', f'aresample=48000,apad=pad_dur={gap}',
-                        '-t', f'{dur + gap:.3f}', '-c:v', 'libx264', '-crf', '28', '-preset', 'veryfast',
-                        '-c:a', 'aac', '-b:a', '128k', '-ac', '2', str(clip)], check=True)
+                        '-t', f'{dur:.3f}', *picture, '-af', f'aresample=48000,apad=pad_dur={gap}',
+                        '-t', f'{dur + gap:.3f}', '-c:a', 'aac', '-b:a', '128k', '-ac', '2', str(clip)], check=True)
         clips.append(clip)
         src_note = ''
         if with_source and w['source']:
@@ -579,15 +611,103 @@ def render_listen(edl, video, windows, out_dir, with_source=False, gap=0.6):
                      f'{"；".join(w["reasons"])} | {src_note} |')
         cursor += dur + gap
     if clips:
-        graph = ''.join(f'[{i}:v][{i}:a]' for i in range(len(clips))) + f'concat=n={len(clips)}:v=1:a=1[v][a]'
         cmd = [ffmpeg(), '-loglevel', 'error', '-y']
         for clip in clips:
             cmd += ['-i', str(clip)]
-        cmd += ['-filter_complex', graph, '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-crf', '28',
-                '-preset', 'veryfast', '-c:a', 'aac', '-b:a', '128k', str(out_dir / '试听合集.mp4')]
+        if audio:
+            graph = ''.join(f'[{i}:a]' for i in range(len(clips))) + f'concat=n={len(clips)}:v=0:a=1[a]'
+            cmd += ['-filter_complex', graph, '-map', '[a]', '-c:a', 'aac', '-b:a', '128k', str(out_dir / '试听合集.m4a')]
+        else:
+            graph = ''.join(f'[{i}:v][{i}:a]' for i in range(len(clips))) + f'concat=n={len(clips)}:v=1:a=1[v][a]'
+            cmd += ['-filter_complex', graph, '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-crf', '28',
+                    '-preset', 'veryfast', '-c:a', 'aac', '-b:a', '128k', str(out_dir / '试听合集.mp4')]
         subprocess.run(cmd, check=True)
     lines += ['', '听完记下：哪一处不自然、像哪一类（重复起音 / 字尾拖延 / 句内犹豫 / 剪断字音 / 停顿过长或过短）。']
     return '\n'.join(lines) + '\n', len(clips)
+
+
+# ---------------------------------------------------------------- checking the windows by ear-substitute
+
+def spoken(text):
+    """Only the characters a transcript can be compared on: no spaces, no punctuation."""
+    return ''.join(c for c in text if WORD_CHAR.match(c))
+
+
+def expected_text(chars, start, end):
+    """Kept characters whose cut-timeline start falls inside [start, end]."""
+    return spoken(''.join(c['c'] for c in chars if start - 1e-6 <= c['t'] <= end + 1e-6))
+
+
+def compare_window(expected, heard, min_ratio=0.8, max_gap=2):
+    """Verdict for one window: ok when the heard text matches the kept text closely and no run of max_gap or more
+    kept characters is missing (a missing run is what a cut through a syllable or a dropped word sounds like)."""
+    expected, heard = spoken(expected), spoken(heard)
+    if not expected:
+        return {'ok': True, 'ratio': 1.0, 'missing': [], 'extra': []}
+    matcher = difflib.SequenceMatcher(None, expected, heard, autojunk=False)
+    missing, extra = [], []
+    for tag, a0, a1, b0, b1 in matcher.get_opcodes():
+        if tag in ('delete', 'replace') and a1 - a0 >= max_gap:
+            missing.append(expected[a0:a1])
+        if tag in ('insert', 'replace') and b1 - b0 >= max_gap:
+            extra.append(heard[b0:b1])
+    ratio = round(matcher.ratio(), 3)
+    return {'ok': ratio >= min_ratio and not missing, 'ratio': ratio, 'missing': missing, 'extra': extra}
+
+
+def whisper_transcriber(model_name=None):
+    """Local faster-whisper on a few seconds of audio; the model loads once per run."""
+    try:
+        from faster_whisper import WhisperModel
+    except ImportError as exc:
+        raise ValueError('listen --check needs faster-whisper (run setup_env.py), or pass the windows to the user') from exc
+    model = WhisperModel(model_name or os.environ.get('VV_WHISPER_MODEL', 'small'), device='cpu', compute_type='int8')
+
+    def transcribe(wav):
+        segments, _ = model.transcribe(str(wav), beam_size=5, vad_filter=False)
+        return ''.join(s.text for s in segments)
+    return transcribe
+
+
+def heard_text(media, window, transcribe, tmp):
+    """Transcribe one window of the cut: a few seconds of 16 kHz mono, not the whole file."""
+    wav = Path(tmp) / f'win_{window["start"]:.3f}.wav'
+    subprocess.run([ffmpeg(), '-loglevel', 'error', '-y', '-ss', f'{window["start"]:.3f}', '-i', str(media),
+                    '-t', f'{window["end"] - window["start"]:.3f}', '-vn', '-ac', '1', '-ar', str(SR_ANALYSIS),
+                    '-c:a', 'pcm_s16le', str(wav)], check=True)
+    return transcribe(wav)
+
+
+def check_windows(edl, transcripts, windows, heard_for):
+    """Compare what each window should contain (kept characters) with what a transcriber hears in the cut.
+    heard_for(window) -> text. Returns the markdown report and the rows."""
+    words = {src: load_words(transcripts, src) for src in edl['sources']}
+    chars = kept_chars(edl, words)
+    rows, flagged = [], 0
+    for n, w in enumerate(windows, start=1):
+        expected = expected_text(chars, w['start'], w['end'])
+        heard = heard_for(w)
+        verdict = compare_window(expected, heard)
+        flagged += not verdict['ok']
+        rows.append({'n': n, 'start': w['start'], 'end': w['end'], 'reasons': w['reasons'], 'expected': expected,
+                     'heard': spoken(heard), **verdict})
+    lines = ['# 剪点核对（转录只做了这些窗口，不是整段）', '',
+             f'{len(rows)} 个窗口，{flagged} 个有疑点。判定只看文字：听感（剪断字音、生硬）仍要试听。', '',
+             '| # | 剪后时间 | 看什么 | 应有的字 | 听到的字 | 判定 |', '|---|---|---|---|---|---|']
+    for r in rows:
+        if r['ok']:
+            verdict = f'对上（{r["ratio"]:.2f}）'
+        else:
+            parts = [f'相似 {r["ratio"]:.2f}']
+            if r['missing']:
+                parts.append('缺：' + '、'.join(r['missing']))
+            if r['extra']:
+                parts.append('多：' + '、'.join(r['extra']))
+            verdict = '**疑点** ' + '；'.join(parts)
+        lines.append(f'| {r["n"]} | {clock(r["start"])}–{clock(r["end"])} | {"；".join(r["reasons"])} | '
+                     f'{r["expected"] or "（无字）"} | {r["heard"] or "（没听出字）"} | {verdict} |')
+    lines += ['', '疑点处：用 listen --at <时间> --with-source 对照原素材，按卡壳诊断分类后只改那一小段。']
+    return '\n'.join(lines) + '\n', rows, flagged
 
 
 def write_out(path, text, force):
@@ -616,13 +736,17 @@ def main(argv=None):
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--work', type=Path, help='segment cache dir; default: <out dir>/voice_segs')
     p.add_argument('--size', help='e.g. 1080x1920; default keeps source size')
+    p.add_argument('--audio-only', action='store_true',
+                   help='write the cut as a WAV (same sample-exact timeline, seconds instead of a full export); '
+                        'use it for every checking round and export the picture once the cut is agreed')
     p = sub.add_parser('cues')
     p.add_argument('edl', type=Path)
     p.add_argument('--transcripts', type=Path, required=True)
     p.add_argument('--out-dir', type=Path, required=True)
     p = sub.add_parser('listen')
     p.add_argument('edl', type=Path)
-    p.add_argument('--video', type=Path, required=True, help='the rendered cut this EDL produced')
+    p.add_argument('--video', '--audio', dest='video', type=Path, required=True,
+                   help='the rendered cut this EDL produced (video, or the WAV from render --audio-only)')
     p.add_argument('--out-dir', type=Path, required=True)
     p.add_argument('--pad', type=float, default=2.0, help='seconds of context on each side')
     p.add_argument('--at', default='', help='extra cut-timeline times, e.g. "0:52,0:55.4"')
@@ -630,6 +754,11 @@ def main(argv=None):
     p.add_argument('--kinds', default=','.join(LISTEN_KINDS),
                    help='suspect kinds to audition; add "pause" to include every listed pause')
     p.add_argument('--with-source', action='store_true', help='also cut the unedited source under each window')
+    p.add_argument('--check', action='store_true',
+                   help='transcribe only these windows (local faster-whisper) and compare with the kept text; '
+                        'writes 剪点核对.md next to the checklist')
+    p.add_argument('--transcripts', type=Path, help='for --check; default: <edl dir>/transcripts')
+    p.add_argument('--model', help='for --check; default: $VV_WHISPER_MODEL or small')
     args = parser.parse_args(argv)
     try:
         if args.command == 'edl':
@@ -646,7 +775,10 @@ def main(argv=None):
             edl = json.loads(args.edl.read_text(encoding='utf-8'))
             if args.out.exists() and not args.force:
                 raise FileExistsError(f'{args.out} exists; pass --force or choose a new name')
-            result = render(edl, args.out, args.work or args.out.parent / 'voice_segs', edl.get('fps', 30), args.size)
+            if args.audio_only and args.out.suffix.lower() not in ('.wav', '.flac'):
+                raise ValueError('--audio-only writes PCM audio: give --out a .wav name')
+            result = render(edl, args.out, args.work or args.out.parent / 'voice_segs', edl.get('fps', 30), args.size,
+                            audio_only=args.audio_only)
         elif args.command == 'listen':
             edl = json.loads(args.edl.read_text(encoding='utf-8'))
             checklist = args.out_dir / '试听清单.md'
@@ -658,6 +790,15 @@ def main(argv=None):
             text, count = render_listen(edl, args.video, windows, args.out_dir, args.with_source)
             write_out(checklist, text, True)
             result = {'clips': count, 'checklist': str(checklist)}
+            if args.check:
+                transcripts = args.transcripts or args.edl.parent / 'transcripts'
+                transcribe = whisper_transcriber(args.model)
+                with tempfile.TemporaryDirectory() as tmp:
+                    report, rows, flagged = check_windows(
+                        edl, transcripts, windows, lambda w: heard_text(args.video, w, transcribe, tmp))
+                check_file = args.out_dir / '剪点核对.md'
+                write_out(check_file, report, True)
+                result.update(checked=len(rows), flagged=flagged, check_report=str(check_file))
         else:
             edl = json.loads(args.edl.read_text(encoding='utf-8'))
             chars, sections = build_cues(edl, args.transcripts)

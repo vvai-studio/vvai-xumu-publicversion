@@ -42,6 +42,8 @@ v1 规则：整数 fps、整数帧、半开窗口 `[from, from+duration)`，背�
 - `schema_version`：整数 1。
 - `input_mode`：`video | audio | text`。
 - `timeline`：非空 `revision`、布尔 `locked`、整数 `fps`（1–120）、`total_frames`、正偶数 `width`/`height`。首次镜头规划与最终渲染分别记录锁定状态。
+  - 可选 `text_limits`：`{"max_chars_per_line": N, "max_lines": M}`，`check` 按它查每个镜头 `screen_text` 的行数与每行字数；超了在计划里断行或缩短，不在渲染时将就。
+  - 可选 `caption_area`：字幕区 `{"x", "y", "w", "h"}`（画布比例 0～1）。与任何镜头的 `reserved` 相交即报错。
 - `narration.kind`：`original | tts | none`。非 none 时包含 `file`、`locked`、`timeline_revision`；就绪时文件存在、旁白已锁定、revision 与时间线一致。none 时不带旁白文件。是否保留底片音轨按下文"唯一主声音"处理。
 - 可选 `base_video`：仅 video 模式可用，包含 `file`、`timeline_revision`、`verified`，代表已实际完成的整条主剪辑底片。就绪时文件存在且已验收。
 - `shots`：零个或多个镜头。有完整 video 底片时可以没有增强镜头；没有底片时，background 镜头从第 0 帧无缝覆盖到 `total_frames`。背景之间不重叠；overlay 可以重叠，按数组顺序后者压在前者之上。
@@ -53,6 +55,7 @@ v1 规则：整数 fps、整数帧、半开窗口 `[from, from+duration)`，背�
   - `props`：镜头的可调参数（文案、颜色、数值、开关），镜头代码从这里读取。
   - `inputs`：渲染这个镜头用到的源文件或目录（代码、brief、props 文件、素材），相对计划目录。只列源文件；目录按内容递归计算，跳过点开头的文件夹及 `node_modules`、`__pycache__`、`dist`、`build`、`out`，任何镜头的 `asset.file` 都不计入。
   - `inner_cues` / `inner_frames`：镜头内部跟字的时刻（某个词出现时弹出、敲击）。`inner_cues` 写 `{"名称": <引用>}`，`cue.py sync` 换算成 `inner_frames`（相对镜头起点的帧），镜头代码从 `inner_frames` 读取。
+  - `reserved`：镜头里不能被字幕盖住的区域，`[{"name": "作品墙", "x": 0, "y": 0.75, "w": 1, "h": 0.25}]`（画布比例）。
 - `audio_policy`：`silent` 或 `separate`。视觉文件自身的音轨一律不自动混入；`separate` 必须有对应的 SFX 条目。
 - `route=shotcraft` 时另需 `card` 与 `style_key`。计划工具只检查非空，名称真实性对照上游索引人工核对。
 - `route=shotcraft|mg` 的镜头进入 `rendered`/`verified` 前（以及 `--ready` 时）必须有 `refs_viewed`：`[{"id": "sc:<style-key>", "sheet": "verify/refs/refs_sheet_1.jpg"}, …]`，`sheet` 是 `motion_index.py frames` 截出的图，文件必须存在；shotcraft 镜头选中的 `sc:<style_key>` 必须在里面。确实没有样片可看时写 `{"none": "<原因>"}`。不进渲染指纹。
@@ -130,12 +133,17 @@ python <skill>/scripts/plan_tools.py stale <edit>/visual-plan.json
 
 `stamp` 用 `--out` 写新文件，或用 `--force` 原地更新计划（只改被盖章镜头的 asset）。指纹只认 `inputs` 里声明的文件：没列进去的源码、共享设计规范或字体改了，工具发现不了，所以共享文件也要列进依赖它的镜头。整片作为一个合成工程渲染的路线（如 HyperFrames 白板一镜到底）是一个大镜头，任何改动都整片重渲。
 
+## 渲染前截帧
+
+合成渲染前要看的静帧时刻从计划生成，不靠手选：`snapshots` 列出第一帧、最后一帧、每镜起止与衔接前后 0.1 秒、每镜中点、每个 `inner_frames`，写进 `verify/snapshot_times.json`（`at` 字段可直接给 `hyperframes snapshot --at`；`--until <秒>` 只列参考片范围内的）。截完逐张看过后，再跑一次带 `--frames-dir <截图目录>`（HyperFrames 的 `snapshot` 写在工程的 `.hyperframes/artifacts/snapshots/<本次>/`，其他引擎用 `verify/snapshots/`）：比计划新的图片数不少于时刻数才算覆盖。`preflight` 要求这份记录存在、属于当前计划且已覆盖；计划一改记录就作废。
+
 ## 运行工具
 
 ```text
 python <skill>/scripts/plan_tools.py check <edit>/visual-plan.json
 python <skill>/scripts/plan_tools.py check <edit>/visual-plan.json --ready
 python <skill>/scripts/plan_tools.py export <edit>/visual-plan.json --out <edit>/render-manifest.json
+python <skill>/scripts/plan_tools.py snapshots <edit>/visual-plan.json [--until <秒>] [--frames-dir <截图目录>]
 ```
 
 工具离线运行，不调用生成服务、不渲染媒体；除 `stamp --force` 外不修改输入计划。`check` 检查类型、时间范围、版本、画面覆盖、声音归属、engine 取值与 anchor 结构；`--ready` 额外要求锁定、verified 状态与本地文件存在。`export` 先执行 ready 检查，再输出绝对文件路径、秒数与输入计划的 SHA256；目标已存在时拒绝覆盖，改用带版本的文件名。

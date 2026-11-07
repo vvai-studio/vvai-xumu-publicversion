@@ -8,7 +8,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from plan_tools import export_manifest, main, plan_diff, stale_report, stamp_shots, validate
+from plan_tools import export_manifest, main, plan_diff, snapshot_times, stale_report, stamp_shots, validate
 
 
 def example():
@@ -129,6 +129,73 @@ class PlanTests(unittest.TestCase):
         doc = {'mode': mode, 'grids': {'7': {'visual_tier': tier}}}
         (self.root / 'director.json').write_text(json.dumps(doc, ensure_ascii=False), encoding='utf-8')
 
+    def take_stills(self, count=None):
+        """Stills 'taken' after the plan was written, then the record preflight reads."""
+        plan_file = self.root / 'visual-plan.json'
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            main(['snapshots', str(plan_file)])
+        need = json.loads(out.getvalue())['count'] if count is None else count
+        folder = self.root / 'verify' / 'snapshots'
+        folder.mkdir(parents=True, exist_ok=True)
+        for k in range(need):
+            (folder / f'still_{k}.png').write_bytes(b'png fixture')
+        with contextlib.redirect_stdout(io.StringIO()):
+            return main(['snapshots', str(plan_file), '--frames-dir', 'verify/snapshots'])
+
+    def test_snapshot_times_cover_every_join_end_and_middle(self):
+        self.plan['shots'][0]['duration_frames'] = 45
+        self.plan['shots'][0]['inner_frames'] = {'pop': 10}
+        self.plan['shots'].append({**example()['shots'][0], 'id': 's2', 'from_frame': 45, 'duration_frames': 45,
+                                   'asset': {'file': '画面.bin', 'timeline_revision': 'v1', 'alpha': False}})
+        times = snapshot_times(self.plan)
+        frames = {t['frame']: t['why'] for t in times}
+        for frame in (0, 3, 10, 22, 41, 44, 45, 48, 67, 86, 89):
+            self.assertIn(frame, frames, frames)
+        self.assertIn('s2 start', frames[45])
+        self.assertIn('s1 end', frames[44])
+        self.assertIn('s1 pop', frames[10])
+        self.assertEqual([t['frame'] for t in times], sorted(frames))
+        self.assertEqual(snapshot_times(self.plan, until=1.0)[-1]['frame'], 29)
+
+    def test_preflight_needs_fresh_stills_at_the_listed_times(self):
+        # The 2026-11-07 case: a reference clip rendered twice because no still was taken at one join.
+        self.write_director('full')
+        (self.root / 'visual-plan.json').write_text(json.dumps(self.plan, ensure_ascii=False), encoding='utf-8')
+        code, report = self.preflight_run()
+        self.assertEqual(code, 1)
+        self.assertTrue(any('snapshot_times.json missing' in e for e in report['errors']))
+        self.assertEqual(self.take_stills(count=1), 1)
+        code, report = self.preflight_run()
+        self.assertTrue(any('stills newer than the plan cover' in e for e in report['errors']))
+        self.assertEqual(self.take_stills(), 0)
+        code, report = self.preflight_run()
+        self.assertEqual(code, 0, report['errors'])
+        self.assertEqual(report['snapshots']['count'], report['snapshots']['images'])
+        # Changing the plan afterwards invalidates the record.
+        self.plan['shots'][0]['screen_text'] = '改了'
+        (self.root / 'visual-plan.json').write_text(json.dumps(self.plan, ensure_ascii=False), encoding='utf-8')
+        code, report = self.preflight_run()
+        self.assertTrue(any('older plan' in e for e in report['errors']))
+
+    def test_caption_cannot_cover_a_reserved_element(self):
+        self.plan['timeline']['caption_area'] = {'x': 0.1, 'y': 0.8, 'w': 0.8, 'h': 0.12}
+        self.plan['shots'][0]['reserved'] = [{'name': '作品墙', 'x': 0.0, 'y': 0.75, 'w': 1.0, 'h': 0.25}]
+        self.assertTrue(any('overlaps timeline.caption_area' in e for e in self.errors()))
+        self.plan['shots'][0]['reserved'] = [{'name': '作品墙', 'x': 0.0, 'y': 0.2, 'w': 1.0, 'h': 0.5}]
+        self.assertEqual(self.errors(), [])
+        self.plan['shots'][0]['reserved'] = [{'x': 0.5, 'y': 0.5, 'w': 0.6, 'h': 0.1}]
+        self.assertTrue(any('reserved must be' in e for e in self.errors()))
+
+    def test_screen_text_respects_line_limits(self):
+        self.plan['timeline']['text_limits'] = {'max_chars_per_line': 8, 'max_lines': 2}
+        self.plan['shots'][0]['screen_text'] = '收集资料\n统一分类'
+        self.assertEqual(self.errors(), [])
+        self.plan['shots'][0]['screen_text'] = '把三个来源的资料统一分类'
+        self.assertTrue(any('over text_limits.max_chars_per_line' in e for e in self.errors()))
+        self.plan['shots'][0]['screen_text'] = '一\n二\n三'
+        self.assertTrue(any('over text_limits.max_lines' in e for e in self.errors()))
+
     def test_preflight_blocks_a_composition_without_plan(self):
         # The 2026-11-04 case: a Remotion data file written from a private shot table, no decision record, no plan.
         (self.root / 'data.json').write_text('{"shots": []}', encoding='utf-8')
@@ -156,6 +223,7 @@ class PlanTests(unittest.TestCase):
         self.assertTrue(any('is stale' in e for e in report['errors']))
         sha = hashlib.sha256(plan_file.read_bytes()).hexdigest()
         data.write_text(json.dumps({'source_plan_sha256': sha}), encoding='utf-8')
+        self.take_stills()
         code, report = self.preflight_run('--data', str(data))
         self.assertEqual(code, 0, report['errors'])
         self.assertTrue((self.root / 'verify' / 'preflight.json').exists())

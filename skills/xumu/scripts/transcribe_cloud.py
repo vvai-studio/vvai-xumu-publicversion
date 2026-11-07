@@ -47,7 +47,7 @@ VIDEO_USE_ENV = Path(__file__).resolve().parents[2] / 'video-use' / '.env'
 # usd_per_hour None = not published as a single rate; the estimate then points to the pricing page.
 ENGINES = {
     'local': {'name': '本地 faster-whisper', 'env': [], 'upload': False, 'usd_per_hour': 0.0,
-              'how': 'Video Use transcribe.py（未设置 ElevenLabs 密钥时）；先跑 setup_env.py --check 做冒烟测试'},
+              'how': 'transcribe_cloud.py run --engine local（不上传、不用 --confirmed）；模型用 $VV_WHISPER_MODEL，默认 small'},
     'elevenlabs': {'name': 'ElevenLabs Scribe', 'env': ['ELEVENLABS_API_KEY'], 'upload': True, 'usd_per_hour': 0.22,
                    'how': 'Video Use transcribe.py', 'pricing': 'https://elevenlabs.io/pricing/api'},
     'azure': {'name': 'Azure 快速转录', 'env': ['AZURE_SPEECH_KEY', 'AZURE_SPEECH_ENDPOINT|AZURE_SPEECH_REGION'],
@@ -57,6 +57,24 @@ ENGINES = {
                'how': 'transcribe_cloud.py run --engine funasr',
                'pricing': 'https://www.alibabacloud.com/help/en/model-studio/fun-asr'},
 }
+
+
+# CPU int8, rough wall-clock as a multiple of the audio length (a 10-minute recording with medium ≈ 8 minutes).
+LOCAL_SPEED = {'tiny': 0.1, 'base': 0.15, 'small': 0.3, 'medium': 0.8, 'large-v3': 1.6, 'large-v2': 1.6}
+DEFAULT_LOCAL_MODEL = 'small'
+
+
+def local_model(environ=os.environ):
+    return environ.get('VV_WHISPER_MODEL') or DEFAULT_LOCAL_MODEL
+
+
+def local_minutes(seconds, model):
+    return round(seconds * LOCAL_SPEED.get(model, 1.0) / 60, 1)
+
+
+def local_available():
+    import importlib.util
+    return importlib.util.find_spec('faster_whisper') is not None
 
 
 # ------------------------------------------------------------------ environment and estimate
@@ -89,9 +107,15 @@ def estimate(seconds, environ=os.environ, scribe_env_file=None):
     rows = []
     for key, e in ENGINES.items():
         ready = env_ready(key, environ) or (key == 'elevenlabs' and scribe_file)
+        if key == 'local':
+            ready = local_available()
         cost = None if e['usd_per_hour'] is None else round(e['usd_per_hour'] * hours, 3)
-        rows.append({'engine': key, 'name': e['name'], 'ready': ready, 'uploads': e['upload'], 'usd': cost,
-                     'usd_per_hour': e['usd_per_hour'], 'how': e['how'], 'pricing': e.get('pricing')})
+        row = {'engine': key, 'name': e['name'], 'ready': ready, 'uploads': e['upload'], 'usd': cost,
+               'usd_per_hour': e['usd_per_hour'], 'how': e['how'], 'pricing': e.get('pricing')}
+        if key == 'local':
+            row['model'] = local_model(environ)
+            row['minutes'] = local_minutes(seconds, row['model'])
+        rows.append(row)
     notes = []
     if scribe_file:
         notes.append('video-use/.env 里有 ELEVENLABS_API_KEY：直接跑 Video Use 转录会走付费的 Scribe，即使环境变量没设。')
@@ -105,11 +129,11 @@ def estimate_text(est):
         if r['usd'] is None:
             cost = f'见官网 {r["pricing"]}'
         elif r['usd'] == 0:
-            cost = '免费'
+            cost = f'免费，预计约 {r["minutes"]} 分钟（模型 {r["model"]}，CPU）' if 'minutes' in r else '免费'
         else:
             amount = '不到 $0.01' if r['usd'] < 0.01 else '约 $%.2f' % r['usd']
             cost = f'{amount}（${r["usd_per_hour"]}/小时）'
-        ready = '冒烟测试后才知道' if r['engine'] == 'local' else '是' if r['ready'] else '否'
+        ready = '是' if r['ready'] else ('否（跑 setup_env.py 装 faster-whisper）' if r['engine'] == 'local' else '否')
         lines.append(f'| {r["name"]} | {ready} | {"是" if r["uploads"] else "否"} | {cost} | {r["how"]} |')
     lines += [''] + [f'注意：{n}' for n in est['notes']]
     return '\n'.join(lines).rstrip() + '\n'
@@ -189,6 +213,31 @@ def funasr_payload(result, model, language=None):
 
 
 # ------------------------------------------------------------------ engines (http = the requests module, or a test double)
+def load_local_model(model):
+    from faster_whisper import WhisperModel
+    return WhisperModel(model, device='cpu', compute_type='int8')
+
+
+def call_local(wav, language, model, loader=load_local_model, out=print):
+    """faster-whisper on this machine: word timestamps, nothing uploaded. loader(model) -> object with
+    .transcribe(path, ...) -> (segments, info), the faster-whisper shape."""
+    engine = loader(model)
+    segments, info = engine.transcribe(str(wav), language=language, word_timestamps=True, beam_size=5,
+                                       vad_filter=True, vad_parameters={'min_silence_duration_ms': 400})
+    words, texts = [], []
+    for seg in segments:
+        texts.append(seg.text)
+        for w in seg.words or []:
+            piece = w.word.strip()
+            if piece:
+                words.append({'text': piece, 'start': round(float(w.start), 3), 'end': round(float(w.end), 3),
+                              'type': 'word', 'speaker_id': 'speaker_0'})
+        out(f'  {seg.end:7.1f} s', end='\r')
+    language_code = getattr(info, 'language', None) or language or ''
+    return {'language_code': language_code, 'text': ''.join(texts).strip(), 'words': with_spacing(words),
+            'engine': f'faster-whisper:{model}'}
+
+
 def azure_locale(language):
     return {'zh': 'zh-CN', 'en': 'en-US', 'ja': 'ja-JP', 'ko': 'ko-KR'}.get(language, language)
 
@@ -274,23 +323,31 @@ def run(args, http=None):
     if out.exists() and not args.force:
         print(f'cached: {out} (--force to replace)')
         return 0
-    if not args.confirmed:
+    local = args.engine == 'local'
+    if local and not local_available():
+        raise SystemExit('local: faster-whisper is not installed; run setup_env.py (it installs it), or use a cloud engine')
+    if not local and not args.confirmed:
         print(estimate_text(estimate(media_seconds(media))))
         print('未运行：转录会上传音频并产生费用。把上表给用户看，用户同意后加 --confirmed 再运行。')
         return 3
-    if not env_ready(args.engine):
+    if not local and not env_ready(args.engine):
         missing = ' + '.join(ENGINES[args.engine]['env'])
         raise SystemExit(f'{args.engine}: set {missing} in the environment first (never in a file in this repo)')
-    if http is None:
+    if http is None and not local:
         import requests as http
     with tempfile.TemporaryDirectory() as tmp:
         wav = Path(tmp) / f'{media.stem}.wav'
         extract_audio(media, wav, ['-c:a', 'pcm_s16le'])
         peak = peak_dbfs(wav)
         if peak < -60:
-            raise SystemExit(f'{media.name}: the first audio track is silent (peak {peak:.1f} dBFS); not uploading')
+            raise SystemExit(f'{media.name}: the first audio track is silent (peak {peak:.1f} dBFS); not transcribing')
         t0 = time.time()
-        if args.engine == 'azure':
+        if local:
+            model = args.whisper_model or local_model()
+            seconds = media_seconds(media)
+            print(f'本地转录 {media.name}（{seconds / 60:.1f} 分钟，模型 {model}，预计约 {local_minutes(seconds, model)} 分钟）…')
+            payload = call_local(wav, args.language, model, loader=args.loader or load_local_model)
+        elif args.engine == 'azure':
             payload = call_azure(wav, args.language, args.speakers, http)
         else:
             mp3 = Path(tmp) / f'{media.stem}.mp3'   # 16 kHz mono MP3: about 20 MB an hour, under upload size caps
@@ -310,8 +367,8 @@ def main(argv=None):
     p = sub.add_parser('estimate', help='duration and expected cost per engine; uploads nothing')
     p.add_argument('media', nargs='+')
     p.add_argument('--json', action='store_true')
-    p = sub.add_parser('run', help='transcribe one file with a cloud engine')
-    p.add_argument('--engine', choices=['azure', 'funasr'], required=True)
+    p = sub.add_parser('run', help='transcribe one file: local faster-whisper (free, nothing uploaded) or a cloud engine')
+    p.add_argument('--engine', choices=['local', 'azure', 'funasr'], required=True)
     p.add_argument('media')
     p.add_argument('--edit', required=True, help='edit directory; writes transcripts/<stem>.json')
     p.add_argument('--confirmed', action='store_true', help='the user agreed to the upload and the cost')
@@ -319,7 +376,9 @@ def main(argv=None):
     p.add_argument('--speakers', type=int, help='number of speakers when more than one (enables diarization)')
     p.add_argument('--audio-url', help='funasr: an HTTP(S) or oss:// URL of the audio instead of a temporary upload')
     p.add_argument('--model', default='fun-asr', help='funasr model id (default fun-asr)')
+    p.add_argument('--whisper-model', help='local: faster-whisper model (default $VV_WHISPER_MODEL or small)')
     p.add_argument('--force', action='store_true', help='replace an existing transcript')
+    p.set_defaults(loader=None)
     a = ap.parse_args(argv)
     if a.cmd == 'estimate':
         if not shutil.which('ffprobe'):

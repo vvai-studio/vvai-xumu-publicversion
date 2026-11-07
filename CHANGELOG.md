@@ -6,6 +6,28 @@
 
 ---
 
+## v0.30.0 — 2026-11-07 · 少等少返工：截帧时刻表、样片合渲、剪点窗口核对、本地转录、工程骨架
+
+PR [#42](https://github.com/vvai-studio/xumu/pull/42)
+
+一次实际制作的复盘（开工到参考片 86 分钟，其中实跑 56 分钟）：参考片因字幕盖住作品墙起点渲了两遍；四段类型样片分四次渲，每次起浏览器近 1 分钟；听不了声音就把整段剪后口播重新转录三遍来核对；每改一版就导一份完整 1080p，攒下 2.8 GB；合成工程从零写生成脚本。另外发现"本地 faster-whisper"引擎只写在文档里，没有能跑的脚本。这一版把这些都改成工具保证，不靠每次自觉。
+
+**新增**
+- `plan_tools.py snapshots`：从 `visual-plan.json` 生成合成渲染前要看的截帧时刻表（第一帧、最后一帧、每镜起止与衔接前后 0.1 秒、中点、内部节拍），写进 `verify/snapshot_times.json`；截过看过后带 `--frames-dir` 记录。`preflight` 要求这份记录存在、属于当前计划、比计划新的图片数覆盖全部时刻，否则不放行整片渲染。
+- 计划里可写 `timeline.caption_area`（字幕区）与镜头 `reserved`（不能被字幕盖的区域），相交即报错；`timeline.text_limits` 限制 `screen_text` 的每行字数与行数。字幕盖住元素、断不了行这类问题在渲染前就拦下。
+- `compose_scaffold.py hyperframes --edit <edit>`：从 `visual-plan.json` 生成 HyperFrames 工程骨架（`index.html` 每镜一个计时片段、每个待做镜头一个子合成、素材硬链接进 `assets/`、带 `source_plan_sha256` 的 `data.json`、锁 0.8.230 的 `package.json`），生成即可通过 `check`，只填镜头内容。`--preview-end` 出参考片。
+- `voice_edit.py render --audio-only`：同一条采样精确的时间线只出 WAV，几秒钟；`listen` 接受这个 WAV（合集为 `.m4a`）。核对轮不再导完整画面。
+- `voice_edit.py listen --check`：只转录各剪点窗口（每个几秒）并与保留表里应有的字比对，写出 `剪点核对.md`，标出缺字、多字的窗口；不再整段重转录。
+- `transcribe_cloud.py run --engine local`：本地 faster-whisper 的正式运行器（不上传、不用 `--confirmed`，输出与 Scribe 同格式，模型 `VV_WHISPER_MODEL` 默认 `small`）；`estimate` 对本地引擎报预计分钟数。
+- `media_tools.py clean --edit <edit>`：交付后列出 `build/`、`voice_segs/` 里没被任何记录引用的中间文件与大小，用户同意后 `--yes` 删除。
+
+**改进**
+- `setup_env.py` 的本地转录自检改为真转录：在子进程里加载模型并转录 3 秒合成音频，而不只是加载；优先用 `VV_WHISPER_MODEL` 指定的模型。
+- 规则：短测与类型样片合成一条时间线一次渲染再切开（每次渲染有约 1 分钟固定开销）；等用户确认时先做与决定无关的准备（素材提取、骨架、字体检查、样片下载）；风格确认用画廊已有代表帧，不反复现场渲；渲染前按片长估一句告诉用户。写进 workflow.md、production.md、qa.md 和剪辑师 / 导演身份文件。
+- SKILL.md 瘦身约 400 字节，回到 12 KB 之内。
+
+---
+
 ## v0.29.0 — 2026-11-06 · 数字人：真照片合成首帧、先出 10 秒测试，新增 AI 视频制作员
 
 PR [#41](https://github.com/vvai-studio/xumu/pull/41)

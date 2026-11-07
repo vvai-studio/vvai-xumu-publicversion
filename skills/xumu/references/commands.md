@@ -40,15 +40,19 @@ python <skill>/scripts/plan_tools.py export <edit>/visual-plan.json --out <edit>
 python <skill>/scripts/plan_tools.py stamp <edit>/visual-plan.json --shot <id> --force   # 镜头渲染验收后记录指纹
 python <skill>/scripts/plan_tools.py diff <旧计划> <新计划>      # 修改影响：重渲 / 复用 / 只重新合成
 python <skill>/scripts/plan_tools.py stale <edit>/visual-plan.json   # 哪些镜头文件已过期
-python <skill>/scripts/plan_tools.py preflight <edit> --data <合成数据.json>   # 合成渲染前：决策书模式与档位、计划检查、数据来自当前计划 → verify/preflight.json
+python <skill>/scripts/plan_tools.py snapshots <edit>/visual-plan.json [--until <秒>]   # 合成渲染前的截帧时刻表（每镜起止、衔接前后 0.1 秒、中点）→ verify/snapshot_times.json，`at` 字段可直接给 hyperframes snapshot --at
+python <skill>/scripts/plan_tools.py snapshots <edit>/visual-plan.json --frames-dir <截图目录>   # 截过、看过之后记录（HyperFrames 的 snapshot 写在工程 .hyperframes/artifacts/snapshots/<本次>/）；不够数退出码 1
+python <skill>/scripts/plan_tools.py preflight <edit> --data <合成数据.json>   # 合成渲染前：决策书模式与档位、计划检查、截帧记录、数据来自当前计划 → verify/preflight.json
+python <skill>/scripts/compose_scaffold.py hyperframes --edit <edit> [--out <edit>/compose/hyperframes] [--force] [--preview-end <秒>]   # 从 visual-plan.json 生成 HyperFrames 工程骨架：index.html（每镜一个计时片段）+ compositions/shot-<id>.html（待填的子合成）+ assets/ + data.json（带 source_plan_sha256）+ package.json（锁 0.8.230）；--preview-end 出参考片
 ```
 
 剪辑与时间工具（用法见 [制作路线与合成](production.md#口播剪辑链)、[时间线契约](timeline.md#时间引用)）：
 
 ```text
 python <skill>/scripts/voice_edit.py edl <edit>/keeps.json --out <edit>/edl_voice.json --report <edit>/剪后口播_核对.txt
-python <skill>/scripts/voice_edit.py render <edit>/edl_voice.json --out <edit>/build/voice_cut.mp4 [--size 1080x1920]
-python <skill>/scripts/voice_edit.py listen <edit>/edl_voice.json --video <edit>/build/voice_cut.mp4 --out-dir <edit>/verify/listen [--at 0:52] [--with-source]
+python <skill>/scripts/voice_edit.py render <edit>/edl_voice.json --out <edit>/build/voice_cut.wav --audio-only   # 核对轮：只出声音，几秒钟
+python <skill>/scripts/voice_edit.py render <edit>/edl_voice.json --out <edit>/build/voice_cut.mp4 [--size 1080x1920]   # 剪辑定下后导一次画面
+python <skill>/scripts/voice_edit.py listen <edit>/edl_voice.json --video <edit>/build/voice_cut.wav --out-dir <edit>/verify/listen [--at 0:52] [--with-source] [--check]   # --check 只转录剪点窗口并与应有的字比对 → 剪点核对.md
 python <skill>/scripts/voice_edit.py cues <edit>/edl_voice.json --transcripts <edit>/transcripts --out-dir <edit>
 python <skill>/scripts/cue.py --edit <edit> resolve '{"cue": "跟地图", "section": "B09", "offset": 2.4}' '{"clip": "c0103", "edge": "end"}' '{"beat_near": 12.3}'
 python <skill>/scripts/footage.py scan --edit <edit> --inputs <视频或目录…> [--scene 0.3] [--faces]   # 切镜头、打分、缩略图墙 footage/scan.html
@@ -57,7 +61,8 @@ python <skill>/scripts/footage.py select --edit <edit> [--max-shot 6] [--min-sco
 python <skill>/scripts/footage.py render --edit <edit> [--size 1080x1920] [--keep-audio] [--music <曲>] [--force]   # 粗剪预览 + edl_footage.json
 python <skill>/scripts/cue.py --edit <edit> sync <edit>/visual-plan.json --out <edit>/visual-plan.r2.json --revision r2
 python <skill>/scripts/transcribe_cloud.py estimate <素材…>    # 转录前：各引擎是否可用、是否上传、预估费用
-python <skill>/scripts/transcribe_cloud.py run --engine azure|funasr <素材> --edit <edit> --confirmed   # 用户同意后
+python <skill>/scripts/transcribe_cloud.py run --engine local <素材> --edit <edit> [--whisper-model small]   # 本地 faster-whisper：免费、不上传、不用 --confirmed
+python <skill>/scripts/transcribe_cloud.py run --engine azure|funasr <素材> --edit <edit> --confirmed   # 付费引擎，用户同意后
 python <skill>/scripts/key_setup.py --status [--var VVAI_API_KEY]   # 查密钥是否已保存（离线，不显示密钥）；0 可用，1 未配置；“只有当前会话能读到”表示没存进这台电脑
 python <skill>/scripts/key_setup.py [--var VVAI_API_KEY] [--replace]   # 后台运行：未配置时开本机临时网页，用户粘贴密钥，验证通过才保存；换密钥加 --replace；退出码 4 表示沙箱不让保存，照提示在沙箱外运行
 python <skill>/scripts/audio_cloud.py setup [--yes]           # 写入造物社默认设置（生图 / 配音 / 配乐），不写密钥
@@ -79,6 +84,7 @@ python <skill>/scripts/image_cloud.py generate --edit <edit> --name <镜头名> 
 python <shotcraft>/assets/scripts/sfx-source.py search "paper slide" --max-duration 1 --limit 5 | get fs:<id> --out-dir <edit>/audio/sfx | analyze <文件>   # Freesound 真实音效（<shotcraft> = 相邻 video-shotcraft 目录，默认 CC0）
 python <skill>/scripts/sfx_synth.py make pop --out pop.wav | track events.json --len <秒> --out sfx.wav   # 本地合成 UI 提示音；events 里的 file 事件把下载的音效按能量峰铺进同一条轨
 python <skill>/scripts/media_tools.py clips | cutpoint | level | measure | normalize | fontcheck ...
+python <skill>/scripts/media_tools.py clean --edit <edit> [--yes]   # 交付后：列出 build/、voice_segs/ 里没被任何记录引用的中间文件与大小；用户同意后 --yes 删
 python <skill>/scripts/hf_upgrade_check.py --work <空目录>     # 每月一次：HyperFrames 受控升级检查
 python <skill>/scripts/motion_index.py search 对比 | show gn:split-compare | show mg15:19-paperclip | show opus:caption-news | build --force
 python <skill>/scripts/motion_index.py frames sc:<style-key> gn:<slug> mg15:<id> opus:<slug> --out <edit>/verify/refs   # 入围样片截帧拼图，结果记进镜头 refs_viewed

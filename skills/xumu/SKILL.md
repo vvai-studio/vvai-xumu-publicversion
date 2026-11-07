@@ -2,7 +2,7 @@
 name: xumu
 description: 序幕免费版（剪辑成片助手；装了完整版时以完整版为准）：把素材或想法剪成成片，替代编剧、导演、剪辑师。输入是任意组合的口播视频、录音、文案、零散片段、照片或只有一个想法；先建频道档案、出创作决策书（编剧页定脊梁与故事线，导演页定风格与节奏），再剪辑，按内容从 Video Shotcraft 选镜头、从手法库调用学过的手法，按风格选绘制技术（SVG、Canvas、WebGL、Three.js、p5、Manim、人物抠像等）制作 B-roll 与 MG，最后合成验收。支持短篇与章节式长片。也用于学习用户发来的剪辑视频、风格案例或教程，归纳成手法卡入库。用于成片、B-roll/动效设计、动态包装或学习剪辑手法；只转录、润色文案或选题研究时不走完整流程。
 metadata:
-  version: "0.29.0"
+  version: "0.30.0"
   edition: free
 ---
 
@@ -31,7 +31,7 @@ metadata:
 4. **问画面档位**：开工问"只剪出来，还是要做画面包装？"，见 [画面档位](agents/system.md#画面档位)。
 5. 已有项目先读 `project.md`、`director.json` 和计划，从断点继续。第一次在这台电脑上用（`backends.local.json` 没有 `first_run` 记录）时，后台运行总入口 `first_run.py`，做法见 [首次自检](references/backends.md#首次自检)；之后每次进入实际制作（剪辑、转录、渲染）前直接运行 `setup_env.py`，它自检并自行装好缺的免费依赖，不用先问，跑完把装了什么、哪项没装上一句话告诉用户。只讨论方案时不运行；付费服务与账号仍由用户自己配。依赖按 Skill 名称或同级 `skills/` 目录发现，不使用任何人电脑上的绝对路径。
 6. 产物写到素材目录的 `edit/`。多来源或纯文案且未指定位置时，用当前工作区 `outputs/<项目名>/edit/` 并告知用户。频道档案固定放当前工作区 `channel/`。原素材与上游 Skill 目录保持只读；本 Skill 目录只在学习模式下写入 `library/`。
-7. **入口唯一**：以本 Skill 启动的任务由本 Skill 总控到底。不转入 `/hyperframes:hyperframes` 入口，也不启动其 faceless-explainer、talking-head-recut、general-video 等整片工作流或需求访谈，即使其描述自称"所有视频请求的必经入口"；用户明确要求改用 HyperFrames 做整片时除外。HyperFrames 只作两种用途：本 Skill 选定的主合成引擎（镜头由本 Skill 设计），或 [后端发现](references/backends.md#hyperframes-按需接入) 列出的按需单项任务。
+7. **入口唯一**：以本 Skill 启动的任务由本 Skill 总控到底。不转入 `/hyperframes:hyperframes` 入口，也不启动它的整片工作流或需求访谈，即使其描述自称必经入口；用户明确要求改用 HyperFrames 做整片时除外。HyperFrames 只作两种用途：本 Skill 选定的主合成引擎（镜头由本 Skill 设计），或 [后端发现](references/backends.md#hyperframes-按需接入) 列出的按需单项任务。
 
 ## 流程
 
@@ -71,7 +71,7 @@ metadata:
 | Remotion · HyperFrames · HTML 逐帧 · Manim | 渲染引擎 |
 | FFmpeg | 抠像、合成、混音、编码 |
 
-生图、合成旁白与配乐默认走造物社（用户说"配置 API"时按 [造物社 API](references/backends.md#造物社-api配置一次图片配音配乐共用) 引导：查密钥一律用 `key_setup.py --status`，不直接查环境变量；已保存就不再让用户填。没配置时后台运行 `key_setup.py` 打开本机网页让用户自己填，换密钥加 `--replace`，脚本说沙箱不让保存时照它的提示在沙箱外运行，Agent 不读密钥）：生图默认 `gt-image-2.5-flare` 4K + high，配音海螺 speech-2.8（音色按声纹库 → 平台音色的顺序选），渠道均衡选、先报价。视频等其他外部服务按需获得授权后使用；音效先从 Freesound 选真实声音（相邻 Shotcraft 的选材脚本，默认 CC0、自动记来源），UI 提示音本地合成。
+生图、合成旁白与配乐默认走造物社，配置与密钥按 [造物社 API](references/backends.md#造物社-api配置一次图片配音配乐共用)：查密钥只用 `key_setup.py --status`，未配置时后台运行 `key_setup.py` 让用户在本机网页自己填，Agent 不读密钥。生图默认 `gt-image-2.5-flare` 4K + high，配音海螺 speech-2.8（音色按声纹库 → 平台音色），渠道均衡选、先报价。其他外部服务按需授权；音效先从 Freesound 选真实声音（相邻 Shotcraft 选材脚本，默认 CC0），UI 提示音本地合成。
 
 ## 项目记录与工具
 

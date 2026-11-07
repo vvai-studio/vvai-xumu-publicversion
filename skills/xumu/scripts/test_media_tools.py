@@ -156,5 +156,31 @@ class DeliverCheckCliTests(unittest.TestCase):
         self.assertIn('exists', report['errors'][0])
 
 
+class CleanTests(unittest.TestCase):
+    def test_lists_unreferenced_intermediates_and_deletes_only_with_yes(self):
+        with tempfile.TemporaryDirectory() as d:
+            edit = Path(d)
+            (edit / 'build' / 'voice_segs').mkdir(parents=True)
+            (edit / 'verify').mkdir()
+            (edit / 'build' / 'voice_cut_v5.mp4').write_bytes(b'x' * 3000)
+            (edit / 'build' / 'voice_cut_v3.mp4').write_bytes(b'x' * 2000)
+            (edit / 'build' / 'voice_segs' / 'seg_000.mkv').write_bytes(b'x' * 1000)
+            (edit / 'verify' / 'strip.png').write_bytes(b'x')
+            (edit / 'project.md').write_text('当前剪辑：build/voice_cut_v5.mp4', encoding='utf-8')
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
+                self.assertEqual(main(['clean', '--edit', str(edit)]), 0)
+            report = json.loads(out.getvalue())
+            self.assertEqual([r['file'] for r in report['candidates']],
+                             ['build/voice_cut_v3.mp4', 'build/voice_segs/seg_000.mkv'])
+            self.assertEqual(report['deleted'], 0)
+            self.assertTrue((edit / 'build' / 'voice_cut_v3.mp4').exists())
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(main(['clean', '--edit', str(edit), '--yes']), 0)
+            self.assertFalse((edit / 'build' / 'voice_cut_v3.mp4').exists())
+            self.assertFalse((edit / 'build' / 'voice_segs' / 'seg_000.mkv').exists())
+            self.assertTrue((edit / 'build' / 'voice_cut_v5.mp4').exists())
+            self.assertTrue((edit / 'verify' / 'strip.png').exists())
+
 if __name__ == '__main__':
     unittest.main()

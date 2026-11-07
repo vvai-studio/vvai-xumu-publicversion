@@ -21,6 +21,7 @@ import argparse
 import hashlib
 from html.parser import HTMLParser
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -342,6 +343,59 @@ def composition_gate(edit):
     return []
 
 
+# ---------------------------------------------------------------- intermediate files after delivery
+
+CLEAN_DIR_NAMES = ('build', 'voice_segs')
+CLEAN_SKIP = {'node_modules', '.git', '__pycache__', 'verify', 'transcripts'}
+RECORD_EXT = ('.json', '.md', '.txt', '.html', '.py', '.mjs', '.js')
+
+
+def referenced_text(edit):
+    """Everything the project's records say: JSON, Markdown, scripts. A file whose name appears there is in use."""
+    chunks = []
+    for folder, dirs, files in os.walk(edit):
+        dirs[:] = [d for d in dirs if d not in CLEAN_SKIP and d not in CLEAN_DIR_NAMES]
+        for name in files:
+            if name.lower().endswith(RECORD_EXT):
+                try:
+                    chunks.append(Path(folder, name).read_text(encoding='utf-8', errors='replace'))
+                except OSError:
+                    pass
+    return '\n'.join(chunks)
+
+
+def clean_candidates(edit):
+    """Intermediate renders (build/, voice_segs/) no record refers to, largest first. Referenced = its file name
+    appears in any JSON / Markdown / script of the project, so the delivered cut and anything a plan or log
+    points at stays; the five earlier 1080p exports and the per-segment caches go."""
+    edit = Path(edit).resolve()
+    records = referenced_text(edit)
+    rows, kept = [], []
+    for folder, dirs, files in os.walk(edit):
+        dirs[:] = [d for d in dirs if d not in CLEAN_SKIP]
+        if not any(part in CLEAN_DIR_NAMES for part in Path(folder).relative_to(edit).parts):
+            continue
+        for name in files:
+            item = Path(folder, name)
+            size = item.stat().st_size
+            rel = item.relative_to(edit).as_posix()
+            (kept if name in records else rows).append({'file': rel, 'mb': round(size / 1e6, 1)})
+    rows.sort(key=lambda r: -r['mb'])
+    return rows, kept
+
+
+def clean(edit, yes=False):
+    rows, kept = clean_candidates(edit)
+    total = round(sum(r['mb'] for r in rows), 1)
+    deleted = 0
+    if yes:
+        for r in rows:
+            (Path(edit).resolve() / r['file']).unlink()
+            deleted += 1
+    return {'candidates': rows, 'total_mb': total, 'kept_referenced': len(kept), 'deleted': deleted,
+            'note': 'deleted' if yes else 'nothing deleted: show this list to the user, rerun with --yes after their OK'}
+
+
 def deliver_check(final, source=None, spec=None, probe=None):
     """Compare the deliverable with the source footage (the default spec) or an explicit WxH spec."""
     probe = probe or probe_media
@@ -419,6 +473,10 @@ def main(argv=None):
     p.add_argument('--font', type=Path, required=True)
     p.add_argument('files', nargs='+', type=Path)
     p.add_argument('--subset', type=Path, help='write a woff2 subset of the used characters')
+    p = sub.add_parser('clean', help='intermediate renders in build/ and voice_segs/ that no record refers to; '
+                                     'lists sizes, deletes only with --yes after the user agreed')
+    p.add_argument('--edit', type=Path, required=True)
+    p.add_argument('--yes', action='store_true', help='the user agreed to delete the listed files')
     p = sub.add_parser('deliver-check')
     p.add_argument('deliverable', type=Path)
     p.add_argument('--source', type=Path, help='original footage; its size is the default delivery spec')
@@ -447,6 +505,8 @@ def main(argv=None):
             result = measure(args.media, args.ranges)
         elif args.command == 'normalize':
             result = normalize(args.src, args.dst, args.target, args.tp, args.lra, args.force)
+        elif args.command == 'clean':
+            result = clean(args.edit, args.yes)
         elif args.command == 'deliver-check':
             if args.report:
                 guard(args.report, args.force)
