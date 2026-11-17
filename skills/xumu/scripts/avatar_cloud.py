@@ -3,26 +3,28 @@
 the user configured (造物社), behind audio_cloud's paid-call layer.
 
   python avatar_cloud.py check --image IMG [--out OUT.jpg]
-  python avatar_cloud.py plan --edit EDIT [--model minimax-h3|kling-v4|wan-3-0|kling-avatar] [--audio WAV] [--max-seg S]
-  python avatar_cloud.py estimate --edit EDIT [--quality std|pro] [--resolution 720p|1080p] [--only 1,3]
+  python avatar_cloud.py plan --edit EDIT [--model minimax-h3|seedance-2-5-promo|kling-v4|wan-3-0] [--max-seg S]
+  python avatar_cloud.py estimate --edit EDIT [--resolution 768p|720p|1080p] [--only 1,3]
   python avatar_cloud.py frame --edit EDIT --photo IMG --scene IMG [--mode blend|paste] [--light TEXT] [--count 2]
                                [--blur 6] [--confirmed] [--max-cost N]
   python avatar_cloud.py generate --edit EDIT --image IMG [--motion 小|中|大] [--extra TEXT]
-                                  [--resolution R] [--quality Q] [--only 1,3 | --all] [--user-asked "用户的原话"]
+                                  [--resolution R] [--only 1,3 | --all] [--user-asked "用户的原话"]
                                   --confirmed [--max-cost N]
   python avatar_cloud.py finish --edit EDIT [--no-align]
   python avatar_cloud.py lipsync --edit EDIT --video CLIP.mp4 --audio NEW.wav --name NAME --confirmed [--max-cost N]
 
-Two kinds of model, chosen at plan time (default minimax-h3, backups kling-v4 and wan-3-0; config avatar.model):
-  speak   minimax-h3, kling-v4, wan-3-0. The model says the lines itself: each segment's script text goes into the prompt, and a
-          short clip of the finished narration (the user's cloned voice, at most 15 s) is the voice reference. The
-          voice is the model's rendering of that timbre, not the narration file. Segments follow the script sections
-          from `audio_cloud.py voice speak` (tts/manifest.json), split at sentence ends to at most 30 s, and the
-          requested length is the narration's length plus a little room. Tested live 2026-10-27 on a 7 s line: both
-          said it word for word and kept the face (kling-v4 2.28⚡, wan-3-0 2.80⚡).
-  audio   kling-avatar. The mouth follows the narration file exactly; segments are cut at pauses of the audio (up to
-          300 s each). Real-person photos need the platform's likeness consent first (HTTP 403
-          likeness_consent_required, not charged).
+Models, chosen at plan time (default minimax-h3, first backup seedance-2-5-promo, then kling-v4 and wan-3-0; config
+avatar.model). All of them say the lines themselves: each segment's script text goes into the prompt, and a short clip
+of the finished narration (the user's cloned voice, at most 15 s) is the voice reference. The voice is the model's
+rendering of that timbre, not the narration file. Segments follow the script sections from `audio_cloud.py voice
+speak` (tts/manifest.json), split at sentence ends to the model's maximum, and the requested length is the narration's
+length plus a little room. Tested live: minimax-h3 2026-11-03 and 2026-11-05 (a 158 s film); kling-v4 and wan-3-0
+2026-10-27 on a 7 s line. seedance-2-5-promo is not tested live yet.
+
+kling-avatar (可灵数字人) is retired (2026-11-17): it refuses a real person's photo until the person ticks a likeness
+statement on the 造物社 web page (HTTP 403 likeness_consent_required), which students could not find. Choosing it, a
+config naming it, or an old plan made with it is refused with the command to re-plan on minimax-h3. Never send the
+user to the web page to upload or generate by hand.
 
 A digital human is used only when the user asked for one, or the decision doc (director.json grid 7, field avatar:
 use, source user_asked|suggested, reason) suggested it with a reason and the user confirmed grid 7; generate checks
@@ -40,8 +42,8 @@ segments would no longer match it. Same paid-call rules as audio_cloud:
 quote every segment, pin the balanced channel, run only under the no-confirm limit or --max-cost, log every task
 before polling (an interrupted run resumes), reuse an identical earlier request, never switch channel after a failure.
 
-finish joins the segments into avatar/final_avatar.mp4. audio models: the narration replaces the model's audio.
-speak models: each take keeps its own voice, its silent tail is trimmed, and the takes are written as sections to
+finish joins the segments into avatar/final_avatar.mp4: each take keeps its own voice, its silent tail is trimmed, and
+the takes are written as sections to
 avatar/voice/ (manifest.json + one wav each) and aligned to the script with `audio_cloud.align(tts='avatar/voice')`,
 so cue_chars.json and sections.json describe what the presenter actually says and the rest of the pipeline (cue.py,
 subtitles) works unchanged. Quality check: lengths, frozen stretches, seam and contact sheets, and (with OpenCV)
@@ -75,7 +77,7 @@ for _stream in (sys.stdout, sys.stderr):   # Windows pipes default to the ANSI c
 sys.path.insert(0, str(Path(__file__).resolve().parent))   # also under python -I
 import audio_cloud as ac  # noqa: E402
 
-DEFAULTS = {'model': 'minimax-h3', 'quality': 'std', 'lipsync_model': 'kling-lip-sync', 'min_seg': 4}
+DEFAULTS = {'model': 'minimax-h3', 'lipsync_model': 'kling-lip-sync'}
 # H3 reads its official six-part reference format; a 15 s clip at most, and the request needs room for a slower read
 H3_PROMPT = '''subject_definitions:
 <Subject 1> is the person in <Picture 1>; their appearance, clothing, pose, framing, background and lighting follow <Picture 1> exactly.
@@ -104,16 +106,25 @@ H3_MOTION = {
     '大': 'Gestures are rich and wide: both hands open or press down for emphasis, the fingers count out lists, a palm opens toward the camera, '
           'and the body leans with the tone; the hands return between sentences.',
 }
-# what each model takes; speak = says the prompt's lines in the reference voice, audio = lip-syncs the given audio
+# Seedance names its references @图片N / @音频N in the prompt (造物社 model page, 2026-11-17)
+SEEDANCE_PROMPT = ('真人实拍，固定机位，单人正对镜头说话。@图片1 里的这个人，长相、发型、衣服、姿势、构图、背景和光线都和@图片1 完全一致，'
+                   '不出现图片里没有的物品。这个人看着镜头，用@音频1 的音色、普通话、自然口语的语气说："{text}" {motion}{extra}'
+                   '整句话在视频结束前说完。镜头不推拉。不加字幕、不加背景音乐和音效。')
+# every model says the prompt's lines itself in the reference voice
 MODELS = {
     'minimax-h3': {'kind': 'speak', 'max_seg': 13, 'durations': list(range(4, 16)), 'resolutions': ('768p', '2k'),
                    'resolution': '768p', 'prompt': H3_PROMPT, 'motion': H3_MOTION},
+    # 4–30 s, but the platform says 30 s fails more often than 29 s: requests stop at 29
+    'seedance-2-5-promo': {'kind': 'speak', 'max_seg': 25, 'durations': list(range(4, 30)),
+                           'resolutions': ('480p', '720p', '1080p'), 'resolution': '720p', 'prompt': SEEDANCE_PROMPT},
     'kling-v4': {'kind': 'speak', 'max_seg': 30, 'durations': list(range(3, 31)), 'resolutions': ('720p', '1080p'),
                  'resolution': '720p'},
     'wan-3-0': {'kind': 'speak', 'max_seg': 30, 'durations': list(range(5, 16)) + [20, 25, 30],
                 'resolutions': ('480p', '720p', '1080p'), 'resolution': '720p'},
-    'kling-avatar': {'kind': 'audio', 'max_seg': 60, 'limit': 300},
 }
+BACKUP = {'minimax-h3': 'seedance-2-5-promo', 'seedance-2-5-promo': 'minimax-h3'}
+RETIRED = {'kling-avatar': '可灵数字人（kling-avatar）已停用：真人照片要本人先在造物社网页勾选肖像声明，否则直接拒收，学员找不到也配不了。'
+                           '数字人用默认的 minimax-h3（备选 seedance-2-5-promo），不要让用户去网页手动上传或生成。'}
 REF_MAX = 15.0   # voice reference length the speak models accept
 LOG = 'avatar/avatar_log.json'
 IMAGE_RULES = {'min_short': 300, 'good_short': 720, 'min_ratio': 0.4, 'max_ratio': 2.5, 'max_bytes': 10 * 1024 * 1024,
@@ -136,6 +147,9 @@ def settings(cfg, model=None):
     a = {**DEFAULTS, **(cfg.get('avatar') or {})}
     if model:
         a['model'] = model
+    if a['model'] in RETIRED:
+        raise ac.Refused(RETIRED[a['model']] + '\n  python avatar_cloud.py plan --edit <edit> --model minimax-h3'
+                         + ('（backends.local.json 的 avatar.model 也改掉）' if not model else ''))
     if a['model'] not in MODELS:
         raise ac.Refused(f'数字人模型只能是 {"、".join(MODELS)}')
     a['spec'] = MODELS[a['model']]
@@ -291,26 +305,6 @@ def make_frame(edit, photo, scene, blur=6.0, cutter=hf_cutout):
 
 
 # ------------------------------------------------------------------ plan
-def cut_points(samples, sr, max_seg=60.0, min_seg=4.0, min_pause=0.3):
-    """Segment boundaries (seconds, including 0 and the end) placed in the middle of pauses."""
-    total = len(samples) / sr
-    pauses = [((a + b) / 2, b - a) for a, b in ac.quiet_runs(samples, sr) if b - a >= min_pause and 0.05 < a and b < total - 0.05]
-    cuts, cur = [0.0], 0.0
-    while total - cur > max_seg:
-        lo, hi = cur + min_seg, cur + max_seg
-        window = [p for p in pauses if lo <= p[0] <= hi]
-        late = [p for p in window if p[0] >= cur + max_seg * 0.6] or window
-        if late:
-            cut = max(late, key=lambda p: (p[1], p[0]))[0]   # the longest pause late in the window
-        else:
-            cut = hi   # no pause at all: a hard cut, flagged in the plan
-        cuts.append(round(cut, 3))
-        cur = cut
-    if len(cuts) > 1 and total - cuts[-1] < min_seg:
-        cuts.pop()   # fold a tiny tail into the previous segment
-    return cuts + [round(total, 3)]
-
-
 def split_text(text, seconds, max_seg):
     """A section longer than max_seg -> pieces at sentence ends, each with its share of the section's seconds."""
     clean = ac.strip_pauses(text)
@@ -340,7 +334,7 @@ def speak_plan(edit, a, max_seg):
     man = edit / 'tts' / 'manifest.json'
     if not man.exists():
         raise ac.Refused(f'{a["model"]} 按文案说台词：先用 audio_cloud.py voice speak 生成配音（会写 tts/manifest.json）；'
-                         '只有录音没有文案时用 --model kling-avatar')
+                         '只有录音没有文案时，先转写录音、定好文案，再用克隆音色 voice speak 生成配音')
     manifest = json.loads(man.read_text(encoding='utf-8'))
     narration = edit / 'tts' / 'narration.wav'
     d = adir(edit)
@@ -360,38 +354,10 @@ def speak_plan(edit, a, max_seg):
             'max_seg': max_seg, 'segments': segs, 'hard_cuts': []}
 
 
-def audio_plan(edit, a, audio, max_seg, min_seg):
-    src = Path(audio) if audio else Path(edit) / 'tts' / 'narration.wav'
-    if not src.is_file():
-        raise ac.Refused(f'没有配音：{src}。先用 audio_cloud.py voice speak 生成，或用 --audio 指定录音')
-    if max_seg > a['spec']['limit']:
-        raise ac.Refused(f'每段最长 {a["spec"]["limit"]} 秒（模型上限）')
-    samples = ac.load_samples(src)
-    cuts = cut_points(samples, 16000, max_seg, min_seg)
-    d = adir(edit)
-    segs, hard = [], []
-    for n, (s, e) in enumerate(zip(cuts, cuts[1:]), 1):
-        mp3 = d / f'seg_{n:02d}.mp3'
-        to_mp3(src, mp3, s, e)
-        i1 = int(e * 16000)
-        if n < len(cuts) - 1 and not ac.quiet_runs(samples[max(0, i1 - 1600):i1 + 1600], 16000):
-            hard.append(n)
-        segs.append({'n': n, 'start': s, 'end': e, 'seconds': round(e - s, 3), 'duration': int(math.ceil(e - s)),
-                     'audio': mp3.name, 'audio_hash': ac.file_hash(mp3)})
-    return {'model': a['model'], 'kind': 'audio', 'audio': str(src), 'audio_hash': ac.file_hash(src),
-            'duration': cuts[-1], 'max_seg': max_seg, 'segments': segs, 'hard_cuts': hard}
-
-
-def make_plan(edit, audio=None, max_seg=None, min_seg=None, cfg=None, model=None):
+def make_plan(edit, max_seg=None, cfg=None, model=None):
     a = settings(cfg or {}, model)
     max_seg = float(max_seg or (cfg or {}).get('avatar', {}).get('max_seg') or a['spec']['max_seg'])
-    min_seg = float(min_seg or a['min_seg'])
-    if a['spec']['kind'] == 'speak':
-        if audio:
-            raise ac.Refused(f'{a["model"]} 自己说台词，不用 --audio；要嘴型跟录音走用 --model kling-avatar')
-        plan = speak_plan(edit, a, min(max_seg, a['spec']['max_seg']))
-    else:
-        plan = audio_plan(edit, a, audio, max_seg, min_seg)
+    plan = speak_plan(edit, a, min(max_seg, a['spec']['max_seg']))
     (adir(edit) / 'plan.json').write_text(json.dumps(plan, ensure_ascii=False, indent=1), encoding='utf-8')
     return plan
 
@@ -401,8 +367,10 @@ def load_plan(edit):
     if not p.exists():
         raise ac.Refused('还没有分段：先运行 avatar_cloud.py plan --edit …')
     plan = json.loads(p.read_text(encoding='utf-8'))
-    plan.setdefault('model', 'kling-avatar')
-    plan.setdefault('kind', MODELS[plan['model']]['kind'])
+    # plans from before the model field were kling-avatar ones, which is retired
+    if plan.setdefault('model', 'kling-avatar') in RETIRED or plan.get('kind') == 'audio':
+        raise ac.Refused('这个项目的分段是用已停用的可灵数字人（kling-avatar）做的：重新分段\n'
+                         f'  python avatar_cloud.py plan --edit "{edit}" --model minimax-h3')
     src = Path(plan['audio'])
     if src.exists() and ac.file_hash(src) != plan['audio_hash']:
         raise ac.Refused('配音在分段之后改过：重新运行 plan（已生成的人物视频对不上新配音）')
@@ -418,16 +386,12 @@ def build_prompt(motion='中', extra='', text=None):
 
 
 def seg_params(a, plan, s, prompt, image_url='https://example.com/avatar.jpg', audio_url='https://example.com/seg.mp3',
-               quality=None, resolution=None, aspect='9:16'):
-    if plan['kind'] == 'speak':
-        res = resolution or a['resolution']
-        if res not in a['spec']['resolutions']:
-            raise ac.Refused(f'{a["model"]} 的分辨率只能是 {"、".join(a["spec"]["resolutions"])}')
-        return {'mode': 'reference', 'images': [image_url], 'audios': [audio_url], 'duration': s['duration'],
-                'resolution': res, 'aspect_ratio': aspect, 'prompt': prompt}
-    # duration is not a kling-avatar input (the video follows the audio) but the price estimate needs it
-    return {'images': [image_url], 'audios': [audio_url], 'quality': quality or a['quality'], 'prompt': prompt,
-            'duration': s['duration']}
+               resolution=None, aspect='9:16'):
+    res = resolution or a['resolution']
+    if res not in a['spec']['resolutions']:
+        raise ac.Refused(f'{a["model"]} 的分辨率只能是 {"、".join(a["spec"]["resolutions"])}')
+    return {'mode': 'reference', 'images': [image_url], 'audios': [audio_url], 'duration': s['duration'],
+            'resolution': res, 'aspect_ratio': aspect, 'prompt': prompt}
 
 
 def prompt_of(plan, s, motion, extra):
@@ -435,16 +399,17 @@ def prompt_of(plan, s, motion, extra):
     if spec.get('prompt'):
         if motion not in MOTION:
             raise ac.Refused(f'动作幅度只能是 {"、".join(MOTION)}')
-        return spec['prompt'].format(text=s['text'], motion=spec['motion'][motion], extra=extra.strip() + ' ' if extra else '')
-    return build_prompt(motion, extra, s['text'] if plan['kind'] == 'speak' else None)
+        return spec['prompt'].format(text=s['text'], motion=spec.get('motion', MOTION)[motion],
+                                     extra=extra.strip() + ' ' if extra else '')
+    return build_prompt(motion, extra, s['text'])
 
 
-def quote(prov, a, plan, segs, motion, extra, b, limit, quality=None, resolution=None, aspect='9:16'):
+def quote(prov, a, plan, segs, motion, extra, b, limit, resolution=None, aspect='9:16'):
     cache, total, chosen, ordered, notes, q = {}, 0.0, None, [], [], {'note': ''}
     for s in segs:
         if s['duration'] not in cache:
             cache[s['duration']] = prov.quote(a['model'], seg_params(a, plan, s, prompt_of(plan, s, motion, extra),
-                                                                     quality=quality, resolution=resolution, aspect=aspect))
+                                                                     resolution=resolution, aspect=aspect))
         q = cache[s['duration']]
         best, ordered, notes = ac.choose_channel(q['channels'], b['min_success_rate'], b['avoid_vendors'])
         if best is None:
@@ -508,7 +473,7 @@ def test_segment(segs):
     return min(segs, key=lambda s: (abs(s['seconds'] - TEST_SECONDS), s['n']))
 
 
-def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, voice_ok=None, all_segments=False,
+def generate(cfg, edit, image, motion='中', extra='', only=None, voice_ok=None, all_segments=False,
              confirmed=False, max_cost=None, http=None, sleep=time.sleep, poll_every=10.0, timeout=3600, out=print,
              resolution=None, user_asked=None):
     why = avatar_decision(edit, user_asked)
@@ -524,7 +489,7 @@ def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, 
         raise ac.Refused('图片不能用：' + '；'.join(img['risks']))
     img_hash = ac.file_hash(d / 'image.jpg')
     log = ac.read_log(edit, LOG)
-    opts = {'quality': quality or a['quality']} if plan['kind'] == 'audio' else {'resolution': resolution or a['resolution']}
+    opts = {'resolution': resolution or a['resolution']}
     test = None
     if not only and not all_segments and len(plan['segments']) > 1:
         # until the user has OK'd a test take, every run makes the test segment only (same inputs reuse it, unpaid)
@@ -535,7 +500,7 @@ def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, 
     todo, waiting = [], []
     for s in pick(plan['segments'], only):
         prompt = prompt_of(plan, s, motion, extra)
-        sound = s.get('audio_hash') or plan['voice_ref_hash']
+        sound = plan['voice_ref_hash']
         s['key'] = ac.request_key(prov.name, a['model'], img_hash, {**opts, 'prompt': prompt, 'duration': s['duration']}, sound)
         done = d / f'seg_{s["n"]:02d}.mp4'
         prev = next((e for e in reversed(log) if e.get('key') == s['key']), None)
@@ -547,21 +512,23 @@ def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, 
         else:
             todo.append(s)
     if todo:
-        q = quote(prov, a, plan, todo, motion, extra, b, limit, opts.get('quality'), opts.get('resolution'), img['aspect'])
+        q = quote(prov, a, plan, todo, motion, extra, b, limit, opts['resolution'], img['aspect'])
         out(ac.quote_text(q) + f'{a["model"]}：{len(todo)} 段，合计请求 {q.get("seconds")} 秒；'
-            f'{"画质 " + opts["quality"] if "quality" in opts else opts["resolution"]}，动作幅度 {motion}')
+            f'{opts["resolution"]}，动作幅度 {motion}')
         ac.gate(q, limit, confirmed)
         image_url = prov.upload_file(d / 'image.jpg')
-        ref_url = prov.upload_file(d / plan['voice_ref']) if plan['kind'] == 'speak' else None
+        ref_url = prov.upload_file(d / plan['voice_ref'])
         attempt = len(log)
         for s in todo:
-            audio_url = ref_url or prov.upload_file(d / s['audio'])
-            params = seg_params(a, plan, s, prompt_of(plan, s, motion, extra), image_url, audio_url,
-                                opts.get('quality'), opts.get('resolution'), img['aspect'])
+            params = seg_params(a, plan, s, prompt_of(plan, s, motion, extra), image_url, ref_url,
+                                opts['resolution'], img['aspect'])
             try:
                 task = prov.submit_video(a['model'], params, q['chosen'].get('lane'), request_id=f'xumu-av-{s["key"]}-{attempt}')
-            except RuntimeError as e:   # refused before any charge (e.g. likeness consent, balance): say why, stop
-                raise ac.Refused(f'第 {s["n"]} 段没有提交成功（未扣费）：{e}')
+            except RuntimeError as e:   # refused before any charge (e.g. balance, content policy): say why, stop
+                msg = f'第 {s["n"]} 段没有提交成功（未扣费）：{e}'
+                if a['model'] in BACKUP:
+                    msg += f'\n可换备选模型重新分段：python avatar_cloud.py plan --edit "{edit}" --model {BACKUP[a["model"]]}'
+                raise ac.Refused(msg)
             attempt += 1
             entry = {'key': s['key'], 'kind': 'avatar', 'segment': s['n'], 'provider': prov.name, 'model': a['model'],
                      'lane': q['chosen'].get('lane'), 'task_id': task, 'state': 'submitted', 'seconds': s['seconds'],
@@ -606,7 +573,7 @@ def generate(cfg, edit, image, quality=None, motion='中', extra='', only=None, 
         lines += ['失败的任务不扣费。没有自动换渠道；可选：'] + \
                  [f'  {c.get("vendor")}（lane {c.get("lane")}）{c.get("price")} {prov.currency}' for c in alts] + \
                  ([] if alts else ['  稍后再试；同一段连续两次失败时，换一张图或改动作描述']) + \
-                 (['  或换备选模型：plan --model kling-v4 重新分段'] if a['model'] == 'minimax-h3' else [])
+                 ([f'  或换备选模型：plan --model {BACKUP[a["model"]]} 重新分段'] if a['model'] in BACKUP else [])
         raise ac.Refused('\n'.join(lines))
     missing = [s['n'] for s in plan['segments'] if not (d / f'seg_{s["n"]:02d}.mp4').exists()]
     spent = round(sum(e.get('cost') or 0 for e in ac.read_log(edit, LOG) if e.get('state') == 'success'), 4)
@@ -727,55 +694,41 @@ def finish(edit, align=True, whisper_model=None, out=print):
     w, h = first['width'], first['height']
     qc, fixed = [], d / 'fixed'
     fixed.mkdir(exist_ok=True)
-    speak = plan['kind'] == 'speak'
     voice = d / 'voice'
-    if speak:
-        shutil.rmtree(voice, ignore_errors=True)
-        voice.mkdir()
+    shutil.rmtree(voice, ignore_errors=True)
+    voice.mkdir()
     sections, offset = [], 0.0
     for s in segs:
         src = d / f'seg_{s["n"]:02d}.mp4'
         got = probe(src)['duration']
-        if speak:
-            wav = voice / f'seg_{s["n"]:02d}_full.wav'
-            subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-vn', '-ac', '1', '-ar', str(ac.SR),
-                            '-c:a', 'pcm_s16le', str(wav)], check=True)
-            length = round(speech_end(wav), 3)
-            # the model paces itself: compare its read with the narration's length for the same text
-            ratio = round(length / s['seconds'], 2) if s['seconds'] else None
-            qc.append({'segment': s['n'], 'requested_s': s['duration'], 'video_s': round(got, 3), 'speech_s': length,
-                       'narration_s': s['seconds'], 'pace': ratio,
-                       'status': 'passed' if length < got - 0.05 and ratio and 0.6 <= ratio <= 1.5 else 'needs_fix'})
-            sid = f'A{s["n"]:02d}'
-            subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(wav), '-t', f'{length:.3f}', str(voice / f'{sid}.wav')],
-                           check=True)
-            wav.unlink()
-            sections.append({'id': sid, 'file': f'{sid}.wav', 'text': s['text'], 'offset': round(offset, 3),
-                             'seconds': length})
-            offset += length
-            vf = f'scale={w}:{h},fps=30'
-        else:
-            length = s['seconds']
-            diff = round(got - length, 3)
-            qc.append({'segment': s['n'], 'audio_s': length, 'video_s': round(got, 3), 'diff_s': diff,
-                       'status': 'passed' if abs(diff) <= 0.15 else 'needs_fix'})
-            # exact segment length: trim a longer take, hold the last frame of a shorter one
-            vf = f'scale={w}:{h},fps=30,tpad=stop_mode=clone:stop_duration=2'
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-an', '-vf', vf, '-t', f'{length:.3f}',
-                        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '16', '-pix_fmt', 'yuv420p',
+        wav = voice / f'seg_{s["n"]:02d}_full.wav'
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-vn', '-ac', '1', '-ar', str(ac.SR),
+                        '-c:a', 'pcm_s16le', str(wav)], check=True)
+        length = round(speech_end(wav), 3)
+        # the model paces itself: compare its read with the narration's length for the same text
+        ratio = round(length / s['seconds'], 2) if s['seconds'] else None
+        qc.append({'segment': s['n'], 'requested_s': s['duration'], 'video_s': round(got, 3), 'speech_s': length,
+                   'narration_s': s['seconds'], 'pace': ratio,
+                   'status': 'passed' if length < got - 0.05 and ratio and 0.6 <= ratio <= 1.5 else 'needs_fix'})
+        sid = f'A{s["n"]:02d}'
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(wav), '-t', f'{length:.3f}', str(voice / f'{sid}.wav')],
+                       check=True)
+        wav.unlink()
+        sections.append({'id': sid, 'file': f'{sid}.wav', 'text': s['text'], 'offset': round(offset, 3),
+                         'seconds': length})
+        offset += length
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-an', '-vf', f'scale={w}:{h},fps=30',
+                        '-t', f'{length:.3f}', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '16', '-pix_fmt', 'yuv420p',
                         str(fixed / src.name)], check=True)
-    if speak:
-        programme = voice / 'narration.wav'
-        lst_a = voice / 'list.txt'
-        lst_a.write_text(''.join(f"file '{(voice / x['file']).as_posix()}'\n" for x in sections), encoding='utf-8')
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', str(lst_a), '-c:a', 'pcm_s16le',
-                        str(programme)], check=True)
-        lst_a.unlink()
-        (voice / 'manifest.json').write_text(json.dumps({'lead': 0.0, 'gap': 0.0, 'sections': sections,
-                                                         'total': round(offset, 3), 'source': plan['model']},
-                                                        ensure_ascii=False, indent=1), encoding='utf-8')
-    else:
-        programme = Path(plan['audio'])
+    programme = voice / 'narration.wav'
+    lst_a = voice / 'list.txt'
+    lst_a.write_text(''.join(f"file '{(voice / x['file']).as_posix()}'\n" for x in sections), encoding='utf-8')
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', str(lst_a), '-c:a', 'pcm_s16le',
+                    str(programme)], check=True)
+    lst_a.unlink()
+    (voice / 'manifest.json').write_text(json.dumps({'lead': 0.0, 'gap': 0.0, 'sections': sections,
+                                                     'total': round(offset, 3), 'source': plan['model']},
+                                                    ensure_ascii=False, indent=1), encoding='utf-8')
     lst = fixed / 'list.txt'
     lst.write_text(''.join(f"file '{(fixed / f'seg_{s['n']:02d}.mp4').as_posix()}'\n" for s in segs), encoding='utf-8')
     final = d / 'final_avatar.mp4'
@@ -784,37 +737,33 @@ def finish(edit, align=True, whisper_model=None, out=print):
                    check=True)
     shutil.rmtree(fixed, ignore_errors=True)
     total = probe(final)['duration']
-    bounds = [x['offset'] for x in sections[1:]] if speak else [s['end'] for s in segs[:-1]]
+    bounds = [x['offset'] for x in sections[1:]]
     seam_img = _frames(final, [t + o for t in bounds for o in (-0.2, 0.05)], d / 'seams.jpg') if bounds else None
     contact = _frames(final, [k * 2.0 + 1 for k in range(int(total // 2))][:60], d / 'contact.jpg', 240)
     anomalies = [{'start': round(s, 2), 'end': round(e if e is not None else total, 2), 'type': 'freeze',
                   'detail': '画面静止超过 2 秒'} for s, e in freezes(final)]
     mouth = mouth_check(final, programme)
     anomalies += [{'start': s, 'end': e, 'type': 'mouth_still', 'detail': '有声音但嘴几乎不动'} for s, e in (mouth or [])]
-    aligned = 'n/a'
-    if speak:
-        if not align:
-            aligned = 'not_run（--no-align）'
-        else:
-            try:
-                _, _, report = ac.align(edit, whisper_model, out, tts='avatar/voice')
-                aligned = f'run：疑点 {len(report)} 处（avatar/voice/align_report.md）'
-            except ac.Refused as e:
-                aligned = f'not_run（{e}）'
+    if not align:
+        aligned = 'not_run（--no-align）'
+    else:
+        try:
+            _, _, report = ac.align(edit, whisper_model, out, tts='avatar/voice')
+            aligned = f'run：疑点 {len(report)} 处（avatar/voice/align_report.md）'
+        except ac.Refused as e:
+            aligned = f'not_run（{e}）'
     report = {'video': str(final), 'model': plan['model'], 'duration': round(total, 3), 'size': f'{w}x{h}',
               'segments': qc, 'seam_sheet': seam_img, 'contact_sheet': contact, 'align': aligned,
               'mouth_check': 'not_run（OpenCV 不可用）' if mouth is None else 'run', 'anomalies': len(anomalies),
-              'unverified': ['口型是否逐字对准', '手势自然不自然', '接缝处动作是否跳'] +
-                            (['音色像不像本人的克隆声音', '每段之间音色是否一致'] if speak else [])}
+              'unverified': ['口型是否逐字对准', '手势自然不自然', '接缝处动作是否跳',
+                             '音色像不像本人的克隆声音', '每段之间音色是否一致']}
     (d / 'qc.json').write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding='utf-8')
     (d / 'anomalies.json').write_text(json.dumps({'duration': round(total, 3), 'anomalies': anomalies},
                                                  ensure_ascii=False, indent=1), encoding='utf-8')
     bad = [q for q in qc if q['status'] != 'passed']
-    out(f'final_avatar.mp4：{total:.2f} 秒，{w}x{h}，{len(segs)} 段（{plan["model"]}）；' +
-        ('人声是模型说的，逐字时间按它重新对齐' if speak else '原声已换回配音原文件'))
+    out(f'final_avatar.mp4：{total:.2f} 秒，{w}x{h}，{len(segs)} 段（{plan["model"]}）；人声是模型说的，逐字时间按它重新对齐')
     out(f'长度核对：{len(qc) - len(bad)}/{len(qc)} 段通过' + (f'（要看的段：{", ".join(str(q["segment"]) for q in bad)}）' if bad else ''))
-    if speak:
-        out(f'逐字对齐：{aligned}')
+    out(f'逐字对齐：{aligned}')
     out(f'异常时间段 {len(anomalies)} 处 → avatar/anomalies.json；接缝图 {seam_img or "无"}，总览图 {contact or "无"}')
     out('需要用户播放确认：' + '、'.join(report['unverified']))
     return report
@@ -891,13 +840,13 @@ def main(argv=None, cfg=None, http=None):
     p.add_argument('--light', default='', help='blend: the scene light in words, e.g. 窗外夕阳从人物后方打来')
     p.add_argument('--count', type=int, default=2); p.add_argument('--blur', type=float, default=6.0)
     p.add_argument('--confirmed', action='store_true'); p.add_argument('--max-cost', type=float)
-    p = sub.add_parser('plan'); p.add_argument('--edit', required=True); p.add_argument('--audio')
-    p.add_argument('--model', choices=list(MODELS)); p.add_argument('--max-seg', type=float); p.add_argument('--min-seg', type=float)
-    p = sub.add_parser('estimate'); p.add_argument('--edit', required=True); p.add_argument('--quality')
+    p = sub.add_parser('plan'); p.add_argument('--edit', required=True)
+    p.add_argument('--model', help='、'.join(MODELS)); p.add_argument('--max-seg', type=float)
+    p = sub.add_parser('estimate'); p.add_argument('--edit', required=True)
     p.add_argument('--resolution'); p.add_argument('--motion', default='中'); p.add_argument('--extra', default='')
     p.add_argument('--only'); p.add_argument('--aspect', default='9:16')
     p = sub.add_parser('generate'); p.add_argument('--edit', required=True); p.add_argument('--image', required=True)
-    p.add_argument('--quality'); p.add_argument('--resolution'); p.add_argument('--motion', default='中')
+    p.add_argument('--resolution'); p.add_argument('--motion', default='中')
     p.add_argument('--extra', default=''); g = p.add_mutually_exclusive_group()
     g.add_argument('--only'); g.add_argument('--all', action='store_true', dest='all_segments')
     p.add_argument('--voice-ok', help=argparse.SUPPRESS); p.add_argument('--user-asked')
@@ -917,21 +866,19 @@ def main(argv=None, cfg=None, http=None):
                 if a.mode == 'blend' else make_frame(a.edit, a.photo, a.scene, a.blur)
             print(json.dumps(rep, ensure_ascii=False, indent=1))
         elif a.cmd == 'plan':
-            plan = make_plan(a.edit, a.audio, a.max_seg, a.min_seg, cfg, a.model)
+            plan = make_plan(a.edit, a.max_seg, cfg, a.model)
             print(f'{plan["model"]}：{len(plan["segments"])} 段，配音共 {plan["duration"]:.1f} 秒：' +
                   '，'.join(f'{s["n"]}）{s["seconds"]:.1f}s→请求 {s["duration"]}s' for s in plan['segments']))
-            if plan['hard_cuts']:
-                print(f'注意：第 {"、".join(map(str, plan["hard_cuts"]))} 段的结尾不在停顿上（找不到停顿，硬切），接缝要重点看')
         elif a.cmd == 'estimate':
             plan = load_plan(a.edit)
             s = settings(cfg, plan['model'])
             prov = provider(cfg, s, http)
             b = ac.budget(cfg)
             segs = pick(plan['segments'], a.only)
-            print(ac.quote_text(quote(prov, s, plan, segs, a.motion, a.extra, b, b['confirm_over'], a.quality,
+            print(ac.quote_text(quote(prov, s, plan, segs, a.motion, a.extra, b, b['confirm_over'],
                                       a.resolution, a.aspect)), end='')
         elif a.cmd == 'generate':
-            generate(cfg, a.edit, a.image, a.quality, a.motion, a.extra, a.only, a.voice_ok,
+            generate(cfg, a.edit, a.image, a.motion, a.extra, a.only, a.voice_ok,
                      a.all_segments or a.skip_sample, a.confirmed, a.max_cost, http, resolution=a.resolution,
                      user_asked=a.user_asked)
         elif a.cmd == 'finish':

@@ -103,9 +103,33 @@ class SpeakTests(unittest.TestCase):
         for s in self.plan('wan-3-0')['segments']:
             self.assertIn(s['duration'], av.MODELS['wan-3-0']['durations'])
 
-    def test_audio_flag_is_refused_for_speaking_models(self):
-        with self.assertRaisesRegex(ac.Refused, 'kling-avatar'):
-            av.make_plan(self.edit, audio=self.edit / 'tts' / 'narration.wav', cfg=self.cfg)
+    def test_kling_avatar_is_retired_everywhere(self):
+        with self.assertRaisesRegex(ac.Refused, '已停用[\\s\\S]*--model minimax-h3'):
+            self.plan('kling-avatar')
+        cfg = json.loads(json.dumps(self.cfg))
+        cfg['avatar']['model'] = 'kling-avatar'   # a local config that still names it
+        with self.assertRaisesRegex(ac.Refused, 'avatar.model'):
+            av.make_plan(self.edit, cfg=cfg)
+        self.plan()
+        old = self.edit / 'avatar' / 'plan.json'   # a plan from before the model field (made with kling-avatar)
+        data = json.loads(old.read_text(encoding='utf-8'))
+        data.pop('model')
+        old.write_text(json.dumps(data), encoding='utf-8')
+        with self.assertRaisesRegex(ac.Refused, '重新分段'):
+            av.load_plan(self.edit)
+
+    def test_seedance_backup_names_its_references_and_stays_under_29_seconds(self):
+        plan = self.plan('seedance-2-5-promo')
+        a = av.settings(self.cfg, plan['model'])
+        self.assertLessEqual(max(s['duration'] for s in plan['segments']), 29)
+        s = plan['segments'][0]
+        p = av.seg_params(a, plan, s, av.prompt_of(plan, s, '中', ''))
+        self.assertEqual((p['mode'], p['resolution']), ('reference', '720p'))
+        for part in ('@图片1', '@音频1', s['text'], '不加字幕'):
+            self.assertIn(part, p['prompt'])
+        for word in ('表情', '微笑', '嘴'):
+            self.assertNotIn(word, p['prompt'])
+        self.assertEqual(av.BACKUP['minimax-h3'], 'seedance-2-5-promo')
 
     def test_h3_default_uses_the_official_format_and_fits_15_seconds(self):
         plan = self.plan()

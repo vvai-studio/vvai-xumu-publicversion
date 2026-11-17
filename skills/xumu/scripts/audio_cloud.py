@@ -166,7 +166,9 @@ HINTS = {
     'content_policy_violation': '内容被安全策略拦截：改写提示词或换参考图',
     'model_not_found': '模型 ID 不存在或已下线：用 GET /v1/skills/models 查当前 ID',
     'pinned_channel_unavailable': '钉住的渠道暂时不可用：稍后重试，或重新报价换渠道',
-    'likeness_consent_required': '这张真人照片在造物社还没确认肖像授权（kling-avatar 会检查）：需要照片本人在造物社确认授权后再提交；失败不扣费',
+    'likeness_consent_required': '这张真人照片在造物社没有肖像授权记录，这个模型要本人先在网页勾选声明，API 做不了：'
+                                 '换不查授权的模型（数字人用默认 minimax-h3，备选 seedance-2-5-promo），'
+                                 '不要让用户去网页手动上传；失败不扣费',
     'voice_not_found': '音色不存在、没就绪或不属于这个账号：voice list 查账号音色，或改用 voice presets 里的平台音色',
 }
 
